@@ -1,0 +1,1133 @@
+Add Component: Footprint Not Found Wire 1.1
+Added Component: Designator=1(MINI-FLAT-4)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Lite-On Inc."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "LTV-356T"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "SOP-4 Lite-On Inc."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/LTV-356T/Lite-On%20Inc./view-part/448527/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=2(MINI-FLAT-4)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Lite-On Inc."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "LTV-356T"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "SOP-4 Lite-On Inc."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/LTV-356T/Lite-On%20Inc./view-part/448527/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=3(MINI-FLAT-4)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Lite-On Inc."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "LTV-356T"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "SOP-4 Lite-On Inc."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/LTV-356T/Lite-On%20Inc./view-part/448527/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=C1(CAP 10x16)
+Add component (AddParameter): Name = "Case"; Value = "“Ã1V221M-RBF16"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/6157/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "FUJICON"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "8x16x3.5"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Temperature"; Value = "-55...+105∞C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Tipe"; Value = "Low ESR"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "680?F"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage"; Value = "25V"; VariantName = "[No Variations]"
+Added Component: Designator=C2(*CAPC3326X230N)
+Add component (AddParameter): Name = "Case"; Value = "SMD 1210"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/36844/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "SAMSUNG ELECTRO-MECHANICS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "CL32B106KLJNNNE"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10uF 35V"; VariantName = "[No Variations]"
+Added Component: Designator=C3(SMD 7343-43)
+Add component (AddParameter): Name = "HalpURL"; Value = "https://store.comet.bg/Catalogue/Product/15617/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "VISHAY"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "593D227X9010E2TE3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "SMD 7343-43   7.3 x 4.3 x 4"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "220uF"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage"; Value = "10V"; VariantName = "[No Variations]"
+Added Component: Designator=C4(SMD 0603)
+Add component (AddParameter): Name = "Case"; Value = "SMD 1210"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/36844/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "SAMSUNG ELECTRO-MECHANICS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "CL32B106KLJNNNE"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10uF 35V"; VariantName = "[No Variations]"
+Added Component: Designator=C5(SMD 0603)
+Add component (AddParameter): Name = "Case"; Value = "SMD 1210"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/36844/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "SAMSUNG ELECTRO-MECHANICS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "CL32B106KLJNNNE"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10uF 35V"; VariantName = "[No Variations]"
+Added Component: Designator=C6(*CAPC3326X230N)
+Add component (AddParameter): Name = "Case"; Value = "SMD 1210"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/36844/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "SAMSUNG ELECTRO-MECHANICS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "CL32B106KLJNNNE"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "100uF"; VariantName = "[No Variations]"
+Added Component: Designator=D1(SOD123)
+Add component (AddParameter): Name = "Case"; Value = "SOD-123 Diodes Inc."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/9613/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "DIODES / ZETEX"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "1N4148W-7-F"; VariantName = "[No Variations]"
+Added Component: Designator=D2(SOD123)
+Add component (AddParameter): Name = "Case"; Value = "SOD-123 Diodes Inc."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/9613/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "DIODES / ZETEX"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "1N4148W-7-F"; VariantName = "[No Variations]"
+Added Component: Designator=D3(SOD123)
+Add component (AddParameter): Name = "Case"; Value = "SOD-123 Diodes Inc."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/9613/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "DIODES / ZETEX"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "1N4148W-7-F"; VariantName = "[No Variations]"
+Added Component: Designator=D4(SOD123)
+Add component (AddParameter): Name = "Case"; Value = "SOD-123 Diodes Inc."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/9613/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "DIODES / ZETEX"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "1N4148W-7-F"; VariantName = "[No Variations]"
+Added Component: Designator=D5(SOD123)
+Add component (AddParameter): Name = "Case"; Value = "SOD-123 Diodes Inc."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/9613/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "DIODES / ZETEX"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "1N4148W-7-F"; VariantName = "[No Variations]"
+Added Component: Designator=D6(SMD 0805 LED-Y)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Rohm Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "SMLMN2WB1CW1C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Rohm Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/SMLMN2WB1CW1C/Rohm/view-part/3217279/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=D7(SMD 0805 LED-Y)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Rohm Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "SMLMN2WB1CW1C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Rohm Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/SMLMN2WB1CW1C/Rohm/view-part/3217279/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=D8(SMD 0805 LED-Y)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Rohm Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "SMLMN2WB1CW1C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Rohm Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/SMLMN2WB1CW1C/Rohm/view-part/3217279/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=D9(SMD 0805 LED-Y)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Rohm Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "SMLMN2WB1CW1C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Rohm Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/SMLMN2WB1CW1C/Rohm/view-part/3217279/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=D10(SMD 0805 LED-Y)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Rohm Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "SMLMN2WB1CW1C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "0805 Rohm Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/SMLMN2WB1CW1C/Rohm/view-part/3217279/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Add Component: Footprint Not Found Wire 1.1
+Added Component: Designator=J1(687140149022)
+Add component (AddParameter): Name = "Availability"; Value = "In Stock"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/687140149022/Wurth+Electronics+Inc./view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Wurth Electronics"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "687140149022"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Purchase-URL"; Value = "https://pricing.snapeda.com/search/part/687140149022/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/687140149022/Wurth+Electronics+Inc./view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=J2(PN1X8)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "WA?rth Elektronik"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "61300711821"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/61300711821/W%C3%BCrth%20Elektronik/view-part/2704590/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=J3(PN1X8)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "WA?rth Elektronik"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "61300711821"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/61300711821/W%C3%BCrth%20Elektronik/view-part/2704590/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=J4(PN1X4)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "WA?rth Elektronik"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "61300711821"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/61300711821/W%C3%BCrth%20Elektronik/view-part/2704590/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=J5(PN1X4)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "WA?rth Elektronik"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "61300711821"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/61300711821/W%C3%BCrth%20Elektronik/view-part/2704590/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=J6(687106149022)
+Add component (AddParameter): Name = "Availability"; Value = "In Stock"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/687106149022/Wurth+Elektronik/view-part/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "WA?rth Elektronik"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "687106149022"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Purchase-URL"; Value = "https://pricing.snapeda.com/search/part/687106149022/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/687106149022/Wurth+Elektronik/view-part/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=J7(PN1X8)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "WA?rth Elektronik"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "61300711821"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/61300711821/W%C3%BCrth%20Elektronik/view-part/2704590/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=J8(PN1X4)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "WA?rth Elektronik"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "61300711821"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/61300711821/W%C3%BCrth%20Elektronik/view-part/2704590/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=J9(PN1X8)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "WA?rth Elektronik"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "61300711821"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/61300711821/W%C3%BCrth%20Elektronik/view-part/2704590/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=L1(DRH104R)
+Add component (AddParameter): Name = "Availability"; Value = "Warning"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Check_prices"; Value = "https://www.snapeda.com/parts/1274AS-H-1R5N=P3/Murata/view-part/4549270/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Murata"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "1274AS-H-1R5N=P3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "NONSTANDARD"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Purchase-URL"; Value = "https://pricing.snapeda.com/search/part/1274AS-H-1R5N=P3/?ref=eda"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/1274AS-H-1R5N=P3/Murata/view-part/4549270/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=LS1(SMD 1206 RES)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "KPEG242-5V"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=Q1(SOT-23-3)
+Add component (AddParameter): Name = "Case"; Value = "SOT-23-3 SST3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "SST2222A"; VariantName = "[No Variations]"
+Added Component: Designator=Q2(SOT-23-3)
+Add component (AddParameter): Name = "Case"; Value = "SOT-23-3 SST3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "SST2222A"; VariantName = "[No Variations]"
+Added Component: Designator=Q3(SOT-23-3)
+Add component (AddParameter): Name = "Case"; Value = "SOT-23-3 SST3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "SST2222A"; VariantName = "[No Variations]"
+Added Component: Designator=Q4(SOT-23-3)
+Add component (AddParameter): Name = "Case"; Value = "SOT-23-3 SST3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "SST2222A"; VariantName = "[No Variations]"
+Added Component: Designator=Q5(SOT-23-3)
+Add component (AddParameter): Name = "Case"; Value = "SOT-23-3 SST3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "SST2222A"; VariantName = "[No Variations]"
+Added Component: Designator=Q6(SOT-23-3)
+Add component (AddParameter): Name = "Case"; Value = "SOT-23-3 SST3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "SST2222A"; VariantName = "[No Variations]"
+Added Component: Designator=Q7(SOT-23-3)
+Add component (AddParameter): Name = "Case"; Value = "SOT-23-3 SST3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "SST2222A"; VariantName = "[No Variations]"
+Added Component: Designator=Q8(SOT-23-3)
+Add component (AddParameter): Name = "Case"; Value = "SOT-23-3 SST3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "SST2222A"; VariantName = "[No Variations]"
+Added Component: Designator=Q9(SOT-23-3)
+Add component (AddParameter): Name = "Case"; Value = "SOT-23-3 SST3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "SST2222A"; VariantName = "[No Variations]"
+Added Component: Designator=Q10(SOT-23-3)
+Add component (AddParameter): Name = "Case"; Value = "SOT-23-3 SST3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "SST2222A"; VariantName = "[No Variations]"
+Added Component: Designator=Q11(SOT-23-3)
+Add component (AddParameter): Name = "Case"; Value = "SOT-23-3 SST3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "SST2222A"; VariantName = "[No Variations]"
+Added Component: Designator=Q12(SOT-23-3)
+Add component (AddParameter): Name = "Case"; Value = "SOT-23-3 SST3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "SST2222A"; VariantName = "[No Variations]"
+Added Component: Designator=Q13(SOT-23-3)
+Add component (AddParameter): Name = "Case"; Value = "SOT-23-3 SST3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "SST2222A"; VariantName = "[No Variations]"
+Added Component: Designator=Q14(SOT-23-3)
+Add component (AddParameter): Name = "Case"; Value = "SOT-23-3 SST3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "SST2222A"; VariantName = "[No Variations]"
+Added Component: Designator=Q15(SOT-346 (SC59) Black)
+Add component (AddParameter): Name = "Case"; Value = "SOT-346 (SC59)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HalpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "DTC114YKA"; VariantName = "[No Variations]"
+Added Component: Designator=Q16(SOT-346 (SC59) Black)
+Add component (AddParameter): Name = "Case"; Value = "SOT-346 (SC59)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HalpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "DTC114YKA"; VariantName = "[No Variations]"
+Added Component: Designator=Q17(SOT-346 (SC59) Black)
+Add component (AddParameter): Name = "Case"; Value = "SOT-346 (SC59)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HalpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "DTC114YKA"; VariantName = "[No Variations]"
+Added Component: Designator=Q18(SOT-346 (SC59) Black)
+Add component (AddParameter): Name = "Case"; Value = "SOT-346 (SC59)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HalpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "DTC114YKA"; VariantName = "[No Variations]"
+Added Component: Designator=Q19(SOT-346 (SC59) Black)
+Add component (AddParameter): Name = "Case"; Value = "SOT-346 (SC59)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HalpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "DTC114YKA"; VariantName = "[No Variations]"
+Added Component: Designator=Q20(SOT-346 (SC59) Black)
+Add component (AddParameter): Name = "Case"; Value = "SOT-346 (SC59)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HalpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "DTC114YKA"; VariantName = "[No Variations]"
+Added Component: Designator=Q21(SOT-346 (SC59) Black)
+Add component (AddParameter): Name = "Case"; Value = "SOT-346 (SC59)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HalpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "DTC114YKA"; VariantName = "[No Variations]"
+Added Component: Designator=Q22(SOT-346 (SC59) Black)
+Add component (AddParameter): Name = "Case"; Value = "SOT-346 (SC59)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HalpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "DTC114YKA"; VariantName = "[No Variations]"
+Added Component: Designator=Q23(SOT-346 (SC59) Black)
+Add component (AddParameter): Name = "Case"; Value = "SOT-346 (SC59)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HalpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "DTC114YKA"; VariantName = "[No Variations]"
+Added Component: Designator=Q24(SOT-346 (SC59) Black)
+Add component (AddParameter): Name = "Case"; Value = "SOT-346 (SC59)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HalpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "DTC114YKA"; VariantName = "[No Variations]"
+Added Component: Designator=Q25(SOT-346 (SC59) Black)
+Add component (AddParameter): Name = "Case"; Value = "SOT-346 (SC59)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HalpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "DTC114YKA"; VariantName = "[No Variations]"
+Added Component: Designator=R1(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "47k"; VariantName = "[No Variations]"
+Added Component: Designator=R2(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R3(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R4(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R5(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R6(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R7(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R8(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R9(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R10(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R11(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R12(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R13(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R14(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R15(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R16(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R17(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R18(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "220Ohm"; VariantName = "[No Variations]"
+Added Component: Designator=R19(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "220Ohm"; VariantName = "[No Variations]"
+Added Component: Designator=R20(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "220Ohm"; VariantName = "[No Variations]"
+Added Component: Designator=R21(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "220Ohm"; VariantName = "[No Variations]"
+Added Component: Designator=R22(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "220Ohm"; VariantName = "[No Variations]"
+Added Component: Designator=R23(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "2,7k"; VariantName = "[No Variations]"
+Added Component: Designator=R24(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R25(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R26(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R27(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R28(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R29(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R30(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R31(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R32(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R33(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R34(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R35(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R36(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R37(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R38(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R39(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R40(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R41(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R42(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R43(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R44(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R45(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R46(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R47(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R48(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R49(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R50(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R51(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R52(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R53(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R54(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R55(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R56(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R57(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R58(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=SW1(SW_KSR221GLFS)
+Add component (AddParameter): Name = "MF"; Value = "C&K"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "KSR221GLFS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "6x3.8x2.5mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "URL"; Value = "https://store.comet.bg/Catalogue/Product/17512/"; VariantName = "[No Variations]"
+Added Component: Designator=SW2(SW_KSR221GLFS)
+Add component (AddParameter): Name = "MF"; Value = "C&K"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "KSR221GLFS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "6x3.8x2.5mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "URL"; Value = "https://store.comet.bg/Catalogue/Product/17512/"; VariantName = "[No Variations]"
+Added Component: Designator=SW3(SW_KSR221GLFS)
+Add component (AddParameter): Name = "MF"; Value = "C&K"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "KSR221GLFS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "6x3.8x2.5mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "URL"; Value = "https://store.comet.bg/Catalogue/Product/17512/"; VariantName = "[No Variations]"
+Added Component: Designator=SW4(SW_KSR221GLFS)
+Add component (AddParameter): Name = "MF"; Value = "C&K"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "KSR221GLFS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "6x3.8x2.5mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "URL"; Value = "https://store.comet.bg/Catalogue/Product/17512/"; VariantName = "[No Variations]"
+Added Component: Designator=SW5(SW_KSR221GLFS)
+Add component (AddParameter): Name = "MF"; Value = "C&K"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "KSR221GLFS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "6x3.8x2.5mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "URL"; Value = "https://store.comet.bg/Catalogue/Product/17512/"; VariantName = "[No Variations]"
+Added Component: Designator=SW6(SW_KSR221GLFS)
+Add component (AddParameter): Name = "MF"; Value = "C&K"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "KSR221GLFS"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "6x3.8x2.5mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "URL"; Value = "https://store.comet.bg/Catalogue/Product/17512/"; VariantName = "[No Variations]"
+Added Component: Designator=U3(DPAK228P968X238-4N)
+Add component (AddParameter): Name = "Case"; Value = "TO252-5-11"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/4871/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "BA05CC0WFP-E2"; VariantName = "[No Variations]"
+Add Pin To Net: Unknown Pin: Pin +1-1
+Added Pin To Net: NetName=Net1_1 Pin=1-1
+Added Pin To Net: NetName=GND Pin=1-2
+Added Pin To Net: NetName=GND Pin=1-3
+Added Pin To Net: NetName=Net1_4 Pin=1-4
+Added Pin To Net: NetName=Net2_1 Pin=2-1
+Added Pin To Net: NetName=GND Pin=2-2
+Added Pin To Net: NetName=GND Pin=2-3
+Added Pin To Net: NetName=Net2_4 Pin=2-4
+Added Pin To Net: NetName=Net3_1 Pin=3-1
+Added Pin To Net: NetName=Net3_2 Pin=3-2
+Added Pin To Net: NetName=GND Pin=3-3
+Added Pin To Net: NetName=Net3_4 Pin=3-4
+Added Pin To Net: NetName=Net+1_1 Pin=C1-1
+Added Pin To Net: NetName=GND Pin=C1-2
+Added Pin To Net: NetName=GND Pin=C2-1
+Added Pin To Net: NetName=Net+1_1 Pin=C2-2
+Added Pin To Net: NetName=NetC3_1 Pin=C3-1
+Added Pin To Net: NetName=GND Pin=C3-2
+Added Pin To Net: NetName=GND Pin=C4-1
+Added Pin To Net: NetName=NetC3_1 Pin=C4-2
+Added Pin To Net: NetName=GND Pin=C5-1
+Added Pin To Net: NetName=NetC5_2 Pin=C5-2
+Added Pin To Net: NetName=GND Pin=C6-1
+Added Pin To Net: NetName=NetC6_2 Pin=C6-2
+Added Pin To Net: NetName=NetD1_A Pin=D1-A
+Added Pin To Net: NetName=NetD1_C Pin=D1-C
+Added Pin To Net: NetName=NetD2_A Pin=D2-A
+Added Pin To Net: NetName=NetD1_C Pin=D2-C
+Added Pin To Net: NetName=NetD3_A Pin=D3-A
+Added Pin To Net: NetName=NetD1_C Pin=D3-C
+Added Pin To Net: NetName=NetD4_A Pin=D4-A
+Added Pin To Net: NetName=NetD4_C Pin=D4-C
+Added Pin To Net: NetName=NetD5_A Pin=D5-A
+Added Pin To Net: NetName=NetD4_C Pin=D5-C
+Added Pin To Net: NetName=NetD6_A Pin=D6-A
+Added Pin To Net: NetName=GND Pin=D6-C
+Added Pin To Net: NetName=NetD7_A Pin=D7-A
+Added Pin To Net: NetName=GND Pin=D7-C
+Added Pin To Net: NetName=NetD8_A Pin=D8-A
+Added Pin To Net: NetName=GND Pin=D8-C
+Added Pin To Net: NetName=NetD9_A Pin=D9-A
+Added Pin To Net: NetName=GND Pin=D9-C
+Added Pin To Net: NetName=NetD10_A Pin=D10-A
+Added Pin To Net: NetName=GND Pin=D10-C
+Add Pin To Net: Unknown Pin: Pin Gnd1-1
+Added Pin To Net: NetName=NetJ1_1 Pin=J1-1
+Added Pin To Net: NetName=GND Pin=J1-2
+Added Pin To Net: NetName=NetJ1_1 Pin=J1-3
+Added Pin To Net: NetName=GND Pin=J1-4
+Added Pin To Net: NetName=GND Pin=J1-5
+Added Pin To Net: NetName=GND Pin=J1-6
+Added Pin To Net: NetName=GND Pin=J1-7
+Added Pin To Net: NetName=NetJ1_8 Pin=J1-8
+Added Pin To Net: NetName=NetJ1_9 Pin=J1-9
+Added Pin To Net: NetName=NetJ1_10 Pin=J1-10
+Added Pin To Net: NetName=NetJ1_11 Pin=J1-11
+Added Pin To Net: NetName=NetJ1_12 Pin=J1-12
+Added Pin To Net: NetName=NetJ1_13 Pin=J1-13
+Added Pin To Net: NetName=NetJ1_14 Pin=J1-14
+Added Pin To Net: NetName=NetJ1_15 Pin=J1-15
+Added Pin To Net: NetName=NetJ1_16 Pin=J1-16
+Added Pin To Net: NetName=NetJ1_17 Pin=J1-17
+Added Pin To Net: NetName=NetJ1_18 Pin=J1-18
+Added Pin To Net: NetName=NetJ1_19 Pin=J1-19
+Added Pin To Net: NetName=NetJ1_20 Pin=J1-20
+Added Pin To Net: NetName=NetJ1_21 Pin=J1-21
+Added Pin To Net: NetName=NetJ1_22 Pin=J1-22
+Added Pin To Net: NetName=NetJ1_23 Pin=J1-23
+Added Pin To Net: NetName=NetJ1_24 Pin=J1-24
+Added Pin To Net: NetName=NetJ1_26 Pin=J1-26
+Added Pin To Net: NetName=NetJ1_29 Pin=J1-29
+Added Pin To Net: NetName=NetJ1_30 Pin=J1-30
+Added Pin To Net: NetName=NetJ1_31 Pin=J1-31
+Added Pin To Net: NetName=NetJ1_32 Pin=J1-32
+Added Pin To Net: NetName=NetJ1_1 Pin=J1-34
+Added Pin To Net: NetName=NetJ1_1 Pin=J1-35
+Added Pin To Net: NetName=NetJ2_1 Pin=J2-1
+Added Pin To Net: NetName=NetJ2_2 Pin=J2-2
+Added Pin To Net: NetName=NetJ2_3 Pin=J2-3
+Added Pin To Net: NetName=NetJ2_4 Pin=J2-4
+Added Pin To Net: NetName=NetJ2_5 Pin=J2-5
+Added Pin To Net: NetName=NetJ2_6 Pin=J2-6
+Added Pin To Net: NetName=NetJ2_7 Pin=J2-7
+Added Pin To Net: NetName=NetJ2_8 Pin=J2-8
+Added Pin To Net: NetName=NetJ3_1 Pin=J3-1
+Added Pin To Net: NetName=NetJ3_2 Pin=J3-2
+Added Pin To Net: NetName=NetJ3_3 Pin=J3-3
+Added Pin To Net: NetName=NetJ3_4 Pin=J3-4
+Added Pin To Net: NetName=NetJ3_5 Pin=J3-5
+Added Pin To Net: NetName=NetJ3_6 Pin=J3-6
+Added Pin To Net: NetName=NetJ3_7 Pin=J3-7
+Added Pin To Net: NetName=GND Pin=J3-8
+Added Pin To Net: NetName=NetJ4_1 Pin=J4-1
+Added Pin To Net: NetName=NetJ4_2 Pin=J4-2
+Added Pin To Net: NetName=NetJ4_3 Pin=J4-3
+Added Pin To Net: NetName=GND Pin=J4-4
+Added Pin To Net: NetName=Net2_4 Pin=J5-1
+Added Pin To Net: NetName=Net1_4 Pin=J5-2
+Added Pin To Net: NetName=Net3_4 Pin=J5-3
+Added Pin To Net: NetName=GND Pin=J5-4
+Added Pin To Net: NetName=NetJ1_1 Pin=J6-1
+Added Pin To Net: NetName=NetJ6_2 Pin=J6-2
+Added Pin To Net: NetName=NetJ6_3 Pin=J6-3
+Added Pin To Net: NetName=NetJ6_4 Pin=J6-4
+Added Pin To Net: NetName=NetJ6_5 Pin=J6-5
+Added Pin To Net: NetName=GND Pin=J6-6
+Added Pin To Net: NetName=NetJ7_1 Pin=J7-1
+Added Pin To Net: NetName=NetJ7_2 Pin=J7-2
+Added Pin To Net: NetName=NetJ7_3 Pin=J7-3
+Added Pin To Net: NetName=GND Pin=J7-4
+Added Pin To Net: NetName=GND Pin=J7-5
+Added Pin To Net: NetName=GND Pin=J7-6
+Added Pin To Net: NetName=GND Pin=J7-7
+Added Pin To Net: NetName=GND Pin=J7-8
+Added Pin To Net: NetName=NetJ8_1 Pin=J8-1
+Added Pin To Net: NetName=NetJ8_2 Pin=J8-2
+Added Pin To Net: NetName=GND Pin=J8-3
+Added Pin To Net: NetName=NetJ1_1 Pin=J8-4
+Added Pin To Net: NetName=NetJ1_1 Pin=J9-1
+Added Pin To Net: NetName=NetJ1_1 Pin=J9-2
+Added Pin To Net: NetName=NetJ1_1 Pin=J9-3
+Added Pin To Net: NetName=NetJ1_1 Pin=J9-4
+Added Pin To Net: NetName=GND Pin=J9-5
+Added Pin To Net: NetName=GND Pin=J9-6
+Added Pin To Net: NetName=GND Pin=J9-7
+Added Pin To Net: NetName=GND Pin=J9-8
+Added Pin To Net: NetName=NetC3_1 Pin=L1-1
+Added Pin To Net: NetName=NetC6_2 Pin=L1-2
+Added Pin To Net: NetName=NetLS1_1 Pin=LS1-1
+Added Pin To Net: NetName=NetC6_2 Pin=LS1-2
+Added Pin To Net: NetName=GND Pin=Q1-1
+Added Pin To Net: NetName=NetD1_C Pin=Q1-2
+Added Pin To Net: NetName=NetD5_A Pin=Q1-3
+Added Pin To Net: NetName=GND Pin=Q2-1
+Added Pin To Net: NetName=NetD4_C Pin=Q2-2
+Added Pin To Net: NetName=NetQ2_3 Pin=Q2-3
+Added Pin To Net: NetName=GND Pin=Q3-1
+Added Pin To Net: NetName=NetQ3_2 Pin=Q3-2
+Added Pin To Net: NetName=NetLS1_1 Pin=Q3-3
+Added Pin To Net: NetName=GND Pin=Q4-1
+Added Pin To Net: NetName=NetJ2_1 Pin=Q4-2
+Added Pin To Net: NetName=NetQ4_3 Pin=Q4-3
+Added Pin To Net: NetName=GND Pin=Q5-1
+Added Pin To Net: NetName=NetJ2_2 Pin=Q5-2
+Added Pin To Net: NetName=NetQ5_3 Pin=Q5-3
+Added Pin To Net: NetName=GND Pin=Q6-1
+Added Pin To Net: NetName=NetJ2_3 Pin=Q6-2
+Added Pin To Net: NetName=NetQ6_3 Pin=Q6-3
+Added Pin To Net: NetName=GND Pin=Q7-1
+Added Pin To Net: NetName=NetJ2_4 Pin=Q7-2
+Added Pin To Net: NetName=NetQ7_3 Pin=Q7-3
+Added Pin To Net: NetName=GND Pin=Q8-1
+Added Pin To Net: NetName=NetJ2_5 Pin=Q8-2
+Added Pin To Net: NetName=NetD4_A Pin=Q8-3
+Added Pin To Net: NetName=GND Pin=Q9-1
+Added Pin To Net: NetName=NetJ2_6 Pin=Q9-2
+Added Pin To Net: NetName=NetQ9_3 Pin=Q9-3
+Added Pin To Net: NetName=GND Pin=Q10-1
+Added Pin To Net: NetName=NetJ2_7 Pin=Q10-2
+Added Pin To Net: NetName=NetQ10_3 Pin=Q10-3
+Added Pin To Net: NetName=GND Pin=Q11-1
+Added Pin To Net: NetName=NetJ2_8 Pin=Q11-2
+Added Pin To Net: NetName=NetQ11_3 Pin=Q11-3
+Added Pin To Net: NetName=GND Pin=Q12-1
+Added Pin To Net: NetName=NetJ7_1 Pin=Q12-2
+Added Pin To Net: NetName=NetD1_A Pin=Q12-3
+Added Pin To Net: NetName=GND Pin=Q13-1
+Added Pin To Net: NetName=NetJ7_2 Pin=Q13-2
+Added Pin To Net: NetName=NetD2_A Pin=Q13-3
+Added Pin To Net: NetName=GND Pin=Q14-1
+Added Pin To Net: NetName=NetJ7_3 Pin=Q14-2
+Added Pin To Net: NetName=NetD3_A Pin=Q14-3
+Added Pin To Net: NetName=NetQ15_1 Pin=Q15-1
+Added Pin To Net: NetName=GND Pin=Q15-2
+Added Pin To Net: NetName=NetJ4_1 Pin=Q15-3
+Added Pin To Net: NetName=NetQ16_1 Pin=Q16-1
+Added Pin To Net: NetName=GND Pin=Q16-2
+Added Pin To Net: NetName=NetJ4_2 Pin=Q16-3
+Added Pin To Net: NetName=NetQ17_1 Pin=Q17-1
+Added Pin To Net: NetName=GND Pin=Q17-2
+Added Pin To Net: NetName=NetJ4_3 Pin=Q17-3
+Added Pin To Net: NetName=NetQ18_1 Pin=Q18-1
+Added Pin To Net: NetName=GND Pin=Q18-2
+Added Pin To Net: NetName=NetJ3_1 Pin=Q18-3
+Added Pin To Net: NetName=NetQ19_1 Pin=Q19-1
+Added Pin To Net: NetName=GND Pin=Q19-2
+Added Pin To Net: NetName=NetJ3_3 Pin=Q19-3
+Added Pin To Net: NetName=NetQ20_1 Pin=Q20-1
+Added Pin To Net: NetName=GND Pin=Q20-2
+Added Pin To Net: NetName=NetJ3_5 Pin=Q20-3
+Added Pin To Net: NetName=NetD5_A Pin=Q21-1
+Added Pin To Net: NetName=GND Pin=Q21-2
+Added Pin To Net: NetName=Net3_2 Pin=Q21-3
+Added Pin To Net: NetName=NetQ22_1 Pin=Q22-1
+Added Pin To Net: NetName=GND Pin=Q22-2
+Added Pin To Net: NetName=NetJ3_2 Pin=Q22-3
+Added Pin To Net: NetName=NetQ23_1 Pin=Q23-1
+Added Pin To Net: NetName=GND Pin=Q23-2
+Added Pin To Net: NetName=NetJ3_4 Pin=Q23-3
+Added Pin To Net: NetName=NetQ24_1 Pin=Q24-1
+Added Pin To Net: NetName=GND Pin=Q24-2
+Added Pin To Net: NetName=NetJ3_6 Pin=Q24-3
+Added Pin To Net: NetName=NetQ25_1 Pin=Q25-1
+Added Pin To Net: NetName=GND Pin=Q25-2
+Added Pin To Net: NetName=NetJ3_7 Pin=Q25-3
+Added Pin To Net: NetName=Net+1_1 Pin=R1-1
+Added Pin To Net: NetName=NetC5_2 Pin=R1-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R2-1
+Added Pin To Net: NetName=NetJ6_5 Pin=R2-2
+Added Pin To Net: NetName=NetJ6_4 Pin=R3-1
+Added Pin To Net: NetName=NetJ1_1 Pin=R3-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R4-1
+Added Pin To Net: NetName=NetD5_A Pin=R4-2
+Added Pin To Net: NetName=NetJ6_2 Pin=R5-1
+Added Pin To Net: NetName=NetJ1_1 Pin=R5-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R6-1
+Added Pin To Net: NetName=NetJ1_26 Pin=R6-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R7-1
+Added Pin To Net: NetName=NetJ1_32 Pin=R7-2
+Added Pin To Net: NetName=NetD1_C Pin=R8-1
+Added Pin To Net: NetName=GND Pin=R8-2
+Added Pin To Net: NetName=NetJ1_8 Pin=R9-1
+Added Pin To Net: NetName=GND Pin=R9-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R10-1
+Added Pin To Net: NetName=NetQ2_3 Pin=R10-2
+Added Pin To Net: NetName=NetD4_C Pin=R11-1
+Added Pin To Net: NetName=GND Pin=R11-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R12-1
+Added Pin To Net: NetName=NetR12_2 Pin=R12-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R13-1
+Added Pin To Net: NetName=NetR13_2 Pin=R13-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R14-1
+Added Pin To Net: NetName=NetR14_2 Pin=R14-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R15-1
+Added Pin To Net: NetName=NetR15_2 Pin=R15-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R16-1
+Added Pin To Net: NetName=NetR16_2 Pin=R16-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R17-1
+Added Pin To Net: NetName=NetR17_2 Pin=R17-2
+Added Pin To Net: NetName=NetR18_1 Pin=R18-1
+Added Pin To Net: NetName=NetD6_A Pin=R18-2
+Added Pin To Net: NetName=NetR19_1 Pin=R19-1
+Added Pin To Net: NetName=NetD7_A Pin=R19-2
+Added Pin To Net: NetName=NetR20_1 Pin=R20-1
+Added Pin To Net: NetName=NetD8_A Pin=R20-2
+Added Pin To Net: NetName=NetR21_1 Pin=R21-1
+Added Pin To Net: NetName=NetD9_A Pin=R21-2
+Added Pin To Net: NetName=NetR22_1 Pin=R22-1
+Added Pin To Net: NetName=NetD10_A Pin=R22-2
+Added Pin To Net: NetName=NetR23_1 Pin=R23-1
+Added Pin To Net: NetName=NetQ3_2 Pin=R23-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R24-1
+Added Pin To Net: NetName=NetJ2_1 Pin=R24-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R25-1
+Added Pin To Net: NetName=NetQ4_3 Pin=R25-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R26-1
+Added Pin To Net: NetName=NetJ2_2 Pin=R26-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R27-1
+Added Pin To Net: NetName=NetQ5_3 Pin=R27-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R28-1
+Added Pin To Net: NetName=NetJ2_3 Pin=R28-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R29-1
+Added Pin To Net: NetName=NetQ6_3 Pin=R29-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R30-1
+Added Pin To Net: NetName=NetJ2_4 Pin=R30-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R31-1
+Added Pin To Net: NetName=NetQ7_3 Pin=R31-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R32-1
+Added Pin To Net: NetName=NetJ2_5 Pin=R32-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R33-1
+Added Pin To Net: NetName=NetD4_A Pin=R33-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R34-1
+Added Pin To Net: NetName=NetJ2_6 Pin=R34-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R35-1
+Added Pin To Net: NetName=NetQ9_3 Pin=R35-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R36-1
+Added Pin To Net: NetName=NetJ2_7 Pin=R36-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R37-1
+Added Pin To Net: NetName=NetQ10_3 Pin=R37-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R38-1
+Added Pin To Net: NetName=NetJ2_8 Pin=R38-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R39-1
+Added Pin To Net: NetName=NetQ11_3 Pin=R39-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R40-1
+Added Pin To Net: NetName=NetJ7_1 Pin=R40-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R41-1
+Added Pin To Net: NetName=NetD1_A Pin=R41-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R42-1
+Added Pin To Net: NetName=NetJ7_2 Pin=R42-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R43-1
+Added Pin To Net: NetName=NetD2_A Pin=R43-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R44-1
+Added Pin To Net: NetName=NetJ7_3 Pin=R44-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R45-1
+Added Pin To Net: NetName=NetD3_A Pin=R45-2
+Added Pin To Net: NetName=NetC3_1 Pin=R46-1
+Added Pin To Net: NetName=NetJ4_1 Pin=R46-2
+Added Pin To Net: NetName=NetC3_1 Pin=R47-1
+Added Pin To Net: NetName=NetJ4_2 Pin=R47-2
+Added Pin To Net: NetName=NetC3_1 Pin=R48-1
+Added Pin To Net: NetName=NetJ4_3 Pin=R48-2
+Added Pin To Net: NetName=NetR49_1 Pin=R49-1
+Added Pin To Net: NetName=Net1_1 Pin=R49-2
+Added Pin To Net: NetName=NetR50_1 Pin=R50-1
+Added Pin To Net: NetName=Net2_1 Pin=R50-2
+Added Pin To Net: NetName=NetC3_1 Pin=R51-1
+Added Pin To Net: NetName=NetJ3_1 Pin=R51-2
+Added Pin To Net: NetName=NetC3_1 Pin=R52-1
+Added Pin To Net: NetName=NetJ3_3 Pin=R52-2
+Added Pin To Net: NetName=NetC3_1 Pin=R53-1
+Added Pin To Net: NetName=NetJ3_5 Pin=R53-2
+Added Pin To Net: NetName=NetC3_1 Pin=R54-1
+Added Pin To Net: NetName=Net3_1 Pin=R54-2
+Added Pin To Net: NetName=NetC3_1 Pin=R55-1
+Added Pin To Net: NetName=NetJ3_2 Pin=R55-2
+Added Pin To Net: NetName=NetC3_1 Pin=R56-1
+Added Pin To Net: NetName=NetJ3_4 Pin=R56-2
+Added Pin To Net: NetName=NetC3_1 Pin=R57-1
+Added Pin To Net: NetName=NetJ3_6 Pin=R57-2
+Added Pin To Net: NetName=NetC3_1 Pin=R58-1
+Added Pin To Net: NetName=NetJ3_7 Pin=R58-2
+Added Pin To Net: NetName=NetR12_2 Pin=SW1-1
+Added Pin To Net: NetName=GND Pin=SW1-2
+Added Pin To Net: NetName=NetR13_2 Pin=SW2-1
+Added Pin To Net: NetName=GND Pin=SW2-2
+Added Pin To Net: NetName=NetR14_2 Pin=SW3-1
+Added Pin To Net: NetName=GND Pin=SW3-2
+Added Pin To Net: NetName=NetR15_2 Pin=SW4-1
+Added Pin To Net: NetName=GND Pin=SW4-2
+Added Pin To Net: NetName=NetR16_2 Pin=SW5-1
+Added Pin To Net: NetName=GND Pin=SW5-2
+Added Pin To Net: NetName=NetR17_2 Pin=SW6-1
+Added Pin To Net: NetName=GND Pin=SW6-2
+Added Pin To Net: NetName=Net+1_1 Pin=U3-1
+Added Pin To Net: NetName=NetC5_2 Pin=U3-2
+Added Pin To Net: NetName=NetC3_1 Pin=U3-3
+Add Class Member: Failed to add class member : Component +1 +12V
+Added Member To Class: ClassName=Sheet5 Member=Component 1 LTV-356T
+Added Member To Class: ClassName=Sheet5 Member=Component 2 LTV-356T
+Added Member To Class: ClassName=Sheet5 Member=Component 3 LTV-356T
+Added Member To Class: ClassName=Sheet1 Member=Component C1 #NAME?
+Added Member To Class: ClassName=Sheet1 Member=Component C2 1uF
+Added Member To Class: ClassName=Sheet1 Member=Component C3 #NAME?
+Added Member To Class: ClassName=Sheet1 Member=Component C4 100nF
+Added Member To Class: ClassName=Sheet1 Member=Component C5 1nF
+Added Member To Class: ClassName=Sheet3 Member=Component C6 100uF
+Added Member To Class: ClassName=Sheet2 Member=Component D1 1N4148W-7-F
+Added Member To Class: ClassName=Sheet2 Member=Component D2 1N4148W-7-F
+Added Member To Class: ClassName=Sheet2 Member=Component D3 1N4148W-7-F
+Added Member To Class: ClassName=Sheet2 Member=Component D4 1N4148W-7-F
+Added Member To Class: ClassName=Sheet2 Member=Component D5 1N4148W-7-F
+Added Member To Class: ClassName=Sheet3 Member=Component D6 KP-2012
+Added Member To Class: ClassName=Sheet3 Member=Component D7 KP-2012
+Added Member To Class: ClassName=Sheet3 Member=Component D8 KP-2012
+Added Member To Class: ClassName=Sheet3 Member=Component D9 KP-2012
+Added Member To Class: ClassName=Sheet3 Member=Component D10 KP-2012
+Add Class Member: Failed to add class member : Component Gnd1 Gnd
+Added Member To Class: ClassName=Sheet2 Member=Component J1 FPC-40PinConnector
+Added Member To Class: ClassName=Sheet2 Member=Component J2 PN1X8
+Added Member To Class: ClassName=Sheet2 Member=Component J3 PN1X8
+Added Member To Class: ClassName=Sheet2 Member=Component J4 PN1X4
+Added Member To Class: ClassName=Sheet2 Member=Component J5 PN1X4
+Added Member To Class: ClassName=Sheet2 Member=Component J6 FPC-6PinConnector
+Added Member To Class: ClassName=Sheet2 Member=Component J7 PN1X8
+Added Member To Class: ClassName=Sheet2 Member=Component J8 PN1X4
+Added Member To Class: ClassName=Sheet2 Member=Component J9 PN1X8
+Added Member To Class: ClassName=Sheet3 Member=Component L1 DRH104R
+Added Member To Class: ClassName=Sheet3 Member=Component LS1 Buzzer
+Added Member To Class: ClassName=Sheet2 Member=Component Q1 SST2222A
+Added Member To Class: ClassName=Sheet2 Member=Component Q2 SST2222A
+Added Member To Class: ClassName=Sheet3 Member=Component Q3 SST2222A
+Added Member To Class: ClassName=Sheet4 Member=Component Q4 SST2222A
+Added Member To Class: ClassName=Sheet4 Member=Component Q5 SST2222A
+Added Member To Class: ClassName=Sheet4 Member=Component Q6 SST2222A
+Added Member To Class: ClassName=Sheet4 Member=Component Q7 SST2222A
+Added Member To Class: ClassName=Sheet4 Member=Component Q8 SST2222A
+Added Member To Class: ClassName=Sheet4 Member=Component Q9 SST2222A
+Added Member To Class: ClassName=Sheet4 Member=Component Q10 SST2222A
+Added Member To Class: ClassName=Sheet4 Member=Component Q11 SST2222A
+Added Member To Class: ClassName=Sheet4 Member=Component Q12 SST2222A
+Added Member To Class: ClassName=Sheet4 Member=Component Q13 SST2222A
+Added Member To Class: ClassName=Sheet4 Member=Component Q14 SST2222A
+Added Member To Class: ClassName=Sheet5 Member=Component Q15 DTC114YKA
+Added Member To Class: ClassName=Sheet5 Member=Component Q16 DTC114YKA
+Added Member To Class: ClassName=Sheet5 Member=Component Q17 DTC114YKA
+Added Member To Class: ClassName=Sheet5 Member=Component Q18 DTC114YKA
+Added Member To Class: ClassName=Sheet5 Member=Component Q19 DTC114YKA
+Added Member To Class: ClassName=Sheet5 Member=Component Q20 DTC114YKA
+Added Member To Class: ClassName=Sheet5 Member=Component Q21 DTC114YKA
+Added Member To Class: ClassName=Sheet5 Member=Component Q22 DTC114YKA
+Added Member To Class: ClassName=Sheet5 Member=Component Q23 DTC114YKA
+Added Member To Class: ClassName=Sheet5 Member=Component Q24 DTC114YKA
+Added Member To Class: ClassName=Sheet5 Member=Component Q25 DTC114YKA
+Added Member To Class: ClassName=Sheet1 Member=Component R1 47k
+Added Member To Class: ClassName=Sheet2 Member=Component R2 10k
+Added Member To Class: ClassName=Sheet2 Member=Component R3 10k
+Added Member To Class: ClassName=Sheet2 Member=Component R4 10k
+Added Member To Class: ClassName=Sheet2 Member=Component R5 10k
+Added Member To Class: ClassName=Sheet2 Member=Component R6 10k
+Added Member To Class: ClassName=Sheet2 Member=Component R7 10k
+Added Member To Class: ClassName=Sheet2 Member=Component R8 10k
+Added Member To Class: ClassName=Sheet2 Member=Component R9 10k
+Added Member To Class: ClassName=Sheet2 Member=Component R10 10k
+Added Member To Class: ClassName=Sheet2 Member=Component R11 10k
+Added Member To Class: ClassName=Sheet3 Member=Component R12 10k
+Added Member To Class: ClassName=Sheet3 Member=Component R13 10k
+Added Member To Class: ClassName=Sheet3 Member=Component R14 10k
+Added Member To Class: ClassName=Sheet3 Member=Component R15 10k
+Added Member To Class: ClassName=Sheet3 Member=Component R16 10k
+Added Member To Class: ClassName=Sheet3 Member=Component R17 10k
+Added Member To Class: ClassName=Sheet3 Member=Component R18 220Ohm
+Added Member To Class: ClassName=Sheet3 Member=Component R19 220Ohm
+Added Member To Class: ClassName=Sheet3 Member=Component R20 220Ohm
+Added Member To Class: ClassName=Sheet3 Member=Component R21 220Ohm
+Added Member To Class: ClassName=Sheet3 Member=Component R22 220Ohm
+Added Member To Class: ClassName=Sheet3 Member=Component R23 2,7k
+Added Member To Class: ClassName=Sheet4 Member=Component R24 10k
+Added Member To Class: ClassName=Sheet4 Member=Component R25 10k
+Added Member To Class: ClassName=Sheet4 Member=Component R26 10k
+Added Member To Class: ClassName=Sheet4 Member=Component R27 10k
+Added Member To Class: ClassName=Sheet4 Member=Component R28 10k
+Added Member To Class: ClassName=Sheet4 Member=Component R29 10k
+Added Member To Class: ClassName=Sheet4 Member=Component R30 10k
+Added Member To Class: ClassName=Sheet4 Member=Component R31 10k
+Added Member To Class: ClassName=Sheet4 Member=Component R32 10k
+Added Member To Class: ClassName=Sheet4 Member=Component R33 10k
+Added Member To Class: ClassName=Sheet4 Member=Component R34 10k
+Added Member To Class: ClassName=Sheet4 Member=Component R35 10k
+Added Member To Class: ClassName=Sheet4 Member=Component R36 10k
+Added Member To Class: ClassName=Sheet4 Member=Component R37 10k
+Added Member To Class: ClassName=Sheet4 Member=Component R38 10k
+Added Member To Class: ClassName=Sheet4 Member=Component R39 10k
+Added Member To Class: ClassName=Sheet4 Member=Component R40 10k
+Added Member To Class: ClassName=Sheet4 Member=Component R41 10k
+Added Member To Class: ClassName=Sheet4 Member=Component R42 10k
+Added Member To Class: ClassName=Sheet4 Member=Component R43 10k
+Added Member To Class: ClassName=Sheet4 Member=Component R44 10k
+Added Member To Class: ClassName=Sheet4 Member=Component R45 10k
+Added Member To Class: ClassName=Sheet5 Member=Component R46 10k
+Added Member To Class: ClassName=Sheet5 Member=Component R47 10k
+Added Member To Class: ClassName=Sheet5 Member=Component R48 10k
+Added Member To Class: ClassName=Sheet5 Member=Component R49 10k
+Added Member To Class: ClassName=Sheet5 Member=Component R50 10k
+Added Member To Class: ClassName=Sheet5 Member=Component R51 10k
+Added Member To Class: ClassName=Sheet5 Member=Component R52 10k
+Added Member To Class: ClassName=Sheet5 Member=Component R53 10k
+Added Member To Class: ClassName=Sheet5 Member=Component R54 10k
+Added Member To Class: ClassName=Sheet5 Member=Component R55 10k
+Added Member To Class: ClassName=Sheet5 Member=Component R56 10k
+Added Member To Class: ClassName=Sheet5 Member=Component R57 10k
+Added Member To Class: ClassName=Sheet5 Member=Component R58 10k
+Added Member To Class: ClassName=Sheet3 Member=Component SW1 but
+Added Member To Class: ClassName=Sheet3 Member=Component SW2 but
+Added Member To Class: ClassName=Sheet3 Member=Component SW3 but
+Added Member To Class: ClassName=Sheet3 Member=Component SW4 but
+Added Member To Class: ClassName=Sheet3 Member=Component SW5 but
+Added Member To Class: ClassName=Sheet3 Member=Component SW6 but
+Added Member To Class: ClassName=Sheet1 Member=Component U3 BA05CC0WFP-E2

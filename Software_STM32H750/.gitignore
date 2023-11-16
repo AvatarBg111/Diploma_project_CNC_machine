@@ -1,0 +1,9 @@
+/Software_STM32H750/.settings
+/Software_STM32H750/Release
+/Software_STM32H750/.cproject
+/Software_STM32H750/.mxproject
+/Software_STM32H750/.project
+/Software_STM32H750/CNC_control_panel_stm32h750 Release.launch
+/Software_STM32H750/CNC_control_panel_stm32h750.ioc
+/Software_STM32H750/STM32H750VBTX_FLASH.ld
+/Software_STM32H750/STM32H750VBTX_RAM.ld

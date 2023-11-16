@@ -1,0 +1,4 @@
+../Core/Src/buttons.c:39:6:update_button_status	7
+../Core/Src/buttons.c:70:6:change_update_time	1
+../Core/Src/buttons.c:89:19:set_button_channel	5
+../Core/Src/buttons.c:107:15:get_button_state	1

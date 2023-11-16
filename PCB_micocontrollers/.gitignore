@@ -1,0 +1,8 @@
+# Ignore history
+/CNC_interfaces_board/History
+
+# Ignore project logs
+/CNC_interfaces_board/History
+
+# Ignore previews
+/CNC_interfaces_board/__Previews

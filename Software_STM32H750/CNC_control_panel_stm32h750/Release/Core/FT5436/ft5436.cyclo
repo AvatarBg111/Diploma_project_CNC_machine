@@ -1,0 +1,7 @@
+../Core/FT5436/ft5436.c:32:6:Init_FT5436	6
+../Core/FT5436/ft5436.c:76:6:touch_move	7
+../Core/FT5436/ft5436.c:114:6:request_available_points	6
+../Core/FT5436/ft5436.c:136:6:transfer_complete_callback	10
+../Core/FT5436/ft5436.c:175:6:reception_complete_callback	10
+../Core/FT5436/ft5436.c:226:6:HAL_I2C_MasterTxCpltCallback	2
+../Core/FT5436/ft5436.c:232:6:HAL_I2C_MasterRxCpltCallback	2

@@ -1,0 +1,6 @@
+../Core/Comm/grbl_cpu_comm.c:52:19:grbl_recv_pckt.part.0	8	static
+../Core/Comm/grbl_cpu_comm.c:36:19:grbl_send_msg	0	static
+../Core/Comm/grbl_cpu_comm.c:52:19:grbl_recv_pckt	0	static
+../Core/Comm/grbl_cpu_comm.c:71:19:enable_mpg	176	static
+../Core/Comm/grbl_cpu_comm.c:89:19:disable_mpg	176	static
+../Core/Comm/grbl_cpu_comm.c:108:6:get_mpg_state	0	static

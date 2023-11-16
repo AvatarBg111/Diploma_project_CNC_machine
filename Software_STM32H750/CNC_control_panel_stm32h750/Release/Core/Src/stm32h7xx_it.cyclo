@@ -1,0 +1,16 @@
+../Core/Src/stm32h7xx_it.c:81:6:NMI_Handler	1
+../Core/Src/stm32h7xx_it.c:96:6:HardFault_Handler	1
+../Core/Src/stm32h7xx_it.c:111:6:MemManage_Handler	1
+../Core/Src/stm32h7xx_it.c:126:6:BusFault_Handler	1
+../Core/Src/stm32h7xx_it.c:141:6:UsageFault_Handler	1
+../Core/Src/stm32h7xx_it.c:156:6:SVC_Handler	1
+../Core/Src/stm32h7xx_it.c:169:6:DebugMon_Handler	1
+../Core/Src/stm32h7xx_it.c:182:6:PendSV_Handler	1
+../Core/Src/stm32h7xx_it.c:195:6:SysTick_Handler	1
+../Core/Src/stm32h7xx_it.c:216:6:DMA1_Stream0_IRQHandler	3
+../Core/Src/stm32h7xx_it.c:237:6:DMA1_Stream1_IRQHandler	3
+../Core/Src/stm32h7xx_it.c:258:6:EXTI9_5_IRQHandler	1
+../Core/Src/stm32h7xx_it.c:274:6:I2C3_EV_IRQHandler	1
+../Core/Src/stm32h7xx_it.c:288:6:I2C3_ER_IRQHandler	1
+../Core/Src/stm32h7xx_it.c:300:6:start_uart1_reception	1
+../Core/Src/stm32h7xx_it.c:308:6:uart1_reception_done	1

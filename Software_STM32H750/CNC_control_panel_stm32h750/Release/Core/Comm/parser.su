@@ -1,0 +1,2 @@
+../Core/Comm/parser.c:22:6:mpg_enabled	8	static
+../Core/Comm/parser.c:37:6:mpg_disabled	8	static

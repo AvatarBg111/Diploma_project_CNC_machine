@@ -1,0 +1,7 @@
+../Core/FT5436/ft5436.c:32:6:Init_FT5436	96	static
+../Core/FT5436/ft5436.c:76:6:touch_move	72	static
+../Core/FT5436/ft5436.c:114:6:request_available_points	16	static
+../Core/FT5436/ft5436.c:136:6:transfer_complete_callback	16	static
+../Core/FT5436/ft5436.c:175:6:reception_complete_callback	24	static
+../Core/FT5436/ft5436.c:226:6:HAL_I2C_MasterTxCpltCallback	0	static
+../Core/FT5436/ft5436.c:232:6:HAL_I2C_MasterRxCpltCallback	0	static

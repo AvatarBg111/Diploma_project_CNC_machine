@@ -1,0 +1,266 @@
+Removed Pin From Net: NetName=GND Pin=J5-1
+Removed Pin From Net: NetName=GND Pin=J8-3
+Removed Pin From Net: NetName=GND Pin=Q23-2
+Removed Pin From Net: NetName=NetJ4_7 Pin=Q23-3
+Removed Pin From Net: NetName=NetJ1_1 Pin=R25-1
+Removed Pin From Net: NetName=NetQ8_3 Pin=R26-2
+Removed Pin From Net: NetName=NetQ9_3 Pin=R28-2
+Removed Pin From Net: NetName=NetQ10_3 Pin=R30-2
+Removed Pin From Net: NetName=NetR7_1 Pin=R45-1
+Removed Pin From Net: NetName=NetJ4_7 Pin=R45-2
+Change Component Comment : Designator=R34 Old Comment=47kOhm New Comment=10k
+Change Component Comment : Designator=R35 Old Comment=47kOhm New Comment=10k
+Change Component Comment : Designator=R36 Old Comment=47kOhm New Comment=10k
+Change Component Comment : Designator=R39 Old Comment=47kOhm New Comment=10k
+Change Component Comment : Designator=R40 Old Comment=47kOhm New Comment=10k
+Change Component Comment : Designator=R41 Old Comment=47kOhm New Comment=10k
+Change Component Comment : Designator=R42 Old Comment=47kOhm New Comment=10k
+Change Component Comment : Designator=R43 Old Comment=47kOhm New Comment=10k
+Change Component Comment : Designator=R44 Old Comment=47kOhm New Comment=10k
+Change Component Comment : Designator=R45 Old Comment=47kOhm New Comment=10k
+Change Component Designator: OldDesignator=J5 NewDesignator=J6
+Change Component Designator: OldDesignator=J6 NewDesignator=J5
+Change Component Designator: OldDesignator=Q11 NewDesignator=Q12
+Change Component Designator: OldDesignator=Q12 NewDesignator=Q13
+Change Component Designator: OldDesignator=Q13 NewDesignator=Q14
+Change Component Designator: OldDesignator=Q14 NewDesignator=Q15
+Change Component Designator: OldDesignator=Q15 NewDesignator=Q16
+Change Component Designator: OldDesignator=Q16 NewDesignator=Q17
+Change Component Designator: OldDesignator=Q17 NewDesignator=Q18
+Change Component Designator: OldDesignator=Q18 NewDesignator=Q19
+Change Component Designator: OldDesignator=Q19 NewDesignator=Q20
+Change Component Designator: OldDesignator=Q20 NewDesignator=Q22
+Change Component Designator: OldDesignator=Q21 NewDesignator=Q23
+Change Component Designator: OldDesignator=Q22 NewDesignator=Q24
+Change Component Designator: OldDesignator=R31 NewDesignator=R25
+Change Component Designator: OldDesignator=R32 NewDesignator=R34
+Change Component Designator: OldDesignator=R33 NewDesignator=R35
+Change Component Designator: OldDesignator=R34 NewDesignator=R36
+Change Component Designator: OldDesignator=R35 NewDesignator=R37
+Change Component Designator: OldDesignator=R36 NewDesignator=R38
+Change Component Designator: OldDesignator=R37 NewDesignator=R39
+Change Component Designator: OldDesignator=R38 NewDesignator=R40
+Change Component Designator: OldDesignator=R39 NewDesignator=R41
+Change Component Designator: OldDesignator=R40 NewDesignator=R42
+Change Component Designator: OldDesignator=R41 NewDesignator=R43
+Change Component Designator: OldDesignator=R42 NewDesignator=R46
+Change Component Designator: OldDesignator=R43 NewDesignator=R47
+Change Component Designator: OldDesignator=R44 NewDesignator=R48
+Change component parameters: Designator = "R34" ("R36"); Footprint = "SMD 0805"; UniqueID = "\NGFQWUSY" ("\NGFQWUSY")
+Change component parameters (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Change component parameters: Designator = "R35" ("R37"); Footprint = "SMD 0805"; UniqueID = "\RZRRMGQS" ("\RZRRMGQS")
+Change component parameters (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Change component parameters: Designator = "R36" ("R38"); Footprint = "SMD 0805"; UniqueID = "\LLHCJLQH" ("\LLHCJLQH")
+Change component parameters (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Change component parameters: Designator = "R39" ("R41"); Footprint = "SMD 0805"; UniqueID = "\QAVPPGSV" ("\QAVPPGSV")
+Change component parameters (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Change component parameters: Designator = "R40" ("R42"); Footprint = "SMD 0805"; UniqueID = "\CGZVVHKJ" ("\CGZVVHKJ")
+Change component parameters (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Change component parameters: Designator = "R41" ("R43"); Footprint = "SMD 0805"; UniqueID = "\VNTKCVVI" ("\VNTKCVVI")
+Change component parameters (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Change component parameters: Designator = "R42" ("R46"); Footprint = "SMD 0805"; UniqueID = "\JTUJGPHV" ("\JTUJGPHV")
+Change component parameters (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Change component parameters: Designator = "R43" ("R47"); Footprint = "SMD 0805"; UniqueID = "\NNZRCKLL" ("\NNZRCKLL")
+Change component parameters (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Change component parameters: Designator = "R44" ("R48"); Footprint = "SMD 0805"; UniqueID = "\AWHHXSXR" ("\AWHHXSXR")
+Change component parameters (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Change component parameters: Designator = "R45" ("R45"); Footprint = "SMD 0805"; UniqueID = "\UUETWIEN" ("\UUETWIEN")
+Change component parameters (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Change component parameters (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=3(MINI-FLAT-4)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "Lite-On Inc."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "LTV-356T"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "SOP-4 Lite-On Inc."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/LTV-356T/Lite-On%20Inc./view-part/448527/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=D6(SOD123)
+Add component (AddParameter): Name = "Case"; Value = "SOD-123 Diodes Inc."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/9613/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "DIODES / ZETEX"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "1N4148W-7-F"; VariantName = "[No Variations]"
+Added Component: Designator=D7(SOD123)
+Add component (AddParameter): Name = "Case"; Value = "SOD-123 Diodes Inc."; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/9613/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "DIODES / ZETEX"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "1N4148W-7-F"; VariantName = "[No Variations]"
+Added Component: Designator=Q11(SOT-23-3)
+Add component (AddParameter): Name = "Case"; Value = "SOT-23-3 SST3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "SST2222A"; VariantName = "[No Variations]"
+Added Component: Designator=Q21(SOT-23-3)
+Add component (AddParameter): Name = "Case"; Value = "SOT-23-3 SST3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "SST2222A"; VariantName = "[No Variations]"
+Added Component: Designator=Q25(SOT-346 (SC59) Black)
+Add component (AddParameter): Name = "Case"; Value = "SOT-346 (SC59)"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HalpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "DTC114YKA"; VariantName = "[No Variations]"
+Added Component: Designator=Q26(SOT-23-3)
+Add component (AddParameter): Name = "Case"; Value = "SOT-23-3 SST3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/Product/23715/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "ROHM Semiconductor"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = "SST2222A"; VariantName = "[No Variations]"
+Added Component: Designator=R31(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10kOhm"; VariantName = "[No Variations]"
+Added Component: Designator=R32(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10kOhm"; VariantName = "[No Variations]"
+Added Component: Designator=R33(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10kOhm"; VariantName = "[No Variations]"
+Added Component: Designator=R44(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R49(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R50(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Component: Designator=R51(SMD 0805)
+Add component (AddParameter): Name = "Case"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "HelpURL"; Value = "https://store.comet.bg/Catalogue/RES/Resistors/#eyJpcHAiOiIxMDAiLCJtIjoiIn0%3D"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Model"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = "10k"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=GND Pin=3-2
+Added Pin To Net: NetName=GND Pin=3-3
+Added Pin To Net: NetName=GND Pin=Q11-1
+Added Pin To Net: NetName=GND Pin=Q21-1
+Added Pin To Net: NetName=GND Pin=Q25-2
+Added Pin To Net: NetName=NetJ4_7 Pin=Q25-3
+Added Pin To Net: NetName=GND Pin=Q26-1
+Added Pin To Net: NetName=NetQ8_3 Pin=R27-2
+Added Pin To Net: NetName=NetQ9_3 Pin=R29-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R31-1
+Added Pin To Net: NetName=NetQ10_3 Pin=R31-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R32-1
+Added Pin To Net: NetName=NetJ1_1 Pin=R33-1
+Added Pin To Net: NetName=NetR7_1 Pin=R44-1
+Added Pin To Net: NetName=GND Pin=R45-2
+Added Pin To Net: NetName=NetR7_1 Pin=R49-1
+Added Pin To Net: NetName=NetJ4_7 Pin=R49-2
+Added Pin To Net: NetName=NetJ1_1 Pin=R50-1
+Added Pin To Net: NetName=GND Pin=R51-2
+Change Net Name : Old Net Name=NetJ6_1 New Net Name=NetJ5_1
+Change Net Name : Old Net Name=NetJ6_2 New Net Name=NetJ5_2
+Change Net Name : Old Net Name=NetJ6_3 New Net Name=NetJ5_3
+Change Net Name : Old Net Name=NetJ6_4 New Net Name=NetJ5_4
+Change Net Name : Old Net Name=NetJ6_5 New Net Name=NetJ5_5
+Change Net Name : Old Net Name=NetQ11_1 New Net Name=NetQ12_1
+Change Net Name : Old Net Name=NetQ12_1 New Net Name=NetQ13_1
+Change Net Name : Old Net Name=NetQ13_1 New Net Name=NetQ14_1
+Change Net Name : Old Net Name=NetQ14_1 New Net Name=NetQ15_1
+Change Net Name : Old Net Name=NetQ15_1 New Net Name=NetQ16_1
+Change Net Name : Old Net Name=NetQ16_1 New Net Name=NetQ17_1
+Change Net Name : Old Net Name=NetQ17_1 New Net Name=NetQ18_1
+Change Net Name : Old Net Name=NetQ18_1 New Net Name=NetQ19_1
+Change Net Name : Old Net Name=NetQ19_1 New Net Name=NetQ20_1
+Change Net Name : Old Net Name=NetQ20_1 New Net Name=NetQ22_1
+Change Net Name : Old Net Name=NetQ21_1 New Net Name=NetQ23_1
+Change Net Name : Old Net Name=NetQ22_1 New Net Name=NetQ24_1
+Change Net Name : Old Net Name=NetR37_1 New Net Name=NetR39_1
+Change Net Name : Old Net Name=NetR38_1 New Net Name=NetR40_1
+Added Pin To Net: NetName=Net3_1 Pin=3-1
+Added Pin To Net: NetName=Net3_1 Pin=Q21-3
+Added Pin To Net: NetName=Net3_1 Pin=R44-2
+Added Net: Name=Net3_1
+Added Pin To Net: NetName=Net3_4 Pin=3-4
+Added Pin To Net: NetName=Net3_4 Pin=J8-3
+Added Net: Name=Net3_4
+Added Pin To Net: NetName=NetD6_A Pin=D6-A
+Added Pin To Net: NetName=NetD6_A Pin=Q7-3
+Added Pin To Net: NetName=NetD6_A Pin=R24-2
+Added Net: Name=NetD6_A
+Added Pin To Net: NetName=NetD6_C Pin=D6-C
+Added Pin To Net: NetName=NetD6_C Pin=D7-C
+Added Pin To Net: NetName=NetD6_C Pin=Q26-2
+Added Pin To Net: NetName=NetD6_C Pin=R51-1
+Added Net: Name=NetD6_C
+Added Pin To Net: NetName=NetD7_A Pin=D7-A
+Added Pin To Net: NetName=NetD7_A Pin=Q11-3
+Added Pin To Net: NetName=NetD7_A Pin=Q21-2
+Added Pin To Net: NetName=NetD7_A Pin=R33-2
+Added Pin To Net: NetName=NetD7_A Pin=R45-1
+Added Net: Name=NetD7_A
+Added Pin To Net: NetName=NetJ5_6 Pin=J5-6
+Added Pin To Net: NetName=NetJ5_6 Pin=Q8-2
+Added Pin To Net: NetName=NetJ5_6 Pin=R26-2
+Added Net: Name=NetJ5_6
+Added Pin To Net: NetName=NetJ5_7 Pin=J5-7
+Added Pin To Net: NetName=NetJ5_7 Pin=Q9-2
+Added Pin To Net: NetName=NetJ5_7 Pin=R28-2
+Added Net: Name=NetJ5_7
+Added Pin To Net: NetName=NetJ5_8 Pin=J5-8
+Added Pin To Net: NetName=NetJ5_8 Pin=Q10-2
+Added Pin To Net: NetName=NetJ5_8 Pin=R30-2
+Added Net: Name=NetJ5_8
+Added Pin To Net: NetName=NetJ6_1 Pin=J6-1
+Added Pin To Net: NetName=NetJ6_1 Pin=Q11-2
+Added Pin To Net: NetName=NetJ6_1 Pin=R32-2
+Added Net: Name=NetJ6_1
+Added Pin To Net: NetName=NetQ25_1 Pin=Q25-1
+Added Pin To Net: NetName=NetQ25_1 Pin=U2-69
+Added Net: Name=NetQ25_1
+Added Pin To Net: NetName=NetQ26_3 Pin=Q26-3
+Added Pin To Net: NetName=NetQ26_3 Pin=R50-2
+Added Pin To Net: NetName=NetQ26_3 Pin=U2-82
+Added Net: Name=NetQ26_3
+Added Member To Class: ClassName=Sheet3 Member=Component 3 LTV-356T
+Added Member To Class: ClassName=Sheet3 Member=Component D6 1N4148W-7-F
+Added Member To Class: ClassName=Sheet3 Member=Component D7 1N4148W-7-F
+Added Member To Class: ClassName=Sheet2 Member=Component Q14 DTC114YKA
+Added Member To Class: ClassName=Sheet3 Member=Component Q25 DTC114YKA
+Added Member To Class: ClassName=Sheet3 Member=Component Q26 SST2222A
+Added Member To Class: ClassName=Sheet2 Member=Component R34 220Ohm
+Added Member To Class: ClassName=Sheet2 Member=Component R35 220Ohm
+Added Member To Class: ClassName=Sheet3 Member=Component R48 10k
+Added Member To Class: ClassName=Sheet3 Member=Component R49 10k
+Added Member To Class: ClassName=Sheet3 Member=Component R50 10k
+Added Member To Class: ClassName=Sheet3 Member=Component R51 10k
