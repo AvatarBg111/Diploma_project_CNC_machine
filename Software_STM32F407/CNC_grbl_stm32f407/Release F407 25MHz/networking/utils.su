@@ -1,0 +1,5 @@
+../networking/utils.c:16:7:btoa	24	static
+../networking/utils.c:38:6:is_valid_port	0	static
+../networking/utils.c:43:6:is_valid_hostname	12	static
+../networking/utils.c:60:6:is_valid_ssid	8	static
+../networking/utils.c:77:6:is_valid_password	16	static

@@ -1,0 +1,3 @@
+../networking/base64.c:22:6:revchar	5
+../networking/base64.c:38:8:base64_encode	9
+../networking/base64.c:89:8:base64_decode	10

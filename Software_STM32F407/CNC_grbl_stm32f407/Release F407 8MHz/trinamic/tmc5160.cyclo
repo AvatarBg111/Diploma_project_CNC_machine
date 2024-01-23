@@ -1,0 +1,16 @@
+../trinamic/tmc5160.c:123:13:_set_rms_current	4
+../trinamic/tmc5160.c:150:6:TMC5160_SetDefaults	1
+../trinamic/tmc5160.c:189:15:cs2rms	1
+../trinamic/tmc5160.c:201:10:TMC5160_GetCurrent	1
+../trinamic/tmc5160.c:207:6:TMC5160_SetCurrent	1
+../trinamic/tmc5160.c:159:6:TMC5160_Init	2
+../trinamic/tmc5160.c:218:7:TMC5160_GetTPWMTHRS	1
+../trinamic/tmc5160.c:223:6:TMC5160_SetTPWMTHRS	1
+../trinamic/tmc5160.c:229:6:TMC5160_SetTHIGH	1
+../trinamic/tmc5160.c:235:6:TMC5160_SetTCOOLTHRS	1
+../trinamic/tmc5160.c:242:6:TMC5160_MicrostepsIsValid	1
+../trinamic/tmc5160.c:247:6:TMC5160_SetMicrosteps	1
+../trinamic/tmc5160.c:255:6:TMC5160_SetConstantOffTimeChopper	5
+../trinamic/tmc5160.c:281:18:TMC5160_WriteRegister	1
+../trinamic/tmc5160.c:290:18:TMC5160_ReadRegister	1
+../trinamic/tmc5160.c:300:21:TMC5160_GetRegPtr	5

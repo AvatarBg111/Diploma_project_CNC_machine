@@ -1,0 +1,5 @@
+../lwip/src/core/mem.c:516:1:mem_init	1
+../lwip/src/core/mem.c:617:1:mem_free	22
+../lwip/src/core/mem.c:699:1:mem_trim	14
+../lwip/src/core/mem.c:831:1:mem_malloc	15
+../lwip/src/core/mem.c:999:1:mem_calloc	3

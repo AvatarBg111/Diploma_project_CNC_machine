@@ -1,0 +1,10 @@
+../lwip/src/core/dns.c:942:1:dns_call_found	9
+../lwip/src/core/dns.c:748:1:dns_send.isra	7
+../lwip/src/core/dns.c:1047:1:dns_check_entry	13
+../lwip/src/core/dns.c:1170:1:dns_recv	48
+../lwip/src/core/dns.c:315:1:dns_init	1
+../lwip/src/core/dns.c:361:1:dns_setserver	3
+../lwip/src/core/dns.c:381:1:dns_getserver	2
+../lwip/src/core/dns.c:395:1:dns_tmr	1
+../lwip/src/core/dns.c:1547:1:dns_gethostbyname_addrtype	32
+../lwip/src/core/dns.c:1526:1:dns_gethostbyname	1

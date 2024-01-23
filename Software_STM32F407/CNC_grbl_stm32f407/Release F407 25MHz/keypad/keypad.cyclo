@@ -1,0 +1,9 @@
+../keypad/keypad.c:95:13:keypad_settings_save	1
+../keypad/keypad.c:100:13:keypad_settings_restore	1
+../keypad/keypad.c:112:13:keypad_settings_load	3
+../keypad/keypad.c:164:13:jog_command	1
+../keypad/keypad.c:398:13:onReportOptions	2
+../keypad/keypad.c:149:14:strrepl.constprop.isra	2
+../keypad/keypad.c:169:13:keypad_process_keypress	56
+../keypad/keypad.c:406:15:keypad_enqueue_keycode	6
+../keypad/keypad.c:483:6:keypad_init	3

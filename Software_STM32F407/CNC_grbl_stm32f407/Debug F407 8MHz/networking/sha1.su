@@ -1,0 +1,4 @@
+../networking/sha1.c:21:6:sha1_transform	368	static
+../networking/sha1.c:78:6:sha1_init	0	static
+../networking/sha1.c:93:6:sha1_update	24	static
+../networking/sha1.c:108:6:sha1_final	16	static

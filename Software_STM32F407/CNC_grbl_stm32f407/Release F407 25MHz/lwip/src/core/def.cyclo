@@ -1,0 +1,4 @@
+../lwip/src/core/def.c:105:1:lwip_strnstr	6
+../lwip/src/core/def.c:128:1:lwip_stricmp	5
+../lwip/src/core/def.c:163:1:lwip_strnicmp	6
+../lwip/src/core/def.c:199:1:lwip_itoa	7

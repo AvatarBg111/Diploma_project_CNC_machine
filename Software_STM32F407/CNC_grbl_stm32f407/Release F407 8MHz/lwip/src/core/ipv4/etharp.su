@@ -1,0 +1,12 @@
+../lwip/src/core/ipv4/etharp.c:168:1:etharp_free_entry	16	static
+../lwip/src/core/ipv4/etharp.c:256:1:etharp_find_entry	48	static
+../lwip/src/core/ipv4/etharp.c:1109:1:etharp_raw	48	static
+../lwip/src/core/ipv4/etharp.c:559:1:etharp_cleanup_netif	16	static
+../lwip/src/core/ipv4/etharp.c:583:1:etharp_find_addr	16	static
+../lwip/src/core/ipv4/etharp.c:612:1:etharp_get_entry	16	static
+../lwip/src/core/ipv4/etharp.c:641:1:etharp_input	72	static
+../lwip/src/core/ipv4/etharp.c:1206:1:etharp_request	24	static
+../lwip/src/core/ipv4/etharp.c:197:1:etharp_tmr	24	static
+../lwip/src/core/ipv4/etharp.c:748:1:etharp_output_to_arp_index	48	static
+../lwip/src/core/ipv4/etharp.c:933:1:etharp_query	40	static
+../lwip/src/core/ipv4/etharp.c:791:1:etharp_output	40	static

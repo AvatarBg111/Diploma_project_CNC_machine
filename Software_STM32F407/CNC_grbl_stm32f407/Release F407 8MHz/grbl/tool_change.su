@@ -1,0 +1,15 @@
+../grbl/tool_change.c:63:13:change_completed	16	static
+../grbl/tool_change.c:154:13:execute_warning	0	static
+../grbl/tool_change.c:285:22:on_toolchange_ack	8	static
+../grbl/tool_change.c:91:13:reset	16	static
+../grbl/tool_change.c:263:22:trap_stream_cycle_start	16	static
+../grbl/tool_change.c:245:22:trap_control_cycle_start	16	static
+../grbl/tool_change.c:115:13:restore	64	static
+../grbl/tool_change.c:178:13:execute_probe	80	static
+../grbl/tool_change.c:53:13:on_probe_completed	0	static
+../grbl/tool_change.c:294:13:tool_select	12	static
+../grbl/tool_change.c:161:13:execute_restore	8	static
+../grbl/tool_change.c:302:22:tool_change	72	static
+../grbl/tool_change.c:407:6:tc_init	8	static
+../grbl/tool_change.c:437:6:tc_clear_tlo_reference	24	static
+../grbl/tool_change.c:460:15:tc_probe_workpiece	72	static
