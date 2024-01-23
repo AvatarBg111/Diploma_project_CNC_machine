@@ -5,106 +5,113 @@
  *      Author: AvatarBg111
  */
 
-// Includes
-#include "stm32h7xx_hal.h"
-#include "stm32h7xx_it.h"
+/* Private includes ----------------------------------------------------------*/
 #include "grbl_cpu_comm.h"
 #include "parser.h"
+#include "stm32h7xx_hal.h"
+#include "stm32h7xx_it.h"
 #include<string.h>
 
 
-// Private macros and typedefs
-#define RX_BUF_SIZE 160
+/* Private typedef -----------------------------------------------------------*/
+
+/* Private define ------------------------------------------------------------*/
+#define TX_BUFFER_SIZE 32
 
 
-// Private variables
-bool mpg_mode = false;
-uint8_t cmd_mpg_mode_toggle[] = {0x8B, 0x0D};
+/* Private macro -------------------------------------------------------------*/
+
+/* Private variables ---------------------------------------------------------*/
+uint8_t tx_buffer[TX_BUFFER_SIZE] = {0};
+uint8_t pending_command = NONE;
+bool mpg_state = false;
 
 
-// Private function declarations
-HAL_StatusTypeDef grbl_send_msg(uint8_t,uint8_t*,uint8_t);
-HAL_StatusTypeDef grbl_recv_pckt(uint8_t,uint8_t*,uint8_t*);
+/* Private function prototypes -----------------------------------------------*/
+HAL_StatusTypeDef grbl_send_msg(uint8_t*, uint8_t);
 HAL_StatusTypeDef enable_mpg(void);
 HAL_StatusTypeDef disable_mpg(void);
+uint8_t get_pending_command(void);
+void reset_pending_command(void);
+void set_mpg_state(bool);
+bool get_mpg_state(void);
 
 
-// Private function definitions
+/* Private user code ---------------------------------------------------------*/
 /**
-  * @brief Send message to GRBL controller
+  * @brief Send message to MCU with GRBL firmware
   */
-HAL_StatusTypeDef grbl_send_msg(uint8_t msg_channel, uint8_t *msg, uint8_t len){
-	switch(msg_channel){
-		case UART_Gcode_channel:
-			return HAL_UART_Transmit(&GCODE_UART_H, msg, len, 100);
-		case UART_MPG_channel:
-			return HAL_UART_Transmit(&MPG_UART_H, msg, len, 100);
-		default:
-			break;
-	}
-
-	return HAL_ERROR;
+HAL_StatusTypeDef grbl_send_msg(uint8_t *msg, uint8_t len){
+	return HAL_UART_Transmit_DMA(&huart2, msg, len);
 }
 
 /**
-  * @brief Receive message from GRBL controller
+  * @brief Receive message from MCU with GRBL firmware
   */
-HAL_StatusTypeDef grbl_recv_pckt(uint8_t msg_channel, uint8_t *buf, uint8_t *len){
-	switch(msg_channel){
-		case UART_Gcode_channel:
-			start_uart1_reception(buf, len);
-			while(!uart1_reception_done());
-			return HAL_OK;
-		case UART_MPG_channel:
-			//start_mpg_uart_reception();
-			return HAL_TIMEOUT;
-		default:
-			break;
-	}
-
-	return HAL_ERROR;
+/*
+HAL_StatusTypeDef grbl_recv_pckt(uint8_t *buf, uint8_t *len){
+	start_uart1_reception(buf, len);
+	while(!uart1_reception_done());
+	return HAL_OK;
 }
+*/
 
 /**
   * @brief Enable MPG mode
   */
 HAL_StatusTypeDef enable_mpg(void){
-	uint8_t buf[RX_BUF_SIZE] = {0}, len = 0;
+	sprintf((char*)tx_buffer, "%c", (char)_ENABLE_MPG);
 
-	grbl_send_msg(UART_Gcode_channel, cmd_mpg_mode_toggle, strlen((char*)cmd_mpg_mode_toggle));
-	grbl_recv_pckt(UART_Gcode_channel, buf, &len);
-
-	if(mpg_enabled(buf, len)){
-		mpg_mode = true;
-		return HAL_OK;
+	if(grbl_send_msg(tx_buffer, 1) == HAL_OK){
+		pending_command = _ENABLE_MPG;
+	}else{
+		pending_command = NONE;
+		return HAL_ERROR;
 	}
 
-	mpg_mode = false;
-	return HAL_ERROR;
+	return HAL_OK;
 }
 
 /**
   * @brief Disable MPG mode
   */
 HAL_StatusTypeDef disable_mpg(void){
-	uint8_t buf[RX_BUF_SIZE] = {0}, len = 0;
+	sprintf((char*)tx_buffer, "%c", (char)_DISABLE_MPG);
 
-	grbl_send_msg(UART_Gcode_channel, cmd_mpg_mode_toggle, strlen((char*)cmd_mpg_mode_toggle));
-	grbl_recv_pckt(UART_Gcode_channel, buf, &len);
-
-	if(mpg_disabled(buf, len)){
-		mpg_mode = false;
-		return HAL_OK;
+	if(grbl_send_msg(tx_buffer, 1) == HAL_OK){
+		pending_command = _DISABLE_MPG;
+	}else{
+		pending_command = NONE;
+		return HAL_ERROR;
 	}
 
-	//grbl_send_msg(UART_MPG_channel, buf, len);
-	mpg_mode = true;
-	return HAL_ERROR;
+	return HAL_OK;
 }
 
 /**
-  * @brief Get MPG mode state
+  * @brief Get the pending command
   */
-bool get_mpg_state(){
-	return mpg_mode;
+uint8_t get_pending_command(void){
+	return pending_command;
+}
+
+/**
+  * @brief Pull pending command
+  */
+void reset_pending_command(void){
+	pending_command = NONE;
+}
+
+/**
+  * @brief Set MPG state
+  */
+void set_mpg_state(bool state){
+	mpg_state = state;
+}
+
+/**
+  * @brief Get MPG state
+  */
+bool get_mpg_state(void){
+	return mpg_state;
 }

@@ -1,0 +1,5 @@
+../Core/Src/r61529_screen_menu.c:46:6:main_menu	3
+../Core/Src/r61529_screen_menu.c:61:6:submenu	1
+../Core/Src/r61529_screen_menu.c:73:6:process_user_input	1
+../Core/Src/r61529_screen_menu.c:79:6:r61529_screen_menu	2
+../Core/Src/r61529_screen_menu.c:94:6:draw_loading_screen	1

@@ -5,23 +5,25 @@
  *      Author: AvatarBg111
  */
 
-// Includes
+/* Private includes ----------------------------------------------------------*/
 #include "buttons.h"
-#include<stdbool.h>
 
 
-// Private macros and typedefs
-#define BUTTON_CHANNELS 16
-#define UPDATE_TIME_LOW_TO_HIGH_DEFAULT 2		//TIM1 has 120Hz frequency -> 21 updates are equal to ~175ms
-#define UPDATE_TIME_HIGH_TO_LOW_DEFAULT 2		//TIM1 has 120Hz frequency -> 42 updates are equal to ~350ms
-
+/* Private typedef -----------------------------------------------------------*/
 typedef struct button{
 	GPIO_TypeDef *port;
 	uint16_t pin;
 }button_t;
 
 
-// Private variables
+/* Private define ------------------------------------------------------------*/
+#define BUTTON_CHANNELS 16
+#define UPDATE_TIME_LOW_TO_HIGH_DEFAULT 2		//TIM1 has 120Hz frequency -> 21 updates are equal to ~175ms
+#define UPDATE_TIME_HIGH_TO_LOW_DEFAULT 2		//TIM1 has 120Hz frequency -> 42 updates are equal to ~350ms
+
+
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
 button_t button_matrix[BUTTON_CHANNELS] = {0};
 GPIO_PinState but_stat_channels[BUTTON_CHANNELS] = {0};
 uint32_t but_stat_cnts[BUTTON_CHANNELS] = {0};
@@ -31,7 +33,15 @@ uint8_t update_time;
 bool startup = true;
 
 
-// Private function definitions
+/* Private function prototypes -----------------------------------------------*/
+void update_button_status(void);
+void change_update_time(uint8_t, uint8_t);
+void clear_button_statuses(void);
+HAL_StatusTypeDef set_button_channel(GPIO_TypeDef*, uint16_t, uint8_t);
+GPIO_PinState get_button_state(uint8_t);
+
+
+/* Private user code ---------------------------------------------------------*/
 /**
   * @brief Updates button statuses
   * Must be called from interrupt handler of a TIMER
@@ -75,7 +85,7 @@ void change_update_time(uint8_t time_high, uint8_t time_low){
 /**
   * @brief Clear the buttons statuses
   */
-static void clear_button_statuses(){
+void clear_button_statuses(void){
 	for(uint8_t i = 0; i < BUTTON_CHANNELS; i++){
 		button_matrix[i].port = NULL;
 		button_matrix[i].pin = 0;

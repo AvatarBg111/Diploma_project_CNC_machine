@@ -1,8 +1,14 @@
-#include "stm32h7xx_hal.h"
-#include "R61529.h"
-#include<stdio.h>
-#include<string.h>
+/* Private includes ----------------------------------------------------------*/
+#include "r61529.h"
 
+
+/* Private typedef -----------------------------------------------------------*/
+
+/* Private define ------------------------------------------------------------*/
+
+/* Private macro -------------------------------------------------------------*/
+
+/* Private variables ---------------------------------------------------------*/
 uint16_t X_SIZE = 480;
 uint16_t Y_SIZE = 320;
 
@@ -44,31 +50,31 @@ uint16_t gpio_pins[16] = {
     TFT_D15_Pin
 };
 
-//  =====================================================================
-/*
-PD14   ------> FMC_D0
-PD15   ------> FMC_D1
-PD0   ------> FMC_D2
-PD1   ------> FMC_D3
-PE7   ------> FMC_D4
-PE8   ------> FMC_D5
-PE9   ------> FMC_D6
-PE10   ------> FMC_D7
-PE11   ------> FMC_D8
-PE12   ------> FMC_D9
-PE13   ------> FMC_D10
-PE14   ------> FMC_D11
-PE15   ------> FMC_D12
-PD8   ------> FMC_D13
-PD9   ------> FMC_D14
-PD10   ------> FMC_D15
-PD11   ------> FMC_A16
-PC7   ------> FMC_NE1
-PD4   ------> FMC_NOE
-PD5   ------> FMC_NWE
-*/
 
-__inline void Lcd_Write(uint16_t index, uint8_t type){
+/* Private function prototypes -----------------------------------------------*/
+inline void Lcd_Write(uint16_t, uint8_t);
+inline void Lcd_Write_Reg(uint16_t);
+inline void Lcd_Write_Data(uint16_t);
+void R61529_SetAddrWindow(uint16_t, uint16_t, uint16_t, uint16_t);
+void Init_R61529(void);
+void R61529_SetRotation(unsigned char);
+void R61529_Flood(uint16_t, uint32_t);
+void R61529_FillScreen(uint16_t);
+void R61529_FillRect(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t);
+void R61529_DrawPixel(int, int, uint16_t);
+void R61529_DrawLine(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t);
+void R61529_DrawRect(uint16_t, uint16_t, uint16_t, uint16_t, uint16_t);
+void R61529_DrawCircle(uint16_t, uint16_t, int, uint16_t);
+static void R61529_WriteChar(uint16_t, uint16_t, char, FontDef, uint16_t, uint16_t);
+void R61529_WriteString(uint16_t, uint16_t, const char*, FontDef, uint16_t, uint16_t);
+void Draw_Image(const short*, uint16_t, uint16_t, uint16_t, uint16_t, uint32_t);
+
+
+/* Private user code ---------------------------------------------------------*/
+/**
+  * @brief Write 2 byte message (either command or data)
+  */
+inline void Lcd_Write(uint16_t index, uint8_t type){
 	if(type == COMMAND){
 		RS_ACTIVE;
 	}else if(type == DATA){
@@ -96,16 +102,25 @@ __inline void Lcd_Write(uint16_t index, uint8_t type){
 	WR_IDLE;
 }
 
-__inline void Lcd_Write_Reg(uint16_t index){
+/**
+  * @brief Write command/register
+  */
+inline void Lcd_Write_Reg(uint16_t index){
 	//*(uint16_t *) (LCD_REG) = index;
 	Lcd_Write(index, COMMAND);
 }
-__inline void Lcd_Write_Data(uint16_t data){
+
+/**
+  * @brief Write data
+  */
+inline void Lcd_Write_Data(uint16_t data){
     //*(uint16_t *) (LCD_DATA)= data;
 	Lcd_Write(data, DATA);
 }
 
-//  =====================================================================
+/**
+  * @brief Set data address window
+  */
 void R61529_SetAddrWindow(uint16_t x1,uint16_t y1,uint16_t x2,uint16_t y2){
 	Lcd_Write_Reg(0x2A);//Column Addres Set
 	Lcd_Write_Data(x1 >> 8);
@@ -121,7 +136,9 @@ void R61529_SetAddrWindow(uint16_t x1,uint16_t y1,uint16_t x2,uint16_t y2){
 	Lcd_Write_Reg(0x2C);
 }
 
-//  =====================================================================
+/**
+  * @brief Initialize R61529 chip
+  */
 void Init_R61529(){
 	RD_IDLE;
 	RESET_IDLE;
@@ -328,7 +345,9 @@ void Init_R61529(){
 	HAL_Delay(20);
 }
 
-//  =====================================================================
+/**
+  * @brief Set screen rotation
+  */
 void R61529_SetRotation(unsigned char r){
 	Lcd_Write_Reg(0x36);
 
@@ -356,6 +375,9 @@ void R61529_SetRotation(unsigned char r){
 	}
 }
 
+/**
+  * @brief Flood screen with a color
+  */
 void R61529_Flood(uint16_t color,uint32_t len){
 	uint16_t blocks;
 	uint8_t i;
@@ -386,24 +408,29 @@ void R61529_Flood(uint16_t color,uint32_t len){
 	}
 	//HAL_SRAM_Write_16b(&hsram1, (uint32_t*)(LCD_DATA), color_arr, len & 63);
 }
-// =====================================================================
-void R61529_FillScreen(uint16_t color)
-{
-        R61529_SetAddrWindow(0,0,X_SIZE-1,Y_SIZE-1); //
-        R61529_Flood(color,(long)X_SIZE*(long)Y_SIZE);
+
+/**
+  * @brief Fill screen with a color
+  */
+void R61529_FillScreen(uint16_t color){
+	R61529_SetAddrWindow(0,0,X_SIZE-1,Y_SIZE-1); //
+	R61529_Flood(color,(long)X_SIZE*(long)Y_SIZE);
 }
-// =====================================================================
-void R61529_FillRect(uint16_t color, uint16_t x1, uint16_t y1,
-											uint16_t x2, uint16_t y2)
-{
+
+/**
+  * @brief Draw a filled rectangle on screen
+  */
+void R61529_FillRect(uint16_t color, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2){
 	if(x2==480) x2=479;
 	if(y2==320) y2=319;
 	R61529_SetAddrWindow(x1,y1,x2,y2);
 	R61529_Flood(color,(uint16_t)(x2-x1+1)*(uint16_t)(y2-y1+1));
 }
-// =====================================================================
-void R61529_DrawPixel(int x, int y, uint16_t color)
-{
+
+/**
+  * @brief Draw a pixel on screen
+  */
+void R61529_DrawPixel(int x, int y, uint16_t color){
 	if((x<0)||(y<0)||(x>=X_SIZE)||(y>=Y_SIZE)) return;
 	R61529_SetAddrWindow(x,y,x,y);
 	Lcd_Write_Reg(0x2C);
@@ -411,21 +438,21 @@ void R61529_DrawPixel(int x, int y, uint16_t color)
 
 	//HAL_SRAM_Write_16b(&hsram1, (uint32_t*)(LCD_DATA), &color, 1);
 }
-// =====================================================================
-void R61529_DrawLine(uint16_t color, uint16_t x1, uint16_t y1,
-											uint16_t x2, uint16_t y2)
-{
+
+/**
+  * @brief Draw a line on screen
+  */
+void R61529_DrawLine(uint16_t color, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2){
 	int steep = abs(y2-y1)>abs(x2-x1);
-	if(steep)
-	{
+	if(steep){
 		swap(x1,y1);
 		swap(x2,y2);
 	}
-	if(x1>x2)
-	{
+	if(x1>x2){
 		swap(x1,x2);
 		swap(y1,y2);
 	}
+
 	int dx,dy;
 	dx=x2-x1;
 	dy=abs(y2-y1);
@@ -433,31 +460,31 @@ void R61529_DrawLine(uint16_t color, uint16_t x1, uint16_t y1,
 	int ystep;
 	if(y1<y2) ystep=1;
 	else ystep=-1;
-	for(;x1<=x2;x1++)
-	{
+	for(;x1<=x2;x1++){
 		if(steep) R61529_DrawPixel(y1,x1,color);
 		else R61529_DrawPixel(x1,y1,color);
 		err-=dy;
-		if(err<0)
-		{
+		if(err<0){
 			y1 += ystep;
 			err=dx;
 		}
 	}
 }
 
-// =====================================================================
-void R61529_DrawRect(uint16_t color, uint16_t x1, uint16_t y1,uint16_t x2, uint16_t y2)
-{
+/**
+  * @brief Draw a rectangle on screen (only it's border lines)
+  */
+void R61529_DrawRect(uint16_t color, uint16_t x1, uint16_t y1,uint16_t x2, uint16_t y2){
 	R61529_DrawLine(color,x1,y1,x2,y1);
 	R61529_DrawLine(color,x2,y1,x2,y2);
 	R61529_DrawLine(color,x1,y1,x1,y2);
 	R61529_DrawLine(color,x1,y2,x2,y2);
 }
 
-// =====================================================================
-void R61529_DrawCircle(uint16_t x0, uint16_t y0, int r, uint16_t color)
-{
+/**
+  * @brief Draw a circle on screen
+  */
+void R61529_DrawCircle(uint16_t x0, uint16_t y0, int r, uint16_t color){
 	int f = 1-r;
 	int ddF_x=1;
 	int ddF_y=-2*r;
@@ -467,10 +494,8 @@ void R61529_DrawCircle(uint16_t x0, uint16_t y0, int r, uint16_t color)
 	R61529_DrawPixel(x0,y0-r,color);
 	R61529_DrawPixel(x0+r,y0,color);
 	R61529_DrawPixel(x0-r,y0,color);
-	while (x<y)
-	{
-		if (f>=0)
-		{
+	while(x<y){
+		if(f>=0){
 			y--;
 			ddF_y+=2;
 			f+=ddF_y;
@@ -489,6 +514,9 @@ void R61529_DrawCircle(uint16_t x0, uint16_t y0, int r, uint16_t color)
 	}
 }
 
+/**
+  * @brief Draw a character on screen
+  */
 static void R61529_WriteChar(uint16_t x, uint16_t y, char ch, FontDef font, uint16_t color, uint16_t bgcolor){
     uint32_t i, b, j;
 
@@ -506,6 +534,9 @@ static void R61529_WriteChar(uint16_t x, uint16_t y, char ch, FontDef font, uint
     }
 }
 
+/**
+  * @brief Draw a string on screen
+  */
 void R61529_WriteString(uint16_t x, uint16_t y, const char* str, FontDef font, uint16_t color, uint16_t bgcolor){
     while(*str){
         if(x + font.width >= X_SIZE){
@@ -529,6 +560,9 @@ void R61529_WriteString(uint16_t x, uint16_t y, const char* str, FontDef font, u
     }
 }
 
+/**
+  * @brief Display an image on screen
+  */
 void Draw_Image(const short *image_array, uint16_t x_coordinat, uint16_t y_coordinat, uint16_t img_width, uint16_t img_height, uint32_t s_img){
 	R61529_SetAddrWindow(x_coordinat, y_coordinat, img_width + x_coordinat - 1, img_height + y_coordinat - 1);
 
@@ -536,22 +570,3 @@ void Draw_Image(const short *image_array, uint16_t x_coordinat, uint16_t y_coord
 		Lcd_Write_Data(image_array[i]);
 	}
 }
-
-// =====================================================================
-void R61529_rotation_test(){
-	char text[20] = {0};
-	R61529_FillScreen(BLACK);
-
-	for(uint8_t i = 0; i < 4; i++){
-		sprintf(text, "Hello, World! Rt: %d", i + 1);
-		R61529_SetRotation(i);
-		R61529_WriteString(10, 10, text, Font_11x18, GREEN, BLACK);
-		HAL_Delay(750);
-		R61529_FillRect(BLACK, 10, 10, X_SIZE, 10 + 20);
-		memset(text, 0, 19);
-	}
-
-	R61529_SetRotation(ROTATE_DEFAULT);
-}
-
-

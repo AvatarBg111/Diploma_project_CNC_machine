@@ -1,19 +1,25 @@
-#ifndef _SSD1289_H_
-#define _SSD1289_H_
+#ifndef __R61529_H
+#define __R61529_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* Private includes ----------------------------------------------------------*/
 #include "main.h"
-#include "stm32h7xx_hal.h"
 #include "fonts.h"
-#include "stdlib.h"
-//#include "string.h"
+#include "stm32h7xx_hal.h"
 
-/*
-PD4   ------> R61529_RD
-PD5   ------> R61529_WR
-PD6   ------> R61529_CS		//PC7
-PD11   ------> R61529_RS
-PB13   ------> R61529_RESET
-*/
+
+/* Exported types ------------------------------------------------------------*/
+
+/* Exported constants --------------------------------------------------------*/
+
+/* Exported macro ------------------------------------------------------------*/
+
+/* Exported functions prototypes ---------------------------------------------*/
+
+/* Private defines -----------------------------------------------------------*/
 #define  RESET_ACTIVE   HAL_GPIO_WritePin(TFT_RESET_GPIO_Port, TFT_RESET_Pin, GPIO_PIN_RESET);
 #define  RESET_IDLE     HAL_GPIO_WritePin(TFT_RESET_GPIO_Port, TFT_RESET_Pin, GPIO_PIN_SET);
 #define  RS_ACTIVE   HAL_GPIO_WritePin(TFT_RS_GPIO_Port, TFT_RS_Pin, GPIO_PIN_RESET);
@@ -25,16 +31,15 @@ PB13   ------> R61529_RESET
 #define  WR_ACTIVE   HAL_GPIO_WritePin(TFT_WR_GPIO_Port, TFT_WR_Pin, GPIO_PIN_RESET);
 #define  WR_IDLE     HAL_GPIO_WritePin(TFT_WR_GPIO_Port, TFT_WR_Pin, GPIO_PIN_SET);
 
-#define COMMAND 0
-#define DATA 1
-
 #define swap(a,b) {int16_t t=a;a=b;b=t;}
 
 // Определяем адреса
 // Для записи данных
 #define LCD_DATA    			    0x60080000
+#define DATA 1
 // Для записи команд
 #define LCD_REG   		  	    0x60000000
+#define COMMAND 0
 
 #define  BLACK   0x0000
 #define  BLUE    0x001F
@@ -69,6 +74,8 @@ void R61529_String_to_Char_universale(int x0, int y0, unsigned int color, unsign
 void Draw_Image(const short *image_array, uint16_t x_coordinat, uint16_t y_coordinat, uint16_t img_width, uint16_t img_height, uint32_t s_img);
 void R61529_WriteString(uint16_t x, uint16_t y, const char* str, FontDef font, uint16_t color, uint16_t bgcolor);
 
-void R61529_rotation_test(void);
-
+#ifdef __cplusplus
+}
 #endif
+
+#endif // __FONTS_H

@@ -5,41 +5,34 @@
  *      Author: AvatarBg111
  */
 
-#ifndef INC_BUTTONS_H_
-#define INC_BUTTONS_H_
+#ifndef __BUTTONS_H
+#define __BUTTONS_H
 
-// Includes
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* Private includes ----------------------------------------------------------*/
 #include "main.h"
 
 
-// Exported macros and typedefs
+/* Exported types ------------------------------------------------------------*/
 
+/* Exported constants --------------------------------------------------------*/
 
-// Exported variables
+/* Exported macro ------------------------------------------------------------*/
 
-
-// Exported function declarations
-/**
-  * @brief Updates button statuses
-  * Must be called from interrupt handler of a TIMER
-  */
+/* Exported functions prototypes ---------------------------------------------*/
 void update_button_status(void);
-
-/**
-  * @brief Change button status update time
-  * time_high - the time needed for a button to be high to change it's status to activated
-  * time_low - the time needed for a button to be low to change it's status to deactivated
-  */
 void change_update_time(uint8_t, uint8_t);
-
-/**
-  * @brief Set button pin association with a channel
-  */
 HAL_StatusTypeDef set_button_channel(GPIO_TypeDef*, uint16_t, uint8_t);
-
-/**
-  * @brief Get button status
-  */
 GPIO_PinState get_button_state(uint8_t);
 
-#endif /* INC_BUTTONS_H_ */
+
+/* Private defines -----------------------------------------------------------*/
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __BUTTONS_H */

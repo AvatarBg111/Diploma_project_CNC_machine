@@ -12,6 +12,7 @@ RM := rm -rf
 -include Drivers/STM32H7xx_HAL_Driver/Src/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
+-include Core/SoundFX/subdir.mk
 -include Core/R61529/subdir.mk
 -include Core/FT5436/subdir.mk
 -include Core/Comm/subdir.mk

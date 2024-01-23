@@ -22,6 +22,7 @@
 #include "stm32h7xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "grbl_cpu_comm.h"
 #include "ft5436.h"
 
 /* USER CODE END Includes */
@@ -33,6 +34,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+#define RX_BUF_SIZE 160
 
 /* USER CODE END PD */
 
@@ -46,10 +48,19 @@
 uint8_t touch_detected = 0x00;
 uint8_t i2c3_dma_itr_sync = 0x00;
 
+uint8_t rx_buffer[RX_BUF_SIZE] = {0}, rx_buffer_len = 0;
+uint8_t *uart2_rx = NULL, *uart2_pckt_len = NULL;
+bool auto_flushing = true;
+
+bool buzzer_program_occupied = false;
+uint16_t buzzer_update_event_cnt = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
+bool turn_on_buzzer(uint16_t);
+void start_uart2_reception(uint8_t*, uint8_t*);
+bool uart2_reception_done(void);
 
 /* USER CODE END PFP */
 
@@ -62,13 +73,10 @@ uint8_t i2c3_dma_itr_sync = 0x00;
 extern DMA_HandleTypeDef hdma_i2c3_rx;
 extern DMA_HandleTypeDef hdma_i2c3_tx;
 extern I2C_HandleTypeDef hi2c3;
-/* USER CODE BEGIN EV */
-extern UART_HandleTypeDef huart1;
+extern TIM_HandleTypeDef htim4;
+extern DMA_HandleTypeDef hdma_usart2_tx;
 extern UART_HandleTypeDef huart2;
-
-bool auto_flushing = true;
-uint8_t *uart1_pckt_len = NULL;
-uint8_t *uart1_rx = NULL;
+/* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
 
@@ -246,10 +254,27 @@ void DMA1_Stream1_IRQHandler(void)
   /* USER CODE BEGIN DMA1_Stream1_IRQn 1 */
   if(i2c3_dma_itr_sync & 0x01){
 	i2c3_dma_itr_sync &= ~0x01;
-	transfer_complete_callback(&hdma_i2c3_tx);
+	transmission_complete_callback(&hdma_i2c3_tx);
   }
 
   /* USER CODE END DMA1_Stream1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles DMA1 stream2 global interrupt.
+  */
+void DMA1_Stream2_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA1_Stream2_IRQn 0 */
+	if(__HAL_DMA_STREAM_GET_IT_SOURCE(&hdma_usart2_tx, DMA_IT_TC)){
+		reset_pending_command();
+	}
+
+  /* USER CODE END DMA1_Stream2_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_usart2_tx);
+  /* USER CODE BEGIN DMA1_Stream2_IRQn 1 */
+
+  /* USER CODE END DMA1_Stream2_IRQn 1 */
 }
 
 /**
@@ -262,10 +287,46 @@ void EXTI9_5_IRQHandler(void)
   request_available_points();
 
   /* USER CODE END EXTI9_5_IRQn 0 */
-  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_6);
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_5);
   /* USER CODE BEGIN EXTI9_5_IRQn 1 */
 
   /* USER CODE END EXTI9_5_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM4 global interrupt.
+  */
+void TIM4_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM4_IRQn 0 */
+	if(__HAL_TIM_GET_IT_SOURCE(&htim4, TIM_IT_CC3) == SET){
+		if(--buzzer_update_event_cnt == 0){
+			buzzer_program_occupied = false;
+		}
+	}
+
+  /* USER CODE END TIM4_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim4);
+  /* USER CODE BEGIN TIM4_IRQn 1 */
+  if(buzzer_program_occupied == false){
+	  HAL_TIM_PWM_Stop_IT(&htim4, TIM_CHANNEL_3);
+  }
+
+  /* USER CODE END TIM4_IRQn 1 */
+}
+
+/**
+  * @brief This function handles USART2 global interrupt.
+  */
+void USART2_IRQHandler(void)
+{
+  /* USER CODE BEGIN USART2_IRQn 0 */
+
+  /* USER CODE END USART2_IRQn 0 */
+  HAL_UART_IRQHandler(&huart2);
+  /* USER CODE BEGIN USART2_IRQn 1 */
+
+  /* USER CODE END USART2_IRQn 1 */
 }
 
 /**
@@ -297,15 +358,28 @@ void I2C3_ER_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
-void start_uart1_reception(uint8_t *buf, uint8_t *len){
-	__HAL_UART_ENABLE_IT(&huart1, UART_IT_RXNE);
-	uart1_rx = buf;
-	uart1_pckt_len = len;
-	*uart1_pckt_len = 0;
+bool turn_on_buzzer(uint16_t cnt){
+	if(cnt == 0 || buzzer_program_occupied){
+		return false;
+	}
+
+	buzzer_program_occupied = true;
+	buzzer_update_event_cnt = cnt;
+
+	HAL_TIM_PWM_Start_IT(&htim4, TIM_CHANNEL_3);
+
+	return true;
+}
+
+void start_uart2_reception(uint8_t *buf, uint8_t *len){
+	__HAL_UART_ENABLE_IT(&huart2, UART_IT_RXNE);
+	uart2_rx = buf;
+	uart2_pckt_len = len;
+	*uart2_pckt_len = 0;
 	auto_flushing = false;
 }
 
-bool uart1_reception_done(void){
+bool uart2_reception_done(void){
 	return auto_flushing;
 }
 

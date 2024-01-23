@@ -5,27 +5,66 @@
  *      Author: AvatarBg111
  */
 
-// Includes
+/* Private includes ----------------------------------------------------------*/
 #include "ft5436.h"
-#include "stm32h7xx_hal.h"
 #include "r61529.h"
 #include "systick_timer.h"
-#include<stdio.h>
-#include<string.h>
+#include "stm32h7xx_hal.h"
 
 
-// Private macros and typedefs
+/* Private typedef -----------------------------------------------------------*/
+
+/* Private define ------------------------------------------------------------*/
+// FocalTech I2C defines
+#define FT_ADDR 0x38            // I2C address
+#define FT_REG_MODE 0x00        // Device mode, either WORKING or FACTORY
+#define FT_REG_CALIBRATE 0x02   // Calibrate mode
+#define FT_REG_WORKMODE 0x00    // Work mode
+#define FT_REG_FACTORYMODE 0x40 // Factory mode
+#define FT_REG_THRESHHOLD 0x80  // Threshold for touch detection
+#define FT_REG_POINTRATE 0x88   // Point rate
+#define FT_REG_FIRMVERS 0xA6    // Firmware version
+#define FT_REG_CHIPID 0xA3      // Chip selecting
+#define FT_REG_VENDID 0xA8      // FocalTech's panel ID
+
+// FocalTech ID's
+#define FT6234_VENVID 0x79  // FocalTech's panel ID
+#define FT6236_VENDID 0x11  // FocalTech's panel ID
+#define FT5436_VENDID 0x79  // FocalTech's panel ID
+#define FT6206_CHIPID 0x06  // FT6206 ID
+#define FT6234_CHIPID 0x54  // FT6234 ID
+#define FT6236_CHIPID 0x36  // FT6236 ID
+#define FT5436_CHIPID 0x54  // FT5436 ID
+#define FT6236U_CHIPID 0x64 // FT6236U ID
+
+// Other touch IC defines
+#define POINT_CNT_SENT_MASK 0x01
+#define POINT_ARB_RECEIVED_MASK 0x02
+#define POINT_DATA_REQUEST_SENT_MASK 0x04
+#define POINT_DATA_RECEIVED_MASK 0x08
 
 
-// Private variables
+/* Private macro -------------------------------------------------------------*/
+#define FT5436_RESET_ACTIVE HAL_GPIO_WritePin(FT5436_RESET_GPIO_Port, FT5436_RESET_Pin, GPIO_PIN_RESET);
+#define FT5436_RESET_IDLE HAL_GPIO_WritePin(FT5436_RESET_GPIO_Port, FT5436_RESET_Pin, GPIO_PIN_SET);
+
+
+/* Private variables ---------------------------------------------------------*/
 uint8_t FT5436_rx_arr[50] = {0};
 uint8_t FT5436_tx_arr[50] = {0};
-
 uint8_t ft5436_flags = 0x00, points_detected = 0x00;
 uint16_t touchX[FT_REG_NUMTOUCHES] = {0}, touchY[FT_REG_NUMTOUCHES] = {0}, touchID[FT_REG_NUMTOUCHES] = {0};
 
 
-// Private function definitions
+/* Private function prototypes -----------------------------------------------*/
+void Init_FT5436(void);
+void collect_move_data(void);
+void request_available_points(void);
+void transmission_complete_callback(DMA_HandleTypeDef*);
+void reception_complete_callback(DMA_HandleTypeDef*);
+
+
+/* Private user code ---------------------------------------------------------*/
 /**
   * @brief Initialize FT5436 controller
   */
@@ -73,7 +112,7 @@ void Init_FT5436(void){
 /**
   * @brief Send request for touch data and receive it
   */
-void touch_move(void){
+void collect_move_data(void){
 	uint8_t meta_arr[] = {FT_REG_NUMTOUCHES, 0x00};
 	uint8_t res_arr[3 + (5 * 6)] = {0x00};
 
@@ -133,7 +172,10 @@ void request_available_points(void){
 	}
 }
 
-void transfer_complete_callback(DMA_HandleTypeDef *hdma){
+/**
+  * @brief DMA transmission complete callback function
+  */
+void transmission_complete_callback(DMA_HandleTypeDef *hdma){
 	if(hdma->Instance == DMA1_Stream1){
 		if(ft5436_flags & POINT_CNT_SENT_MASK){
 			FT5436_tx_arr[0] = 0x00;
@@ -172,6 +214,9 @@ void transfer_complete_callback(DMA_HandleTypeDef *hdma){
 	}
 }
 
+/**
+  * @brief DMA reception complete callback function
+  */
 void reception_complete_callback(DMA_HandleTypeDef *hdma){
 	if(hdma->Instance == DMA1_Stream0){
 		if(ft5436_flags & POINT_CNT_SENT_MASK){
@@ -223,12 +268,18 @@ void reception_complete_callback(DMA_HandleTypeDef *hdma){
 	}
 }
 
+/**
+  * @brief HAL I2C master transmission complete callback function
+  */
 void HAL_I2C_MasterTxCpltCallback(I2C_HandleTypeDef *hi2c){
     if(hi2c->Instance == hi2c3.Instance){
         HAL_DMA_Abort_IT(hi2c->hdmatx);
     }
 }
 
+/**
+  * @brief HAL I2C master reception complete callback function
+  */
 void HAL_I2C_MasterRxCpltCallback(I2C_HandleTypeDef *hi2c){
     if(hi2c->Instance == hi2c3.Instance){
         HAL_DMA_Abort_IT(hi2c->hdmarx);

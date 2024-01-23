@@ -27,14 +27,16 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_i2c_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pwr.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pwr_ex.h \
+ ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h \
+ ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h \
- ../Core/Inc/systick_timer.h ../Core/Inc/main.h \
- ../Core/Comm/grbl_cpu_comm.h ../Core/Inc/screen_menu_r61529.h \
  ../Core/R61529/r61529.h ../Core/R61529/fonts.h ../Core/R61529/fonts.h \
- ../Core/FT5436/ft5436.h
+ ../Core/FT5436/ft5436.h ../Core/Inc/r61529_screen_menu.h \
+ ../Core/Inc/main.h ../Core/SoundFX/sound_fx.h ../Core/Inc/stm32h7xx_it.h \
+ ../Core/Inc/systick_timer.h ../Core/Comm/grbl_cpu_comm.h
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 ../Core/Inc/stm32h7xx_hal_conf.h:
@@ -64,15 +66,19 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_i2c_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pwr.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pwr_ex.h:
+../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h:
+../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h:
-../Core/Inc/systick_timer.h:
-../Core/Inc/main.h:
-../Core/Comm/grbl_cpu_comm.h:
-../Core/Inc/screen_menu_r61529.h:
 ../Core/R61529/r61529.h:
 ../Core/R61529/fonts.h:
 ../Core/R61529/fonts.h:
 ../Core/FT5436/ft5436.h:
+../Core/Inc/r61529_screen_menu.h:
+../Core/Inc/main.h:
+../Core/SoundFX/sound_fx.h:
+../Core/Inc/stm32h7xx_it.h:
+../Core/Inc/systick_timer.h:
+../Core/Comm/grbl_cpu_comm.h:

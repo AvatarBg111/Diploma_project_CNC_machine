@@ -5,45 +5,43 @@
  *      Author: AvatarBg111
  */
 
-#ifndef COMM_GRBL_CPU_COMM_H_
-#define COMM_GRBL_CPU_COMM_H_
+#ifndef __COMM_GRBL_CPU_COMM_H
+#define __COMM_GRBL_CPU_COMM_H
 
-// Includes
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* Private includes ----------------------------------------------------------*/
 #include "main.h"
 
 
-// Exported macros and typedefs
-extern UART_HandleTypeDef huart1;
+/* Exported types ------------------------------------------------------------*/
 extern UART_HandleTypeDef huart2;
-#define GCODE_UART_H huart1
-#define MPG_UART_H huart2
-
-
-typedef uint8_t grbl_comm_stat_t;
-
-enum msg_channel_t{
-	UART_Gcode_channel = 0,
-	UART_MPG_channel
+enum grbl_commands{
+	NONE = 0x00,
+	_ENABLE_MPG = 0x8B,
+	_DISABLE_MPG = 0x85
 };
 
-enum grbl_comm_stat_t{
-	grbl_cpu_comm_ready = 0,
-	grbl_cpu_comm_busy = 1
-};
 
-/**
-  * @brief Enable MPG mode
-  */
+/* Exported constants --------------------------------------------------------*/
+
+/* Exported macro ------------------------------------------------------------*/
+
+/* Exported functions prototypes ---------------------------------------------*/
 HAL_StatusTypeDef enable_mpg(void);
-
-/**
-  * @brief Disable MPG mode
-  */
 HAL_StatusTypeDef disable_mpg(void);
-
-/**
-  * @brief Get MPG mode status
-  */
+uint8_t get_pending_command(void);
+void reset_pending_command(void);
+void set_mpg_state(bool);
 bool get_mpg_state(void);
 
-#endif /* COMM_GRBL_CPU_COMM_H_ */
+
+/* Private defines -----------------------------------------------------------*/
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __COMM_GRBL_CPU_COMM_H */

@@ -25,6 +25,7 @@ SUBDIRS := \
 Core/Comm \
 Core/FT5436 \
 Core/R61529 \
+Core/SoundFX \
 Core/Src \
 Core/Startup \
 Drivers/STM32H7xx_HAL_Driver/Src \

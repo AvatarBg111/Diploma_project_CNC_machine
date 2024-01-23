@@ -1,4 +1,5 @@
-../Core/Src/buttons.c:39:6:update_button_status	32	static
-../Core/Src/buttons.c:70:6:change_update_time	0	static
-../Core/Src/buttons.c:89:19:set_button_channel	16	static
-../Core/Src/buttons.c:107:15:get_button_state	0	static
+../Core/Src/buttons.c:49:6:update_button_status	32	static
+../Core/Src/buttons.c:80:6:change_update_time	0	static
+../Core/Src/buttons.c:88:6:clear_button_statuses	0	static
+../Core/Src/buttons.c:99:19:set_button_channel	16	static
+../Core/Src/buttons.c:117:15:get_button_state	0	static

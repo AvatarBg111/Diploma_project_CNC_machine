@@ -21,14 +21,14 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include<stdio.h>
-#include<string.h>
-#include "systick_timer.h"
-#include "grbl_cpu_comm.h"
-#include "screen_menu_r61529.h"
 #include "r61529.h"
 #include "fonts.h"
 #include "ft5436.h"
+#include "r61529_screen_menu.h"
+#include "sound_fx.h"
+#include "systick_timer.h"
+#include "grbl_cpu_comm.h"
+
 
 /* USER CODE END Includes */
 
@@ -53,11 +53,14 @@ I2C_HandleTypeDef hi2c3;
 DMA_HandleTypeDef hdma_i2c3_rx;
 DMA_HandleTypeDef hdma_i2c3_tx;
 
-TIM_HandleTypeDef htim1;
+SPI_HandleTypeDef hspi3;
+
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
+TIM_HandleTypeDef htim4;
 
 UART_HandleTypeDef huart2;
+DMA_HandleTypeDef hdma_usart2_tx;
 
 /* USER CODE BEGIN PV */
 
@@ -70,12 +73,12 @@ static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_I2C3_Init(void);
-static void MX_TIM3_Init(void);
 static void MX_USART2_UART_Init(void);
-static void MX_TIM1_Init(void);
+static void MX_TIM3_Init(void);
+static void MX_TIM4_Init(void);
+static void MX_SPI3_Init(void);
 /* USER CODE BEGIN PFP */
-void MCU_Init();
-void Blink_LED();
+void Init_interfaces();
 
 /* USER CODE END PFP */
 
@@ -85,12 +88,6 @@ void show_touch_data(void){
 	static uint8_t flags = 0x00;
 	static uint16_t encoder_val = 0x0000;
 	char encoder_str[25];
-
-	if(HAL_GPIO_ReadPin(USER_BUT_A_GPIO_Port, USER_BUT_A_Pin) == GPIO_PIN_RESET){
-		flags |= 0x02;
-	}else{
-		flags &= ~0x02;
-	}
 
 	if(flags == 0x00){
 		R61529_FillScreen(BLACK);
@@ -115,6 +112,7 @@ void show_touch_data(void){
 			char text[25] = "";
 
 			if(i < touches){
+				//buzzer_short_ring(2500, 150);
 				sprintf(text, "(x-%3d, y-%3d)", touch_points[i][0], touch_points[i][1]);
 			}else{
 				sprintf(text, "      NA      ");
@@ -123,19 +121,15 @@ void show_touch_data(void){
 			R61529_WriteString(180, 40 + (i * 20), text, Font_7x10, YELLOW, BLACK);
 		}
 
-		if((flags & 0x02) && !(flags & 0x04)){
-			R61529_WriteString(15, 150, "STOP BUTTON ENGAGED!", Font_11x18, WHITE, RED);
-			flags |= 0x04;
-		}else if(!(flags & 0x02) && (flags & 0x04)){
-			R61529_FillRect(BLACK, 15, 150, 336, 45);
-			flags &= ~0x04;
-		}
-
 		if(htim3.Instance->CNT != encoder_val){
-			encoder_val = htim3.Instance->CNT;
-			sprintf(encoder_str, "Encoder value: %5d", encoder_val);
-			R61529_WriteString(15, 190, encoder_str, Font_7x10, CYAN, BLACK);
-			memset(encoder_str, 0, 25);
+			if(htim2.Instance->CNT != encoder_val){
+				encoder_val = htim2.Instance->CNT;
+
+				//buzzer_short_ring(1000, 50);
+				sprintf(encoder_str, "Encoder value: %5d", encoder_val);
+				R61529_WriteString(15, 190, encoder_str, Font_7x10, CYAN, BLACK);
+				memset(encoder_str, 0, 25);
+			}
 		}
 	}
 }
@@ -176,19 +170,26 @@ int main(void)
   MX_DMA_Init();
   MX_TIM2_Init();
   MX_I2C3_Init();
-  MX_TIM3_Init();
   MX_USART2_UART_Init();
-  MX_TIM1_Init();
+  MX_TIM3_Init();
+  MX_TIM4_Init();
+  MX_SPI3_Init();
   /* USER CODE BEGIN 2 */
-  MCU_Init();
+  Init_interfaces();
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while(1){
-	  Blink_LED();
-	  show_touch_data();
+	  if(wait_ms_ch(1, 1500)){
+		  if(HAL_GPIO_ReadPin(Board_LED_GPIO_Port, Board_LED_Pin) == GPIO_PIN_RESET){
+			  HAL_GPIO_WritePin(Board_LED_GPIO_Port, Board_LED_Pin, GPIO_PIN_SET);
+		  }else{
+			  HAL_GPIO_WritePin(Board_LED_GPIO_Port, Board_LED_Pin, GPIO_PIN_RESET);
+		  }
+	  }
+	  r61529_screen_menu();
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -331,71 +332,50 @@ static void MX_I2C3_Init(void)
 }
 
 /**
-  * @brief TIM1 Initialization Function
+  * @brief SPI3 Initialization Function
   * @param None
   * @retval None
   */
-static void MX_TIM1_Init(void)
+static void MX_SPI3_Init(void)
 {
 
-  /* USER CODE BEGIN TIM1_Init 0 */
+  /* USER CODE BEGIN SPI3_Init 0 */
 
-  /* USER CODE END TIM1_Init 0 */
+  /* USER CODE END SPI3_Init 0 */
 
-  TIM_MasterConfigTypeDef sMasterConfig = {0};
-  TIM_OC_InitTypeDef sConfigOC = {0};
-  TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig = {0};
+  /* USER CODE BEGIN SPI3_Init 1 */
 
-  /* USER CODE BEGIN TIM1_Init 1 */
-
-  /* USER CODE END TIM1_Init 1 */
-  htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 0;
-  htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 65535;
-  htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim1.Init.RepetitionCounter = 0;
-  htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  if (HAL_TIM_PWM_Init(&htim1) != HAL_OK)
+  /* USER CODE END SPI3_Init 1 */
+  /* SPI3 parameter configuration*/
+  hspi3.Instance = SPI3;
+  hspi3.Init.Mode = SPI_MODE_MASTER;
+  hspi3.Init.Direction = SPI_DIRECTION_2LINES;
+  hspi3.Init.DataSize = SPI_DATASIZE_4BIT;
+  hspi3.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi3.Init.CLKPhase = SPI_PHASE_1EDGE;
+  hspi3.Init.NSS = SPI_NSS_HARD_OUTPUT;
+  hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi3.Init.FirstBit = SPI_FIRSTBIT_MSB;
+  hspi3.Init.TIMode = SPI_TIMODE_DISABLE;
+  hspi3.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+  hspi3.Init.CRCPolynomial = 0x0;
+  hspi3.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
+  hspi3.Init.NSSPolarity = SPI_NSS_POLARITY_LOW;
+  hspi3.Init.FifoThreshold = SPI_FIFO_THRESHOLD_01DATA;
+  hspi3.Init.TxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
+  hspi3.Init.RxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
+  hspi3.Init.MasterSSIdleness = SPI_MASTER_SS_IDLENESS_00CYCLE;
+  hspi3.Init.MasterInterDataIdleness = SPI_MASTER_INTERDATA_IDLENESS_00CYCLE;
+  hspi3.Init.MasterReceiverAutoSusp = SPI_MASTER_RX_AUTOSUSP_DISABLE;
+  hspi3.Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_DISABLE;
+  hspi3.Init.IOSwap = SPI_IO_SWAP_DISABLE;
+  if (HAL_SPI_Init(&hspi3) != HAL_OK)
   {
     Error_Handler();
   }
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-  sMasterConfig.MasterOutputTrigger2 = TIM_TRGO2_RESET;
-  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = 0;
-  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-  sConfigOC.OCIdleState = TIM_OCIDLESTATE_RESET;
-  sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
-  if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_4) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sBreakDeadTimeConfig.OffStateRunMode = TIM_OSSR_DISABLE;
-  sBreakDeadTimeConfig.OffStateIDLEMode = TIM_OSSI_DISABLE;
-  sBreakDeadTimeConfig.LockLevel = TIM_LOCKLEVEL_OFF;
-  sBreakDeadTimeConfig.DeadTime = 0;
-  sBreakDeadTimeConfig.BreakState = TIM_BREAK_DISABLE;
-  sBreakDeadTimeConfig.BreakPolarity = TIM_BREAKPOLARITY_HIGH;
-  sBreakDeadTimeConfig.BreakFilter = 0;
-  sBreakDeadTimeConfig.Break2State = TIM_BREAK2_DISABLE;
-  sBreakDeadTimeConfig.Break2Polarity = TIM_BREAK2POLARITY_HIGH;
-  sBreakDeadTimeConfig.Break2Filter = 0;
-  sBreakDeadTimeConfig.AutomaticOutput = TIM_AUTOMATICOUTPUT_DISABLE;
-  if (HAL_TIMEx_ConfigBreakDeadTime(&htim1, &sBreakDeadTimeConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN TIM1_Init 2 */
+  /* USER CODE BEGIN SPI3_Init 2 */
 
-  /* USER CODE END TIM1_Init 2 */
-  HAL_TIM_MspPostInit(&htim1);
+  /* USER CODE END SPI3_Init 2 */
 
 }
 
@@ -411,29 +391,28 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 0 */
 
-  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_Encoder_InitTypeDef sConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
-  TIM_OC_InitTypeDef sConfigOC = {0};
 
   /* USER CODE BEGIN TIM2_Init 1 */
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 135;
+  htim2.Init.Prescaler = 0;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 10000 - 1;
+  htim2.Init.Period = 65535;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
-  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  if (HAL_TIM_PWM_Init(&htim2) != HAL_OK)
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  sConfig.EncoderMode = TIM_ENCODERMODE_TI1;
+  sConfig.IC1Polarity = TIM_ICPOLARITY_RISING;
+  sConfig.IC1Selection = TIM_ICSELECTION_DIRECTTI;
+  sConfig.IC1Prescaler = TIM_ICPSC_DIV1;
+  sConfig.IC1Filter = 0;
+  sConfig.IC2Polarity = TIM_ICPOLARITY_RISING;
+  sConfig.IC2Selection = TIM_ICSELECTION_DIRECTTI;
+  sConfig.IC2Prescaler = TIM_ICPSC_DIV1;
+  sConfig.IC2Filter = 0;
+  if (HAL_TIM_Encoder_Init(&htim2, &sConfig) != HAL_OK)
   {
     Error_Handler();
   }
@@ -443,18 +422,9 @@ static void MX_TIM2_Init(void)
   {
     Error_Handler();
   }
-  sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = 5000 - 1;
-  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
-  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
-  if (HAL_TIM_PWM_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_3) != HAL_OK)
-  {
-    Error_Handler();
-  }
   /* USER CODE BEGIN TIM2_Init 2 */
 
   /* USER CODE END TIM2_Init 2 */
-  HAL_TIM_MspPostInit(&htim2);
 
 }
 
@@ -470,28 +440,19 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 0 */
 
-  TIM_Encoder_InitTypeDef sConfig = {0};
   TIM_MasterConfigTypeDef sMasterConfig = {0};
+  TIM_OC_InitTypeDef sConfigOC = {0};
 
   /* USER CODE BEGIN TIM3_Init 1 */
 
   /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 0;
+  htim3.Init.Prescaler = 120;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim3.Init.Period = 65535;
+  htim3.Init.Period = 1000 - 1;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  sConfig.EncoderMode = TIM_ENCODERMODE_TI1;
-  sConfig.IC1Polarity = TIM_ICPOLARITY_RISING;
-  sConfig.IC1Selection = TIM_ICSELECTION_DIRECTTI;
-  sConfig.IC1Prescaler = TIM_ICPSC_DIV1;
-  sConfig.IC1Filter = 0;
-  sConfig.IC2Polarity = TIM_ICPOLARITY_RISING;
-  sConfig.IC2Selection = TIM_ICSELECTION_DIRECTTI;
-  sConfig.IC2Prescaler = TIM_ICPSC_DIV1;
-  sConfig.IC2Filter = 0;
-  if (HAL_TIM_Encoder_Init(&htim3, &sConfig) != HAL_OK)
+  htim3.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_PWM_Init(&htim3) != HAL_OK)
   {
     Error_Handler();
   }
@@ -501,9 +462,67 @@ static void MX_TIM3_Init(void)
   {
     Error_Handler();
   }
+  sConfigOC.OCMode = TIM_OCMODE_PWM1;
+  sConfigOC.Pulse = 500 - 1;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  if (HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_2) != HAL_OK)
+  {
+    Error_Handler();
+  }
   /* USER CODE BEGIN TIM3_Init 2 */
 
   /* USER CODE END TIM3_Init 2 */
+  HAL_TIM_MspPostInit(&htim3);
+
+}
+
+/**
+  * @brief TIM4 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM4_Init(void)
+{
+
+  /* USER CODE BEGIN TIM4_Init 0 */
+
+  /* USER CODE END TIM4_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+  TIM_OC_InitTypeDef sConfigOC = {0};
+
+  /* USER CODE BEGIN TIM4_Init 1 */
+
+  /* USER CODE END TIM4_Init 1 */
+  htim4.Instance = TIM4;
+  htim4.Init.Prescaler = 120 - 1;
+  htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim4.Init.Period = 10000 - 1;
+  htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_PWM_Init(&htim4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim4, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigOC.OCMode = TIM_OCMODE_PWM1;
+  sConfigOC.Pulse = 5000 - 1;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  if (HAL_TIM_PWM_ConfigChannel(&htim4, &sConfigOC, TIM_CHANNEL_3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM4_Init 2 */
+
+  /* USER CODE END TIM4_Init 2 */
+  HAL_TIM_MspPostInit(&htim4);
 
 }
 
@@ -529,7 +548,7 @@ static void MX_USART2_UART_Init(void)
   huart2.Init.Parity = UART_PARITY_NONE;
   huart2.Init.Mode = UART_MODE_TX_RX;
   huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+  huart2.Init.OverSampling = UART_OVERSAMPLING_8;
   huart2.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
   huart2.Init.ClockPrescaler = UART_PRESCALER_DIV1;
   huart2.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
@@ -571,6 +590,9 @@ static void MX_DMA_Init(void)
   /* DMA1_Stream1_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 5, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
+  /* DMA1_Stream2_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream2_IRQn);
 
 }
 
@@ -593,43 +615,49 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOE, Board_LED_Pin|USER_LED_A_Pin|USER_LED_B_Pin|USER_LED_C_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(Board_LED_GPIO_Port, Board_LED_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(USER_LED_D_GPIO_Port, USER_LED_D_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(FT5436_RESET_GPIO_Port, FT5436_RESET_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(FT5436_RESET_GPIO_Port, FT5436_RESET_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOC, TFT_D0_Pin|TFT_D1_Pin|TFT_WR_Pin|TFT_RS_Pin
+                          |TFT_CS_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOE, TFT_D4_Pin|TFT_D5_Pin|TFT_D6_Pin|TFT_D7_Pin
-                          |TFT_D8_Pin|TFT_D9_Pin|TFT_D10_Pin|TFT_D11_Pin
-                          |TFT_D12_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, TFT_D2_Pin|TFT_D3_Pin|TFT_D4_Pin|TFT_D14_Pin
+                          |TFT_D15_Pin|USER_LED_A_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(TFT_RESET_GPIO_Port, TFT_RESET_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOE, TFT_D5_Pin|TFT_D6_Pin|TFT_D7_Pin|TFT_D8_Pin
+                          |TFT_D9_Pin|TFT_D10_Pin|TFT_D11_Pin|TFT_D12_Pin
+                          |TFT_D13_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOD, TFT_D13_Pin|TFT_D14_Pin|TFT_D15_Pin|TFT_RS_Pin
-                          |TFT_D0_Pin|TFT_D1_Pin|TFT_D2_Pin|TFT_D3_Pin
-                          |TFT_RD_Pin|TFT_WR_Pin|TFT_CS_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOD, USER_LED_B_Pin|USER_LED_C_Pin|USER_LED_D_Pin|TFT_RESET_Pin
+                          |TFT_RD_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : Board_LED_Pin USER_LED_A_Pin USER_LED_B_Pin USER_LED_C_Pin */
-  GPIO_InitStruct.Pin = Board_LED_Pin|USER_LED_A_Pin|USER_LED_B_Pin|USER_LED_C_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  /*Configure GPIO pins : USER_BUT_A_Pin USER_BUT_B_Pin USER_BUT_C_Pin */
+  GPIO_InitStruct.Pin = USER_BUT_A_Pin|USER_BUT_B_Pin|USER_BUT_C_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : USER_LED_D_Pin */
-  GPIO_InitStruct.Pin = USER_LED_D_Pin;
+  /*Configure GPIO pin : Board_LED_Pin */
+  GPIO_InitStruct.Pin = Board_LED_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(USER_LED_D_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(Board_LED_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PA6 */
-  GPIO_InitStruct.Pin = GPIO_PIN_6;
+  /*Configure GPIO pins : USER_BUT_D_Pin USER_BUT_E_Pin USER_BUT_F_Pin */
+  GPIO_InitStruct.Pin = USER_BUT_D_Pin|USER_BUT_E_Pin|USER_BUT_F_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PA5 */
+  GPIO_InitStruct.Pin = GPIO_PIN_5;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
@@ -637,135 +665,94 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin : FT5436_RESET_Pin */
   GPIO_InitStruct.Pin = FT5436_RESET_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(FT5436_RESET_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : TFT_D4_Pin TFT_D5_Pin TFT_D6_Pin TFT_D7_Pin
-                           TFT_D8_Pin TFT_D9_Pin TFT_D10_Pin TFT_D11_Pin
-                           TFT_D12_Pin */
-  GPIO_InitStruct.Pin = TFT_D4_Pin|TFT_D5_Pin|TFT_D6_Pin|TFT_D7_Pin
-                          |TFT_D8_Pin|TFT_D9_Pin|TFT_D10_Pin|TFT_D11_Pin
-                          |TFT_D12_Pin;
+  /*Configure GPIO pins : TFT_D0_Pin TFT_D1_Pin TFT_WR_Pin TFT_RS_Pin
+                           TFT_CS_Pin */
+  GPIO_InitStruct.Pin = TFT_D0_Pin|TFT_D1_Pin|TFT_WR_Pin|TFT_RS_Pin
+                          |TFT_CS_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : TFT_D2_Pin TFT_D3_Pin TFT_D4_Pin TFT_D14_Pin
+                           TFT_D15_Pin USER_LED_A_Pin */
+  GPIO_InitStruct.Pin = TFT_D2_Pin|TFT_D3_Pin|TFT_D4_Pin|TFT_D14_Pin
+                          |TFT_D15_Pin|USER_LED_A_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : TFT_D5_Pin TFT_D6_Pin TFT_D7_Pin TFT_D8_Pin
+                           TFT_D9_Pin TFT_D10_Pin TFT_D11_Pin TFT_D12_Pin
+                           TFT_D13_Pin */
+  GPIO_InitStruct.Pin = TFT_D5_Pin|TFT_D6_Pin|TFT_D7_Pin|TFT_D8_Pin
+                          |TFT_D9_Pin|TFT_D10_Pin|TFT_D11_Pin|TFT_D12_Pin
+                          |TFT_D13_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : TFT_RESET_Pin */
-  GPIO_InitStruct.Pin = TFT_RESET_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(TFT_RESET_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : TFT_D13_Pin TFT_D14_Pin TFT_D15_Pin TFT_D0_Pin
-                           TFT_D1_Pin TFT_D2_Pin TFT_D3_Pin */
-  GPIO_InitStruct.Pin = TFT_D13_Pin|TFT_D14_Pin|TFT_D15_Pin|TFT_D0_Pin
-                          |TFT_D1_Pin|TFT_D2_Pin|TFT_D3_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : TFT_RS_Pin TFT_RD_Pin TFT_WR_Pin TFT_CS_Pin */
-  GPIO_InitStruct.Pin = TFT_RS_Pin|TFT_RD_Pin|TFT_WR_Pin|TFT_CS_Pin;
+  /*Configure GPIO pins : USER_LED_B_Pin USER_LED_C_Pin USER_LED_D_Pin TFT_RESET_Pin
+                           TFT_RD_Pin */
+  GPIO_InitStruct.Pin = USER_LED_B_Pin|USER_LED_C_Pin|USER_LED_D_Pin|TFT_RESET_Pin
+                          |TFT_RD_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : USER_BUT_F_Pin USER_BUT_E_Pin USER_BUT_D_Pin USER_BUT_C_Pin */
-  GPIO_InitStruct.Pin = USER_BUT_F_Pin|USER_BUT_E_Pin|USER_BUT_D_Pin|USER_BUT_C_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : USER_BUT_B_Pin */
-  GPIO_InitStruct.Pin = USER_BUT_B_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(USER_BUT_B_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : USER_BUT_A_Pin */
-  GPIO_InitStruct.Pin = USER_BUT_A_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(USER_BUT_A_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI9_5_IRQn, 2, 0);
   HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
-	/** FMC GPIO Configuration
-	PD14   ------> TFT_D0
-	PD15   ------> TFT_D1
-	PD0   ------> TFT_D2
-	PD1   ------> TFT_D3
-	PE7   ------> TFT_D4
-	PE8   ------> TFT_D5
-	PE9   ------> TFT_D6
-	PE10   ------> TFT_D7
-	PE11   ------> TFT_D8
-	PE12   ------> TFT_D9
-	PE13   ------> TFT_D10
-	PE14   ------> TFT_D11
-	PE15   ------> TFT_D12
-	PD8   ------> TFT_D13
-	PD9   ------> TFT_D14
-	PD10   ------> TFT_D15
-	*/
-	/*
-	PD4   ------> TFT_RD
-	PD5   ------> TFT_WR
-	PD6   ------> TFT_CS		//PC7
-	PD11   ------> TFT_RS
-	PB13   ------> TFT_RESET
-	*/
-
 /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
-void Blink_LED(){
-	if(wait_ms_ch(0, 750)){
-		if(HAL_GPIO_ReadPin(Board_LED_GPIO_Port, Board_LED_Pin) == GPIO_PIN_RESET){
-			HAL_GPIO_WritePin(Board_LED_GPIO_Port, Board_LED_Pin, GPIO_PIN_SET);
-			HAL_GPIO_WritePin(USER_LED_A_GPIO_Port, USER_LED_A_Pin, GPIO_PIN_SET);
-			HAL_GPIO_WritePin(USER_LED_B_GPIO_Port, USER_LED_B_Pin, GPIO_PIN_SET);
-		}else{
-			HAL_GPIO_WritePin(Board_LED_GPIO_Port, Board_LED_Pin, GPIO_PIN_RESET);
-			HAL_GPIO_WritePin(USER_LED_A_GPIO_Port, USER_LED_A_Pin, GPIO_PIN_RESET);
-			HAL_GPIO_WritePin(USER_LED_B_GPIO_Port, USER_LED_B_Pin, GPIO_PIN_RESET);
-		}
-	}
-}
 
-//Initialize peripherals and other
-void MCU_Init(){
+/**
+  * @brief Initialize interfaces
+  */
+void Init_interfaces(){
 	//Enable system tick interrupt
 	HAL_NVIC_SetPriority(SysTick_IRQn, 0x0, 0x1);
 	HAL_NVIC_EnableIRQ(SysTick_IRQn);
 
 	// Turn on screen back light
-	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_3);
+	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);
 
-	// Initialize screen controller
-	Init_R61529();
+	// Turn on encoder timer
+	HAL_TIM_Encoder_Start(&htim2, TIM_CHANNEL_ALL);
 
-	// Rotation test
-	//R61529_rotation_test();
-
-	// Set rotation and background
-	R61529_SetRotation(ROTATE_RIGHT);
-	R61529_FillScreen(BLACK);
+	// Enable buzzer
+	enable_buzzer();
 
 	// Initialize touch screen controller
 	Init_FT5436();
 
-	// Turn on encoder TIM
-	HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
+	// Initialize screen controller
+	Init_R61529();
+	R61529_SetRotation(ROTATE_DEFAULT);
+	draw_loading_screen();
+
+	HAL_GPIO_WritePin(Board_LED_GPIO_Port, Board_LED_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(USER_LED_A_GPIO_Port, USER_LED_A_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(USER_LED_B_GPIO_Port, USER_LED_B_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(USER_LED_C_GPIO_Port, USER_LED_C_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(USER_LED_D_GPIO_Port, USER_LED_D_Pin, GPIO_PIN_SET);
+	delay_ms(2500);
+	HAL_GPIO_WritePin(Board_LED_GPIO_Port, Board_LED_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(USER_LED_A_GPIO_Port, USER_LED_A_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(USER_LED_B_GPIO_Port, USER_LED_B_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(USER_LED_C_GPIO_Port, USER_LED_C_Pin, GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(USER_LED_D_GPIO_Port, USER_LED_D_Pin, GPIO_PIN_RESET);
 }
 
 /* USER CODE END 4 */

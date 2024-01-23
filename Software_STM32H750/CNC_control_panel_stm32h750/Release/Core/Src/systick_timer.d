@@ -1,4 +1,9 @@
 Core/Src/systick_timer.o: ../Core/Src/systick_timer.c \
+ ../Core/Inc/systick_timer.h ../Core/Inc/main.h \
+ ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h \
+ ../Core/Inc/stm32h7xx_hal_conf.h \
+ ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc.h \
+ ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_def.h \
  ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h7xx.h \
  ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h750xx.h \
  ../Drivers/CMSIS/Include/core_cm7.h \
@@ -7,10 +12,6 @@ Core/Src/systick_timer.o: ../Core/Src/systick_timer.c \
  ../Drivers/CMSIS/Include/cmsis_gcc.h \
  ../Drivers/CMSIS/Include/mpu_armv7.h \
  ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/system_stm32h7xx.h \
- ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h \
- ../Core/Inc/stm32h7xx_hal_conf.h \
- ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc.h \
- ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_def.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_gpio.h \
@@ -27,11 +28,18 @@ Core/Src/systick_timer.o: ../Core/Src/systick_timer.c \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_i2c_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pwr.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pwr_ex.h \
+ ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h \
+ ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h \
- ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h \
- ../Core/Inc/systick_timer.h ../Core/Inc/main.h
+ ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h
+../Core/Inc/systick_timer.h:
+../Core/Inc/main.h:
+../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
+../Core/Inc/stm32h7xx_hal_conf.h:
+../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc.h:
+../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_def.h:
 ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h7xx.h:
 ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/stm32h750xx.h:
 ../Drivers/CMSIS/Include/core_cm7.h:
@@ -40,10 +48,6 @@ Core/Src/systick_timer.o: ../Core/Src/systick_timer.c \
 ../Drivers/CMSIS/Include/cmsis_gcc.h:
 ../Drivers/CMSIS/Include/mpu_armv7.h:
 ../Drivers/CMSIS/Device/ST/STM32H7xx/Include/system_stm32h7xx.h:
-../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
-../Core/Inc/stm32h7xx_hal_conf.h:
-../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc.h:
-../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_def.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_gpio.h:
@@ -60,9 +64,9 @@ Core/Src/systick_timer.o: ../Core/Src/systick_timer.c \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_i2c_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pwr.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pwr_ex.h:
+../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h:
+../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h:
-../Core/Inc/systick_timer.h:
-../Core/Inc/main.h:

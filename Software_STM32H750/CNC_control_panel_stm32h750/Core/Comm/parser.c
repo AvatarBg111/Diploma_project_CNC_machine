@@ -5,19 +5,26 @@
  *      Author: AvatarBg111
  */
 
-// Includes
+/* Private includes ----------------------------------------------------------*/
 #include "parser.h"
 
 
-// Private macros and typedefs
+/* Private typedef -----------------------------------------------------------*/
+
+/* Private define ------------------------------------------------------------*/
+
+/* Private macro -------------------------------------------------------------*/
+
+/* Private variables ---------------------------------------------------------*/
+
+/* Private function prototypes -----------------------------------------------*/
+bool mpg_enabled(uint8_t*,uint8_t);
+bool mpg_disabled(uint8_t*,uint8_t);
 
 
-// Private variables
-
-
-// Private function definitions
+/* Private user code ---------------------------------------------------------*/
 /**
-  * @brief Check whether MPG mode is enabled by parsing GRBL message
+  * @brief Check if parsed GRBL message constitutes MPG is on
   */
 bool mpg_enabled(uint8_t *pckt, uint8_t len){
     for(uint8_t i = 0; i < len - 5; i++){
@@ -32,7 +39,7 @@ bool mpg_enabled(uint8_t *pckt, uint8_t len){
 }
 
 /**
-  * @brief Check whether MPG mode is disabled by parsing GRBL message
+  * @brief Check if parsed GRBL message constitutes MPG is off
   */
 bool mpg_disabled(uint8_t *pckt, uint8_t len){
     for(uint8_t i = 0; i < len - 5; i++){
