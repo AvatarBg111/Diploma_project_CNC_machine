@@ -1,6 +1,8 @@
-../Core/Src/main.c:87:6:show_touch_data	8
-../Core/Src/main.c:204:6:SystemClock_Config	4
-../Core/Src/main.c:263:6:PeriphCommonClock_Config	2
-../Core/Src/main.c:723:6:Init_interfaces	1
-../Core/Src/main.c:143:5:main	19
-../Core/Src/main.c:764:6:Error_Handler	1
+../Core/Src/main.c:91:6:show_touch_data	8
+../Core/Src/main.c:210:6:SystemClock_Config	4
+../Core/Src/main.c:269:6:PeriphCommonClock_Config	2
+../Core/Src/main.c:773:6:playNote	1
+../Core/Src/main.c:779:6:playPopcornMelody	4
+../Core/Src/main.c:793:6:Init_interfaces	1
+../Core/Src/main.c:147:5:main	22
+../Core/Src/main.c:837:6:Error_Handler	1

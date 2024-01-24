@@ -17,23 +17,17 @@ extern "C" {
 
 
 /* Private defines -----------------------------------------------------------*/
-#define OPTIONS 2
-
 
 /* Exported types ------------------------------------------------------------*/
 
 /* Exported constants --------------------------------------------------------*/
-static const char *main_menu_options[OPTIONS] = {
-	"Enter MPG mode",
-	"Settings",
-};
-
 
 /* Exported macro ------------------------------------------------------------*/
 
 /* Exported functions prototypes ---------------------------------------------*/
-void draw_loading_screen(void);
 void r61529_screen_menu(void);
+void init_button_inputs(void);
+void draw_loading_screen(void);
 
 
 #ifdef __cplusplus

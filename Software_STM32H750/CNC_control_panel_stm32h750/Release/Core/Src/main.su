@@ -1,6 +1,8 @@
-../Core/Src/main.c:87:6:show_touch_data	88	dynamic
-../Core/Src/main.c:204:6:SystemClock_Config	120	static,ignoring_inline_asm
-../Core/Src/main.c:263:6:PeriphCommonClock_Config	200	static,ignoring_inline_asm
-../Core/Src/main.c:723:6:Init_interfaces	16	static
-../Core/Src/main.c:143:5:main	80	static,ignoring_inline_asm
-../Core/Src/main.c:764:6:Error_Handler	0	static,ignoring_inline_asm
+../Core/Src/main.c:91:6:show_touch_data	88	dynamic
+../Core/Src/main.c:210:6:SystemClock_Config	120	static,ignoring_inline_asm
+../Core/Src/main.c:269:6:PeriphCommonClock_Config	200	static,ignoring_inline_asm
+../Core/Src/main.c:773:6:playNote	8	static
+../Core/Src/main.c:779:6:playPopcornMelody	88	static
+../Core/Src/main.c:793:6:Init_interfaces	16	static
+../Core/Src/main.c:147:5:main	80	static,ignoring_inline_asm
+../Core/Src/main.c:837:6:Error_Handler	0	static,ignoring_inline_asm

@@ -76,6 +76,8 @@ void update_button_status(void){
   * @brief Change button status update time
   * time_high - the time needed for a button to be high to change it's status to activated
   * time_low - the time needed for a button to be low to change it's status to deactivated
+  * Check UPDATE_TIME_LOW_TO_HIGH_DEFAULT and UPDATE_TIME_HIGH_TO_LOW_DEFAULT defines
+  * to understand what parameters to send to this function
   */
 void change_update_time(uint8_t time_high, uint8_t time_low){
 	update_time_low_to_high = time_high;

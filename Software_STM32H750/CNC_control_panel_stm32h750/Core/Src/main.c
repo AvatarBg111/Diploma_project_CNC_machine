@@ -55,6 +55,7 @@ DMA_HandleTypeDef hdma_i2c3_tx;
 
 SPI_HandleTypeDef hspi3;
 
+TIM_HandleTypeDef htim1;
 TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim3;
 TIM_HandleTypeDef htim4;
@@ -77,7 +78,10 @@ static void MX_USART2_UART_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_TIM4_Init(void);
 static void MX_SPI3_Init(void);
+static void MX_TIM1_Init(void);
 /* USER CODE BEGIN PFP */
+void playNote(uint16_t, uint16_t);
+void playPopcornMelody();
 void Init_interfaces();
 
 /* USER CODE END PFP */
@@ -174,8 +178,10 @@ int main(void)
   MX_TIM3_Init();
   MX_TIM4_Init();
   MX_SPI3_Init();
+  MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
   Init_interfaces();
+  //DOOM();
 
   /* USER CODE END 2 */
 
@@ -376,6 +382,53 @@ static void MX_SPI3_Init(void)
   /* USER CODE BEGIN SPI3_Init 2 */
 
   /* USER CODE END SPI3_Init 2 */
+
+}
+
+/**
+  * @brief TIM1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM1_Init(void)
+{
+
+  /* USER CODE BEGIN TIM1_Init 0 */
+
+  /* USER CODE END TIM1_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM1_Init 1 */
+
+  /* USER CODE END TIM1_Init 1 */
+  htim1.Instance = TIM1;
+  htim1.Init.Prescaler = 1000;
+  htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim1.Init.Period = 1000 - 1;
+  htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim1.Init.RepetitionCounter = 0;
+  htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim1, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterOutputTrigger2 = TIM_TRGO2_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM1_Init 2 */
+
+  /* USER CODE END TIM1_Init 2 */
 
 }
 
@@ -716,6 +769,23 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+// Function to play a note
+void playNote(uint16_t freq, uint16_t duration) {
+    buzzer_short_ring(freq, duration);
+    HAL_Delay(duration);  // Delay to separate notes
+}
+
+// Function to play the Popcorn melody
+void playPopcornMelody() {
+    // Define the frequencies and durations for the "Popcorn" melody
+    uint16_t notes[] = {988, 1175, 1047, 880, 783, 1047, 1175, 1319, 1568, 1568, 1397, 1175, 1047, 1175, 1319, 1568};
+    uint16_t durations[] = {500, 500, 250, 250, 250, 250, 250, 250, 500, 250, 250, 250, 250, 250, 250, 500};
+
+    // Play each note in the melody
+    for (int i = 0; i < sizeof(notes) / sizeof(notes[0]); i++) {
+        playNote(notes[i], durations[i]);
+    }
+}
 
 /**
   * @brief Initialize interfaces
@@ -753,6 +823,9 @@ void Init_interfaces(){
 	HAL_GPIO_WritePin(USER_LED_B_GPIO_Port, USER_LED_B_Pin, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(USER_LED_C_GPIO_Port, USER_LED_C_Pin, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(USER_LED_D_GPIO_Port, USER_LED_D_Pin, GPIO_PIN_RESET);
+
+	// Start up TIM1 (timer for button de-bouncer)
+	HAL_TIM_Base_Start_IT(&htim1);
 }
 
 /* USER CODE END 4 */

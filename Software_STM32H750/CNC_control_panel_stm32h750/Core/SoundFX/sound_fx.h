@@ -18,6 +18,12 @@ extern "C" {
 #include "stm32h7xx_it.h"
 
 
+/* Private defines -----------------------------------------------------------*/
+#if(0)
+#define INCLUDE_DOOM
+#endif
+
+
 /* Exported types ------------------------------------------------------------*/
 extern TIM_HandleTypeDef htim4;
 
@@ -30,9 +36,9 @@ extern TIM_HandleTypeDef htim4;
 void enable_buzzer(void);
 void disable_buzzer(void);
 uint8_t buzzer_short_ring(uint16_t,uint16_t);
-
-
-/* Private defines -----------------------------------------------------------*/
+#ifdef INCLUDE_DOOM
+void DOOM(void);
+#endif
 
 #ifdef __cplusplus
 }

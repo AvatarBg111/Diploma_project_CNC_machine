@@ -1,0 +1,16 @@
+../Core/R61529/r61529.c:77:13:Lcd_Write	24	static
+../Core/R61529/r61529.c:108:13:Lcd_Write_Reg	16	static
+../Core/R61529/r61529.c:116:13:Lcd_Write_Data	16	static
+../Core/R61529/r61529.c:124:6:R61529_SetAddrWindow	24	static
+../Core/R61529/r61529.c:142:6:Init_R61529	8	static
+../Core/R61529/r61529.c:351:6:R61529_SetRotation	16	static
+../Core/R61529/r61529.c:381:6:R61529_Flood	24	static
+../Core/R61529/r61529.c:415:6:R61529_FillScreen	16	static
+../Core/R61529/r61529.c:423:6:R61529_FillRect	24	static
+../Core/R61529/r61529.c:433:6:R61529_DrawPixel	24	static
+../Core/R61529/r61529.c:445:6:R61529_DrawLine	56	static
+../Core/R61529/r61529.c:477:6:R61529_DrawRect	32	static
+../Core/R61529/r61529.c:487:6:R61529_DrawCircle	48	static
+../Core/R61529/r61529.c:520:13:R61529_WriteChar	40	static
+../Core/R61529/r61529.c:540:6:R61529_WriteString	32	static
+../Core/R61529/r61529.c:566:6:Draw_Image	40	static

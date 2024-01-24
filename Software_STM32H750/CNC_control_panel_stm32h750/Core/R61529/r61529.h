@@ -16,6 +16,8 @@ extern "C" {
 /* Exported constants --------------------------------------------------------*/
 
 /* Exported macro ------------------------------------------------------------*/
+#define swap(a,b) {int16_t t=a;a=b;b=t;}
+#define rgb565(r,g,b) {(uint16_t)((uint16_t)(b & 0x1F) | ((uint16_t)(g & 0x3F) << 5) | ((uint16_t)(g & 0x3F) << 11))}
 
 /* Exported functions prototypes ---------------------------------------------*/
 
@@ -31,8 +33,6 @@ extern "C" {
 #define  WR_ACTIVE   HAL_GPIO_WritePin(TFT_WR_GPIO_Port, TFT_WR_Pin, GPIO_PIN_RESET);
 #define  WR_IDLE     HAL_GPIO_WritePin(TFT_WR_GPIO_Port, TFT_WR_Pin, GPIO_PIN_SET);
 
-#define swap(a,b) {int16_t t=a;a=b;b=t;}
-
 // Определяем адреса
 // Для записи данных
 #define LCD_DATA    			    0x60080000
@@ -42,6 +42,7 @@ extern "C" {
 #define COMMAND 0
 
 #define  BLACK   0x0000
+#define  GRAY    0xAD55
 #define  BLUE    0x001F
 #define  RED     0xF800
 #define  GREEN   0x07E0

@@ -51,6 +51,7 @@
 									<listOptionValue builtIn="false" value="../Core/ILI9341"/>
 									<listOptionValue builtIn="false" value="../Core/R61529"/>
 									<listOptionValue builtIn="false" value="../Core/FT5436"/>
+									<listOptionValue builtIn="false" value="../Core/SoundFX"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.831029644" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c"/>
 							</tool>

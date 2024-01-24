@@ -34,7 +34,8 @@ Core/SoundFX/sound_fx.o: ../Core/SoundFX/sound_fx.c \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h \
- ../Core/Inc/stm32h7xx_it.h ../Core/Inc/main.h
+ ../Core/Inc/stm32h7xx_it.h ../Core/Inc/main.h \
+ ../Core/Inc/systick_timer.h
 ../Core/SoundFX/sound_fx.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
@@ -73,3 +74,4 @@ Core/SoundFX/sound_fx.o: ../Core/SoundFX/sound_fx.c \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h:
 ../Core/Inc/stm32h7xx_it.h:
 ../Core/Inc/main.h:
+../Core/Inc/systick_timer.h:
