@@ -8,9 +8,11 @@
 /* Private includes ----------------------------------------------------------*/
 #include "r61529_screen_menu.h"
 #include "r61529.h"
+#include "ft5436.h"
 #include "buttons.h"
 #include "systick_timer.h"
 #include "sound_fx.h"
+#include "stm32h7xx_it.h"
 
 
 /* Private typedef -----------------------------------------------------------*/
@@ -27,6 +29,8 @@ typedef struct{
 
 	uint32_t encoder_value;
 	int8_t brightness_value;
+	uint8_t touch_point_cnt;
+	int16_t touch_points[FT_REG_NUMTOUCHES][2];
 }_menu_controller;
 
 
@@ -46,6 +50,9 @@ typedef struct{
 /* External variables --------------------------------------------------------*/
 extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
+extern uint8_t touch_detected;
+extern uint16_t touchX[FT_REG_NUMTOUCHES];
+extern uint16_t touchY[FT_REG_NUMTOUCHES];
 
 
 /* Private variables ---------------------------------------------------------*/
@@ -122,7 +129,7 @@ void submenu(void){
 
 			update_submenu_graphics(2);
 			menu_controller.encoder_value = htim2.Instance->CNT;
-			htim3.Instance->CCR2 = ((menu_controller.brightness_value - 1) * 10);
+			htim3.Instance->CCR2 = (menu_controller.brightness_value * 10) > 1000 ? 999 : menu_controller.brightness_value * 10;
 
 			break;
 		default:
@@ -134,9 +141,44 @@ void submenu(void){
   * @brief Process user input
   */
 void process_user_input(void){
+	// Check for screen touch data
+	menu_controller.touch_point_cnt = touch_detected;
+	for(uint8_t i = 0; (i < FT_REG_NUMTOUCHES) && touch_detected; i++){
+		if(i >= menu_controller.touch_point_cnt){
+			menu_controller.touch_points[i][0] = -1;	// Sort of NaN
+			menu_controller.touch_points[i][1] = -1;	// Sort of NaN
+		}else{
+			menu_controller.touch_points[i][0] = touchY[i];		// This is because of screen rotation
+			menu_controller.touch_points[i][1] = (320 - touchX[i]);		// This is because of screen rotation
+		}
+
+		/*
+		// Draw coordinates
+		char touch_data[20] = {};
+		sprintf(touch_data, "Touch: (%3d, %3d)", menu_controller.touch_points[0][0], menu_controller.touch_points[0][1]);
+		R61529_WriteString(10, 200, touch_data, Font_11x18, CYAN, BLACK);
+		*/
+	}
+
 	if(menu_controller.inside_main_menu){
 		/** Main menu logic */
 		uint8_t previous_submenu_index = menu_controller.submenu_index;
+
+		if(menu_controller.touch_point_cnt){
+			uint16_t x = menu_controller.touch_points[0][0];
+			uint16_t y = menu_controller.touch_points[0][1];
+
+			for(uint8_t i = 0; i < OPTIONS; i++){
+				if((x > 10 && x < (10 + strlen(main_menu_options[i]) * 16)) && (y > ((i + 1) * 50) && y < (((i + 1) * 50) + 30))){
+					menu_controller.submenu_index = i;
+					menu_controller.main_menu_drawn = false;
+					menu_controller.inside_main_menu = false;
+					menu_controller.button_delay_cnt = menu_controller.button_delay;
+					return;
+				}
+			}
+		}
+
 		if(get_button_state(BUTTON_UP_CH) == GPIO_PIN_RESET || menu_controller.encoder_value > htim2.Instance->CNT){
 			if(menu_controller.button_delay_cnt == 0 || menu_controller.button_delay_cnt == menu_controller.button_delay){
 				menu_controller.button_delay_cnt = menu_controller.button_delay - 1;
@@ -164,16 +206,20 @@ void process_user_input(void){
 		if(menu_controller.submenu_index != previous_submenu_index){
 			unselect_submenu(previous_submenu_index);
 			select_submenu(menu_controller.submenu_index);
-			buzzer_short_ring(5000, (uint16_t)(menu_controller.button_delay * INPUT_DELAY_TIME));
+			buzzer_short_ring(450, (uint16_t)(menu_controller.button_delay * INPUT_DELAY_TIME));
 		}
 	}else{
+		bool touch_exit = (menu_controller.touch_point_cnt != 0);
+		touch_exit = (touch_exit && (menu_controller.touch_points[0][0] > 430));
+		touch_exit = (touch_exit && (menu_controller.touch_points[0][1] < 50));
+
 		if(get_button_state(BUTTON_UP_CH) == GPIO_PIN_RESET){
 			// NOP
 		}else if(get_button_state(BUTTON_DOWN_CH) == GPIO_PIN_RESET){
 			// NOP
 		}else if(get_button_state(BUTTON_ENTER_CH) == GPIO_PIN_RESET){
 			// NOP
-		}else if(get_button_state(BUTTON_BACK_CH) == GPIO_PIN_RESET){
+		}else if(get_button_state(BUTTON_BACK_CH) == GPIO_PIN_RESET || touch_exit){
 			menu_controller.main_menu_drawn = false;
 			menu_controller.submenu_drawn = false;
 			menu_controller.inside_main_menu = true;
@@ -228,14 +274,18 @@ void draw_loading_screen(void){
 	menu_controller.button_delay_cnt = 0;
 	menu_controller.encoder_value = htim2.Instance->CNT;
 	menu_controller.brightness_value = 50;
+
+	menu_controller.touch_point_cnt = 0;
+	for(uint8_t i = 0; i < FT_REG_NUMTOUCHES; i++){
+		menu_controller.touch_points[i][0] = -1;	// Sort of NaN
+		menu_controller.touch_points[i][1] = -1;	// Sort of NaN
+	}
 }
 
 /**
   * @brief Draw main menu
   */
 void draw_main_menu(void){
-	R61529_FillScreen(BLACK);
-
 	for(uint8_t i = 0; i < OPTIONS; i++){
 		if(i == menu_controller.submenu_index){
 			select_submenu(i);
@@ -260,13 +310,18 @@ void delete_main_menu(void){
 void draw_submenu(uint8_t index){
 	switch(index){
 		case 0: //TODO: MPG mode
+			R61529_WriteString(10, 10, "Hello from MPG submenu!", Font_16x26, CYAN, BLACK);
+			R61529_WriteString(410, 5, "Exit", Font_16x26, WHITE, RED);
 			break;
 		case 1: //TODO: MPG settings
+			R61529_WriteString(10, 10, "Hello from MPG settings!", Font_16x26, WHITE, BLACK);
+			R61529_WriteString(410, 5, "Exit", Font_16x26, WHITE, RED);
 			break;
 		case 2:
 			delete_main_menu();
 			R61529_WriteString(10, 150, "Brightness level: ", Font_16x26, YELLOW, BLACK);
 			R61529_DrawRect(WHITE, 10, 180, 310, 200);
+			R61529_WriteString(410, 5, "Exit", Font_16x26, WHITE, RED);
 			update_submenu_graphics(2);
 			break;
 	}
@@ -298,11 +353,16 @@ void update_submenu_graphics(uint8_t index){
 void delete_submenu(uint8_t index){
 	switch(index){
 		case 0: //TODO: MPG mode
+			R61529_WriteString(10, 10, "Hello from MPG submenu!", Font_16x26, BLACK, BLACK);
+			R61529_FillRect(BLACK, 410, 0, 480, 35);
 			break;
 		case 1: //TODO: MPG settings
+			R61529_WriteString(10, 10, "Hello from MPG settings!", Font_16x26, BLACK, BLACK);
+			R61529_FillRect(BLACK, 410, 0, 480, 35);
 			break;
 		case 2:
 			R61529_FillRect(BLACK, 10, 150, 360, 200);
+			R61529_FillRect(BLACK, 410, 0, 480, 35);
 			break;
 	}
 }

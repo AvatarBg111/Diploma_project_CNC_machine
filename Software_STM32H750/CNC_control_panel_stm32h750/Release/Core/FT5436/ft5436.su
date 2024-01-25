@@ -1,7 +1,7 @@
-../Core/FT5436/ft5436.c:71:6:Init_FT5436	96	static
-../Core/FT5436/ft5436.c:115:6:collect_move_data	72	static
-../Core/FT5436/ft5436.c:153:6:request_available_points	16	static
-../Core/FT5436/ft5436.c:178:6:transmission_complete_callback	16	static
-../Core/FT5436/ft5436.c:220:6:reception_complete_callback	24	static
-../Core/FT5436/ft5436.c:274:6:HAL_I2C_MasterTxCpltCallback	0	static
-../Core/FT5436/ft5436.c:283:6:HAL_I2C_MasterRxCpltCallback	0	static
+../Core/FT5436/ft5436.c:71:6:Init_FT5436	40	static
+../Core/FT5436/ft5436.c:117:6:collect_move_data	72	static
+../Core/FT5436/ft5436.c:155:6:request_available_points	16	static
+../Core/FT5436/ft5436.c:180:6:transmission_complete_callback	16	static
+../Core/FT5436/ft5436.c:222:6:reception_complete_callback	24	static
+../Core/FT5436/ft5436.c:276:6:HAL_I2C_MasterTxCpltCallback	0	static
+../Core/FT5436/ft5436.c:285:6:HAL_I2C_MasterRxCpltCallback	0	static

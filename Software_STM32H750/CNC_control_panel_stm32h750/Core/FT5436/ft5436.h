@@ -24,8 +24,6 @@ extern "C" {
 /* Exported types ------------------------------------------------------------*/
 extern I2C_HandleTypeDef hi2c3;
 extern uint8_t touch_detected;
-extern uint16_t touchX[FT_REG_NUMTOUCHES];
-extern uint16_t touchY[FT_REG_NUMTOUCHES];
 
 
 /* Exported constants --------------------------------------------------------*/

@@ -88,55 +88,6 @@ void Init_interfaces();
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void show_touch_data(void){
-	static uint8_t flags = 0x00;
-	static uint16_t encoder_val = 0x0000;
-	char encoder_str[25];
-
-	if(flags == 0x00){
-		R61529_FillScreen(BLACK);
-		R61529_WriteString(5, 5, "CNC machine V0.1", Font_16x26, WHITE, BLACK);
-
-		R61529_WriteString(15, 40, "Touch point 1: ", Font_7x10, GREEN, BLACK);
-		R61529_WriteString(15, 60, "Touch point 2: ", Font_7x10, GREEN, BLACK);
-		R61529_WriteString(15, 80, "Touch point 3: ", Font_7x10, GREEN, BLACK);
-		R61529_WriteString(15, 100, "Touch point 4: ", Font_7x10, GREEN, BLACK);
-		R61529_WriteString(15, 120, "Touch point 5: ", Font_7x10, GREEN, BLACK);
-		flags |= 0x01;
-	}else if(flags & 0x01){
-		uint8_t touches = points_detected;
-		uint16_t touch_points[points_detected][2];
-
-		for(uint8_t i = 0; i < points_detected; i++){
-			touch_points[i][0] = touchX[i];
-			touch_points[i][1] = touchY[i];
-		}
-
-		for(uint8_t i = 0; i < FT_REG_NUMTOUCHES; i++){
-			char text[25] = "";
-
-			if(i < touches){
-				//buzzer_short_ring(2500, 150);
-				sprintf(text, "(x-%3d, y-%3d)", touch_points[i][0], touch_points[i][1]);
-			}else{
-				sprintf(text, "      NA      ");
-			}
-
-			R61529_WriteString(180, 40 + (i * 20), text, Font_7x10, YELLOW, BLACK);
-		}
-
-		if(htim3.Instance->CNT != encoder_val){
-			if(htim2.Instance->CNT != encoder_val){
-				encoder_val = htim2.Instance->CNT;
-
-				//buzzer_short_ring(1000, 50);
-				sprintf(encoder_str, "Encoder value: %5d", encoder_val);
-				R61529_WriteString(15, 190, encoder_str, Font_7x10, CYAN, BLACK);
-				memset(encoder_str, 0, 25);
-			}
-		}
-	}
-}
 
 /* USER CODE END 0 */
 
@@ -818,6 +769,7 @@ void Init_interfaces(){
 	HAL_GPIO_WritePin(USER_LED_C_GPIO_Port, USER_LED_C_Pin, GPIO_PIN_SET);
 	HAL_GPIO_WritePin(USER_LED_D_GPIO_Port, USER_LED_D_Pin, GPIO_PIN_SET);
 	delay_ms(2500);
+	R61529_FillScreen(BLACK);
 	HAL_GPIO_WritePin(Board_LED_GPIO_Port, Board_LED_Pin, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(USER_LED_A_GPIO_Port, USER_LED_A_Pin, GPIO_PIN_RESET);
 	HAL_GPIO_WritePin(USER_LED_B_GPIO_Port, USER_LED_B_Pin, GPIO_PIN_RESET);

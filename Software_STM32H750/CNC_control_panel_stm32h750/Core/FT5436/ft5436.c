@@ -73,7 +73,7 @@ void Init_FT5436(void){
 	uint8_t meta_arr[] = {0xA8, 0xA3, 0x80, 0x80};
 	uint8_t panel_id = 0x00, chip_id = 0x00;
 	uint8_t counter = 25;
-	char screen_text[50] = {0};
+	/*char screen_text[50] = {0};*/
 
 	while(counter--){
 		FT5436_RESET_ACTIVE;
@@ -100,8 +100,10 @@ void Init_FT5436(void){
 	HAL_I2C_Master_Receive(&hi2c3, 0x38 << 1, &chip_id, 1, 20);
 
 	// Format output string and draw it on screen
+	/*
 	sprintf(screen_text, "Panel Id: 0x%X  Chip Id: 0x%X", panel_id, chip_id);
 	R61529_WriteString(5, 300, screen_text, Font_7x10, GREEN, BLACK);
+	*/
 
 	// Set touch detection threshold
 	if(HAL_I2C_Master_Transmit(&hi2c3, 0x38 << 1, meta_arr + 2, 2, 25) != HAL_OK){
