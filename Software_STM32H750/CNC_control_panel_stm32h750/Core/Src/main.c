@@ -80,8 +80,6 @@ static void MX_TIM4_Init(void);
 static void MX_SPI3_Init(void);
 static void MX_TIM1_Init(void);
 /* USER CODE BEGIN PFP */
-void playNote(uint16_t, uint16_t);
-void playPopcornMelody();
 void Init_interfaces();
 
 /* USER CODE END PFP */
@@ -132,7 +130,6 @@ int main(void)
   MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
   Init_interfaces();
-  //DOOM();
 
   /* USER CODE END 2 */
 
@@ -500,7 +497,7 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 120 - 1;
+  htim4.Init.Prescaler = 120;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim4.Init.Period = 10000 - 1;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -516,7 +513,7 @@ static void MX_TIM4_Init(void)
     Error_Handler();
   }
   sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = 5000 - 1;
+  sConfigOC.Pulse = 5000;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
   if (HAL_TIM_PWM_ConfigChannel(&htim4, &sConfigOC, TIM_CHANNEL_3) != HAL_OK)
@@ -720,24 +717,6 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-// Function to play a note
-void playNote(uint16_t freq, uint16_t duration) {
-    buzzer_short_ring(freq, duration);
-    HAL_Delay(duration);  // Delay to separate notes
-}
-
-// Function to play the Popcorn melody
-void playPopcornMelody() {
-    // Define the frequencies and durations for the "Popcorn" melody
-    uint16_t notes[] = {988, 1175, 1047, 880, 783, 1047, 1175, 1319, 1568, 1568, 1397, 1175, 1047, 1175, 1319, 1568};
-    uint16_t durations[] = {500, 500, 250, 250, 250, 250, 250, 250, 500, 250, 250, 250, 250, 250, 250, 500};
-
-    // Play each note in the melody
-    for (int i = 0; i < sizeof(notes) / sizeof(notes[0]); i++) {
-        playNote(notes[i], durations[i]);
-    }
-}
-
 /**
   * @brief Initialize interfaces
   */

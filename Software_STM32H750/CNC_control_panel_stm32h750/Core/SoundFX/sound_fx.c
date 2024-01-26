@@ -231,10 +231,12 @@ const int melody[] = {
   NOTE_E2, 8, NOTE_E2, 8, NOTE_E3, 8, NOTE_E2, 8, NOTE_E2, 8, NOTE_D3, 8, NOTE_E2, 8, NOTE_E2, 8,
   NOTE_B3, -16, NOTE_G3, -16, NOTE_E3, -16, NOTE_B2, -16, NOTE_E3, -16, NOTE_G3, -16, NOTE_C4, -16, NOTE_B3, -16, NOTE_G3, -16, NOTE_B3, -16, NOTE_G3, -16, NOTE_E3, -16,
 };
-#define tempo = 225;
+const uint16_t tempo = 225;	//225
 int notes = sizeof(melody) / sizeof(melody[0]) / 2;
-int wholenote = 1067;	//(60000 * 4) / tempo;
+int wholenote = 1067;
 int divider = 0, noteDuration = 0;
+uint16_t noteCnt = 0;
+bool playNote = true, playDoom = true;
 #endif
 
 
@@ -299,10 +301,13 @@ uint8_t buzzer_short_ring(uint16_t freq, uint16_t ms){
 
 
 #ifdef INCLUDE_DOOM
+/**
+  * @brief Play DOOM 1993 soundtrack
+  */
 void DOOM(void){
-	for(int thisNote = 0; thisNote < notes * 2; thisNote = thisNote + 2){
+	if(playDoom && playNote){
 		// calculates the duration of each note
-		divider = melody[thisNote + 1];
+		divider = melody[noteCnt + 1];
 		if(divider > 0){
 			noteDuration = (wholenote) / divider;
 		}else if(divider < 0){
@@ -311,10 +316,47 @@ void DOOM(void){
 		}
 
 		// we only play the note for 90% of the duration, leaving 10% as a pause
-		buzzer_short_ring(melody[thisNote], noteDuration * 0.9);
+		buzzer_short_ring(melody[noteCnt], noteDuration * 0.9);
+		noteCnt += 2;
 
-		// Wait for the specified duration before playing the next note.
-		delay_ms(noteDuration);
+		if(noteCnt > notes * 2){
+			noteCnt = 0;
+		}
+		playNote = false;
 	}
+
+	// Wait for the specified duration before playing the next note.
+	if(wait_ms_ch(2, noteDuration)){
+		playNote = true;
+	}
+}
+
+/**
+  * @brief Turn on DOOM soundtrack player
+  */
+void play_DOOM(void){
+	playDoom = true;
+}
+
+/**
+  * @brief Stop DOOM soundtrack player
+  */
+void stop_DOOM(void){
+	playDoom = false;
+}
+
+/**
+  * @brief Rewind DOOM soundtrack player to start
+  */
+void rewind_DOOM(void){
+	playDoom = false;
+	noteCnt = 0;
+}
+
+/**
+  * @brief Check if DOOM soundtrack player is turned on
+  */
+bool DOOM_playing(void){
+	return playDoom;
 }
 #endif

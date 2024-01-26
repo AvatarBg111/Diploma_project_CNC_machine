@@ -19,7 +19,7 @@ extern "C" {
 
 
 /* Private defines -----------------------------------------------------------*/
-#if(0)
+#if(1)
 #define INCLUDE_DOOM
 #endif
 
@@ -38,6 +38,10 @@ void disable_buzzer(void);
 uint8_t buzzer_short_ring(uint16_t,uint16_t);
 #ifdef INCLUDE_DOOM
 void DOOM(void);
+void play_DOOM(void);
+void stop_DOOM(void);
+void rewind_DOOM(void);
+bool DOOM_playing(void);
 #endif
 
 #ifdef __cplusplus

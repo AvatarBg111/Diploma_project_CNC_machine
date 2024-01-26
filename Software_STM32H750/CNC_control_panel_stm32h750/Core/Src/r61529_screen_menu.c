@@ -29,13 +29,14 @@ typedef struct{
 
 	uint32_t encoder_value;
 	int8_t brightness_value;
+	int8_t buzzer_volume;
 	uint8_t touch_point_cnt;
 	int16_t touch_points[FT_REG_NUMTOUCHES][2];
 }_menu_controller;
 
 
 /* Private define ------------------------------------------------------------*/
-#define OPTIONS 3
+#define OPTIONS 4
 #define BUTTON_UP_CH 0
 #define BUTTON_DOWN_CH 1
 #define BUTTON_LEFT_CH 2
@@ -50,10 +51,10 @@ typedef struct{
 /* External variables --------------------------------------------------------*/
 extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
+extern TIM_HandleTypeDef htim4;
 extern uint8_t touch_detected;
 extern uint16_t touchX[FT_REG_NUMTOUCHES];
 extern uint16_t touchY[FT_REG_NUMTOUCHES];
-
 
 /* Private variables ---------------------------------------------------------*/
 _menu_controller menu_controller = {0};
@@ -61,6 +62,7 @@ static const char *main_menu_options[OPTIONS] = {
 	"Enter MPG mode - 0",
 	"MPG Settings - 1",
 	"Screen brightness - 2",
+	"Easter Egg - 3",
 };
 
 
@@ -95,6 +97,8 @@ void main_menu(void){
   * @brief Sub-menu selector
   */
 void submenu(void){
+	int16_t encoder_diff = 0;
+
 	if(!menu_controller.submenu_drawn){
 		draw_submenu(menu_controller.submenu_index);
 		menu_controller.submenu_drawn = true;
@@ -105,18 +109,17 @@ void submenu(void){
 		case 1:		//TODO: MPG settings
 			break;
 		case 2:		//Screen brightness
-			int16_t diff = 0;
 			if(menu_controller.encoder_value > htim2.Instance->CNT && (menu_controller.encoder_value - htim2.Instance->CNT) > 60000){
-				diff += (htim2.Instance->CNT + (0xFFFF - menu_controller.encoder_value)) / 2;
+				encoder_diff += (htim2.Instance->CNT + (0xFFFF - menu_controller.encoder_value)) / 2;
 				menu_controller.brightness_value++;
 			}else if(menu_controller.encoder_value < htim2.Instance->CNT && (htim2.Instance->CNT - menu_controller.encoder_value) > 60000){
-				diff -= (menu_controller.encoder_value + (0xFFFF - htim2.Instance->CNT)) / 2;
+				encoder_diff -= (menu_controller.encoder_value + (0xFFFF - htim2.Instance->CNT)) / 2;
 				menu_controller.brightness_value--;
 			}else{
-				diff = (htim2.Instance->CNT - menu_controller.encoder_value) / 2;
-				if(diff < 0)
+				encoder_diff = (htim2.Instance->CNT - menu_controller.encoder_value) / 2;
+				if(encoder_diff < 0)
 					menu_controller.brightness_value--;
-				else if(diff > 0)
+				else if(encoder_diff > 0)
 					menu_controller.brightness_value++;
 				else break;
 			}
@@ -131,6 +134,12 @@ void submenu(void){
 			menu_controller.encoder_value = htim2.Instance->CNT;
 			htim3.Instance->CCR2 = (menu_controller.brightness_value * 10) > 1000 ? 999 : menu_controller.brightness_value * 10;
 
+			break;
+		case 3:		//TODO: DOOM sub-menu
+			if(!DOOM_playing()){
+				play_DOOM();
+			}
+			DOOM();
 			break;
 		default:
 			break;
@@ -152,12 +161,12 @@ void process_user_input(void){
 			menu_controller.touch_points[i][1] = (320 - touchX[i]);		// This is because of screen rotation
 		}
 
-		/*
+		#if(0)
 		// Draw coordinates
 		char touch_data[20] = {};
 		sprintf(touch_data, "Touch: (%3d, %3d)", menu_controller.touch_points[0][0], menu_controller.touch_points[0][1]);
-		R61529_WriteString(10, 200, touch_data, Font_11x18, CYAN, BLACK);
-		*/
+		R61529_WriteString(290, 300, touch_data, Font_11x18, CYAN, BLACK);
+		#endif
 	}
 
 	if(menu_controller.inside_main_menu){
@@ -206,7 +215,7 @@ void process_user_input(void){
 		if(menu_controller.submenu_index != previous_submenu_index){
 			unselect_submenu(previous_submenu_index);
 			select_submenu(menu_controller.submenu_index);
-			buzzer_short_ring(450, (uint16_t)(menu_controller.button_delay * INPUT_DELAY_TIME));
+			buzzer_short_ring(1250, (uint16_t)(menu_controller.button_delay * INPUT_DELAY_TIME));
 		}
 	}else{
 		bool touch_exit = (menu_controller.touch_point_cnt != 0);
@@ -225,6 +234,11 @@ void process_user_input(void){
 			menu_controller.inside_main_menu = true;
 			menu_controller.button_delay_cnt = menu_controller.button_delay;
 			delete_submenu(menu_controller.submenu_index);
+
+			if(menu_controller.submenu_index == 3){
+				stop_DOOM();
+				rewind_DOOM();
+			}
 		}
 	}
 }
@@ -274,6 +288,7 @@ void draw_loading_screen(void){
 	menu_controller.button_delay_cnt = 0;
 	menu_controller.encoder_value = htim2.Instance->CNT;
 	menu_controller.brightness_value = 50;
+	menu_controller.buzzer_volume = 50;
 
 	menu_controller.touch_point_cnt = 0;
 	for(uint8_t i = 0; i < FT_REG_NUMTOUCHES; i++){
@@ -317,12 +332,18 @@ void draw_submenu(uint8_t index){
 			R61529_WriteString(10, 10, "Hello from MPG settings!", Font_16x26, WHITE, BLACK);
 			R61529_WriteString(410, 5, "Exit", Font_16x26, WHITE, RED);
 			break;
-		case 2:
+		case 2: //Screen brightness
 			delete_main_menu();
 			R61529_WriteString(10, 150, "Brightness level: ", Font_16x26, YELLOW, BLACK);
 			R61529_DrawRect(WHITE, 10, 180, 310, 200);
 			R61529_WriteString(410, 5, "Exit", Font_16x26, WHITE, RED);
 			update_submenu_graphics(2);
+			break;
+		case 3: //TODO: DOOM sub-menu
+			delete_main_menu();
+			R61529_WriteString(410, 5, "Exit", Font_16x26, WHITE, RED);
+			R61529_WriteString(80, 150, "DOOM 1993 soundtrack", Font_16x26, RED, ORANGE);
+			R61529_DrawRect(WHITE, 80 - 1, 150 - 1, 400 + 1, 176 + 1);
 			break;
 	}
 }
@@ -336,13 +357,15 @@ void update_submenu_graphics(uint8_t index){
 			break;
 		case 1: //TODO: MPG settings
 			break;
-		case 2:
+		case 2: //Screen brightness
 			char brightess[10] = {0};
 
 			sprintf(brightess, "%3d%%", menu_controller.brightness_value);
 			R61529_WriteString(290, 150, brightess, Font_16x26, YELLOW, BLACK);
 			R61529_FillRect(CYAN, 10 + 1, 180 + 1, 11 + ((298 * menu_controller.brightness_value) / 100), 200 - 1);
 			R61529_FillRect(GRAY, 11 + ((298 * menu_controller.brightness_value) / 100), 180 + 1, 309, 200 - 1);
+			break;
+		case 3: //DOOM player
 			break;
 	}
 }
@@ -354,15 +377,19 @@ void delete_submenu(uint8_t index){
 	switch(index){
 		case 0: //TODO: MPG mode
 			R61529_WriteString(10, 10, "Hello from MPG submenu!", Font_16x26, BLACK, BLACK);
-			R61529_FillRect(BLACK, 410, 0, 480, 35);
+			R61529_FillRect(BLACK, 410, 5, 480, 35);
 			break;
 		case 1: //TODO: MPG settings
 			R61529_WriteString(10, 10, "Hello from MPG settings!", Font_16x26, BLACK, BLACK);
-			R61529_FillRect(BLACK, 410, 0, 480, 35);
+			R61529_FillRect(BLACK, 410, 5, 480, 35);
 			break;
 		case 2:
 			R61529_FillRect(BLACK, 10, 150, 360, 200);
-			R61529_FillRect(BLACK, 410, 0, 480, 35);
+			R61529_FillRect(BLACK, 410, 5, 480, 35);
+			break;
+		case 3:
+			R61529_FillRect(BLACK, 410, 5, 480, 35);
+			R61529_FillRect(BLACK, 80 - 1, 150 - 1, 400 + 1, 176 + 1);
 			break;
 	}
 }
