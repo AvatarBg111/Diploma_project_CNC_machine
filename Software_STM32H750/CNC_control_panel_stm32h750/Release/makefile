@@ -10,12 +10,12 @@ RM := rm -rf
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include Drivers/STM32H7xx_HAL_Driver/Src/subdir.mk
+-include Core/grblHALComm/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
 -include Core/SoundFX/subdir.mk
 -include Core/R61529/subdir.mk
 -include Core/FT5436/subdir.mk
--include Core/Comm/subdir.mk
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
@@ -65,7 +65,7 @@ main-build: CNC_control_panel_stm32h750.elf secondary-outputs
 
 # Tool invocations
 CNC_control_panel_stm32h750.elf CNC_control_panel_stm32h750.map: $(OBJS) $(USER_OBJS) E:\Projects\STM32CubeIDE\CNC_control_panel_stm32h750\STM32H750VBTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "CNC_control_panel_stm32h750.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"E:\Projects\STM32CubeIDE\CNC_control_panel_stm32h750\STM32H750VBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CNC_control_panel_stm32h750.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+	arm-none-eabi-gcc -o "CNC_control_panel_stm32h750.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"E:\Projects\STM32CubeIDE\CNC_control_panel_stm32h750\STM32H750VBTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="CNC_control_panel_stm32h750.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

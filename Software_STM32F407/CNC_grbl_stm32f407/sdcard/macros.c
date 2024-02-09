@@ -3,7 +3,7 @@
 
   Part of grblHAL SD card plugins
 
-  Copyright (c) 2023 Terje Io
+  Copyright (c) 2023-2024 Terje Io
 
   Grbl is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -59,6 +59,7 @@ static status_code_t trap_status_messages (status_code_t status_code);
 #if NGC_EXPRESSIONS_ENABLE
 static on_vfs_mount_ptr on_vfs_mount;
 static on_vfs_unmount_ptr on_vfs_unmount;
+static pallet_shuttle_ptr on_pallet_shuttle;
 static char tc_path[15];
 #endif
 
@@ -235,6 +236,19 @@ static status_code_t tool_change (parser_state_t *parser_state)
     return Status_Unhandled;
 }
 
+// Perform a pallet shuttle.
+static void pallet_shuttle (void)
+{
+    vfs_file_t *file;
+    char filename[30];
+
+    if((file = vfs_open(strcat(strcpy(filename, tc_path), "ps.macro"), "r")))
+        macro_start(file, 97);
+
+    if(on_pallet_shuttle)
+        on_pallet_shuttle();
+}
+
 static void atc_path_fix (char *path)
 {
     path = strchr(path, '\0') - 1;
@@ -259,6 +273,15 @@ static void atc_macros_attach (const char *path, const vfs_t *fs)
         }
     }
 
+    if(on_pallet_shuttle == NULL && vfs_stat(strcat(strcpy(filename, tc_path), "ps.macro"), &st) == 0) {
+
+        strcpy(tc_path, path);
+        atc_path_fix(tc_path);
+
+        on_pallet_shuttle = hal.pallet_shuttle;
+        hal.pallet_shuttle = pallet_shuttle;
+    }
+
     if(on_vfs_mount)
         on_vfs_mount(path, fs);
 }
@@ -280,6 +303,11 @@ static void atc_macros_detach (const char *path)
         }
     }
 
+    if(hal.pallet_shuttle == pallet_shuttle) {
+        hal.pallet_shuttle = on_pallet_shuttle;
+        on_pallet_shuttle = NULL;
+    }
+
     if(on_vfs_unmount)
         on_vfs_unmount(path);
 }
@@ -292,7 +320,7 @@ static void report_options (bool newopt)
     on_report_options(newopt);
 
     if(!newopt)
-        hal.stream.write("[PLUGIN:FS macro plugin v0.05]" ASCII_EOL);
+        hal.stream.write("[PLUGIN:FS macro plugin v0.07]" ASCII_EOL);
 }
 
 void fs_macros_init (void)
@@ -308,11 +336,11 @@ void fs_macros_init (void)
 
 #if NGC_EXPRESSIONS_ENABLE
 
-    on_vfs_mount = grbl.on_vfs_mount;
-    grbl.on_vfs_mount = atc_macros_attach;
+    on_vfs_mount = vfs.on_mount;
+    vfs.on_mount = atc_macros_attach;
 
-    on_vfs_unmount = grbl.on_vfs_unmount;
-    grbl.on_vfs_unmount = atc_macros_detach;
+    on_vfs_unmount = vfs.on_unmount;
+    vfs.on_unmount = atc_macros_detach;
 
 #endif
 }

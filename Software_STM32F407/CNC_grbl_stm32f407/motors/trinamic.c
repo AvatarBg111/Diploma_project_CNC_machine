@@ -3,7 +3,7 @@
 
   Part of grblHAL
 
-  Copyright (c) 2018-2023 Terje Io
+  Copyright (c) 2018-2024 Terje Io
 
   Grbl is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -421,7 +421,7 @@ static void trinamic_settings_restore (void)
 #else
                 trinamic.driver[idx].mode = TMCMode_CoolStep;
 #endif
-                trinamic.driver_enable.z = TMC_A_ENABLE;
+                trinamic.driver_enable.a = TMC_A_ENABLE;
                 trinamic.driver[idx].current = TMC_A_CURRENT;
                 trinamic.driver[idx].hold_current_pct = TMC_A_HOLD_CURRENT_PCT;
                 trinamic.driver[idx].microsteps = TMC_A_MICROSTEPS;
@@ -438,7 +438,7 @@ static void trinamic_settings_restore (void)
 #else
                 trinamic.driver[idx].mode = TMCMode_CoolStep;
 #endif
-                trinamic.driver_enable.z = TMC_B_ENABLE;
+                trinamic.driver_enable.b = TMC_B_ENABLE;
                 trinamic.driver[idx].current = TMC_B_CURRENT;
                 trinamic.driver[idx].hold_current_pct = TMC_B_HOLD_CURRENT_PCT;
                 trinamic.driver[idx].microsteps = TMC_B_MICROSTEPS;
@@ -455,13 +455,45 @@ static void trinamic_settings_restore (void)
 #else
                 trinamic.driver[idx].mode = TMCMode_CoolStep;
 #endif
-                trinamic.driver_enable.z = TMC_C_ENABLE;
+                trinamic.driver_enable.c = TMC_C_ENABLE;
                 trinamic.driver[idx].current = TMC_C_CURRENT;
                 trinamic.driver[idx].hold_current_pct = TMC_C_HOLD_CURRENT_PCT;
                 trinamic.driver[idx].microsteps = TMC_C_MICROSTEPS;
                 trinamic.driver[idx].r_sense = TMC_C_R_SENSE;
                 trinamic.driver[idx].homing_seek_sensitivity = TMC_C_HOMING_SEEK_SGT;
                 trinamic.driver[idx].homing_feed_sensitivity = TMC_C_HOMING_FEED_SGT;
+                break;
+#endif
+#ifdef U_AXIS
+            case U_AXIS:
+#if TMC_U_STEALTHCHOP
+                trinamic.driver[idx].mode = TMCMode_StealthChop;
+#else
+                trinamic.driver[idx].mode = TMCMode_CoolStep;
+#endif
+                trinamic.driver_enable.u = TMC_U_ENABLE;
+                trinamic.driver[idx].current = TMC_U_CURRENT;
+                trinamic.driver[idx].hold_current_pct = TMC_U_HOLD_CURRENT_PCT;
+                trinamic.driver[idx].microsteps = TMC_U_MICROSTEPS;
+                trinamic.driver[idx].r_sense = TMC_U_R_SENSE;
+                trinamic.driver[idx].homing_seek_sensitivity = TMC_U_HOMING_SEEK_SGT;
+                trinamic.driver[idx].homing_feed_sensitivity = TMC_U_HOMING_FEED_SGT;
+                break;
+#endif
+#ifdef V_AXIS
+            case V_AXIS:
+#if TMC_V_STEALTHCHOP
+                trinamic.driver[idx].mode = TMCMode_StealthChop;
+#else
+                trinamic.driver[idx].mode = TMCMode_CoolStep;
+#endif
+                trinamic.driver_enable.v = TMC_V_ENABLE;
+                trinamic.driver[idx].current = TMC_V_CURRENT;
+                trinamic.driver[idx].hold_current_pct = TMC_V_HOLD_CURRENT_PCT;
+                trinamic.driver[idx].microsteps = TMC_V_MICROSTEPS;
+                trinamic.driver[idx].r_sense = TMC_V_R_SENSE;
+                trinamic.driver[idx].homing_seek_sensitivity = TMC_V_HOMING_SEEK_SGT;
+                trinamic.driver[idx].homing_feed_sensitivity = TMC_V_HOMING_FEED_SGT;
                 break;
 #endif
         }
@@ -503,6 +535,7 @@ static void trinamic_settings_load (void)
 #else
                     trinamic.driver[idx].mode = TMCMode_CoolStep;
 #endif
+                    trinamic.driver[idx].r_sense = TMC_X_R_SENSE;
                     break;
                 case Y_AXIS:
 #if TMC_Y_STEALTHCHOP
@@ -510,6 +543,7 @@ static void trinamic_settings_load (void)
 #else
                     trinamic.driver[idx].mode = TMCMode_CoolStep;
 #endif
+                    trinamic.driver[idx].r_sense = TMC_Y_R_SENSE;
                     break;
                 case Z_AXIS:
 #if TMC_Z_STEALTHCHOP
@@ -517,7 +551,7 @@ static void trinamic_settings_load (void)
 #else
                     trinamic.driver[idx].mode = TMCMode_CoolStep;
 #endif
-
+                    trinamic.driver[idx].r_sense = TMC_Z_R_SENSE;
                     break;
 #ifdef A_AXIS
                 case A_AXIS:
@@ -526,7 +560,7 @@ static void trinamic_settings_load (void)
 #else
                     trinamic.driver[idx].mode = TMCMode_CoolStep;
 #endif
-
+                    trinamic.driver[idx].r_sense = TMC_A_R_SENSE;
                     break;
 #endif
 #ifdef B_AXIS
@@ -536,7 +570,7 @@ static void trinamic_settings_load (void)
 #else
                     trinamic.driver[idx].mode = TMCMode_CoolStep;
 #endif
-
+                    trinamic.driver[idx].r_sense = TMC_B_R_SENSE;
                     break;
 #endif
 #ifdef C_AXIS
@@ -546,7 +580,27 @@ static void trinamic_settings_load (void)
 #else
                     trinamic.driver[idx].mode = TMCMode_CoolStep;
 #endif
-
+                    trinamic.driver[idx].r_sense = TMC_C_R_SENSE;
+                    break;
+#endif
+#ifdef U_AXIS
+                case U_AXIS:
+#if TMC_U_STEALTHCHOP
+                    trinamic.driver[idx].mode = TMCMode_StealthChop;
+#else
+                    trinamic.driver[idx].mode = TMCMode_CoolStep;
+#endif
+                    trinamic.driver[idx].r_sense = TMC_U_R_SENSE;
+                    break;
+#endif
+#ifdef V_AXIS
+                case V_AXIS:
+#if TMC_V_STEALTHCHOP
+                    trinamic.driver[idx].mode = TMCMode_StealthChop;
+#else
+                    trinamic.driver[idx].mode = TMCMode_CoolStep;
+#endif
+                    trinamic.driver[idx].r_sense = TMC_V_R_SENSE;
                     break;
 #endif
             }
@@ -596,7 +650,7 @@ static void on_settings_changed (settings_t *settings, settings_changed_flags_t 
 
 #endif // End region settings
 
-static void pos_failed (sys_state_t state)
+static void pos_failed (void *data)
 {
     report_message("Could not communicate with stepper driver!", Message_Warning);
 }
@@ -621,7 +675,7 @@ static bool trinamic_driver_config (motor_map_t motor, uint8_t seq)
     #endif
 
     if(!ok) {
-        protocol_enqueue_rt_command(pos_failed);
+        protocol_enqueue_foreground_task(pos_failed, NULL);
     //    system_raise_alarm(Alarm_SelftestFailed);
         return false;
     }
@@ -688,6 +742,28 @@ static bool trinamic_driver_config (motor_map_t motor, uint8_t seq)
           #endif
           #if TRINAMIC_I2C && TMC_C_MONITOR
             dgr_enable.reg.monitor.c = TMC_C_MONITOR;
+          #endif
+            break;
+#endif
+
+#ifdef U_AXIS
+        case U_AXIS:
+          #ifdef TMC_U_ADVANCED
+            TMC_U_ADVANCED(motor.id)
+          #endif
+          #if TRINAMIC_I2C && TMC_U_MONITOR
+            dgr_enable.reg.monitor.u = TMC_U_MONITOR;
+          #endif
+            break;
+#endif
+
+#ifdef V_AXIS
+        case V_AXIS:
+          #ifdef TMC_V_ADVANCED
+            TMC_V_ADVANCED(motor.id)
+          #endif
+          #if TRINAMIC_I2C && TMC_V_MONITOR
+            dgr_enable.reg.monitor.v = TMC_V_MONITOR;
           #endif
             break;
 #endif
@@ -771,7 +847,7 @@ static void write_line (char *s)
 }
 
 //
-static void report_sg_status (sys_state_t state)
+static void report_sg_status (void *data)
 {
     hal.stream.write("[SG:");
     hal.stream.write(uitoa(stepper[report.sg_status_motor]->get_sg_result(report.sg_status_motor)));
@@ -788,12 +864,12 @@ static void stepper_pulse_start (stepper_t *motors)
         uint32_t ms = hal.get_elapsed_ticks();
         if(ms - step_count >= 20) {
             step_count = ms;
-            protocol_enqueue_rt_command(report_sg_status);
+            protocol_enqueue_foreground_task(report_sg_status, NULL);
         }
 /*        step_count++;
         if(step_count >= report.msteps * 4) {
             step_count = 0;
-            protocol_enqueue_rt_command(report_sg_status);
+            protocol_enqueue_foreground_task(report_sg_status, NULL);
         } */
     }
 }
@@ -1076,7 +1152,7 @@ static void trinamic_MCodeExecute (uint_fast16_t state, parser_block_t *gc_block
                     if(gc_block->words.i)
                         trinamic_drivers_init(trinamic.driver_enable);
                     else
-                        pos_failed(state_get());
+                        pos_failed(NULL);
                     return;
                 }
 
@@ -1150,7 +1226,7 @@ static void trinamic_MCodeExecute (uint_fast16_t state, parser_block_t *gc_block
                         }
                     }
 
-                    if(report.sg_status_enable) {
+                    if(report.sg_status_enable && stepper[report.sg_status_motor]) {
 
                         report.sg_status_motormask.mask = 1 << report.sg_status_motor;
                         report.msteps = trinamic.driver[report.sg_status_motor].microsteps;
@@ -1386,21 +1462,20 @@ static float trinamic_get_homing_rate (axes_signals_t axes, homing_mode_t mode)
 }
 
 // Enable/disable sensorless homing
-static void trinamic_homing (bool on, bool enable)
+static void trinamic_homing (bool on, axes_signals_t homing_cycle)
 {
 #ifdef TMC_HOMING_ACCELERATION
     static float accel[N_AXIS];
 #endif
 
     if(limits_enable)
-        limits_enable(on, enable);
+        limits_enable(on, homing_cycle);
 
     homing.mask = driver_enabled.mask & trinamic.homing_enable.mask;
 
-    is_homing = enable;
-    enable = enable && homing.mask;
+    is_homing = homing_cycle.mask != 0;
 
-    if(enable) {
+    if(is_homing && homing.mask) {
 
         grbl.on_homing_rate_set = trinamic_on_homing;
 
@@ -1780,7 +1855,7 @@ static void onReportOptions (bool newopt)
     on_report_options(newopt);
 
     if(!newopt)
-        hal.stream.write("[PLUGIN:Trinamic v0.12]" ASCII_EOL);
+        hal.stream.write("[PLUGIN:Trinamic v0.15]" ASCII_EOL);
     else if(driver_enabled.mask) {
         hal.stream.write(",TMC=");
         hal.stream.write(uitoa(driver_enabled.mask));

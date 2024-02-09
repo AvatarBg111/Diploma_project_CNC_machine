@@ -27,15 +27,15 @@ Core/Src/stm32h7xx_it.o: ../Core/Src/stm32h7xx_it.c ../Core/Inc/main.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_i2c_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pwr.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pwr_ex.h \
- ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h \
- ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h \
- ../Core/Inc/stm32h7xx_it.h ../Core/Inc/main.h \
- ../Core/Comm/grbl_cpu_comm.h ../Core/FT5436/ft5436.h \
- ../Core/Inc/buttons.h
+ ../Core/Inc/stm32h7xx_it.h ../Core/Inc/main.h ../Core/FT5436/ft5436.h \
+ ../Core/Inc/buttons.h ../Core/Inc/systick_timer.h \
+ ../Core/Src/../grblHALComm/parser.h \
+ ../Core/Src/../grblHALComm/../grblHALComm/grbl.h \
+ ../Core/Src/../grblHALComm/../grblHALComm/i2c_interface.h
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 ../Core/Inc/stm32h7xx_hal_conf.h:
@@ -65,14 +65,15 @@ Core/Src/stm32h7xx_it.o: ../Core/Src/stm32h7xx_it.c ../Core/Inc/main.h \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_i2c_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pwr.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pwr_ex.h:
-../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h:
-../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h:
 ../Core/Inc/stm32h7xx_it.h:
 ../Core/Inc/main.h:
-../Core/Comm/grbl_cpu_comm.h:
 ../Core/FT5436/ft5436.h:
 ../Core/Inc/buttons.h:
+../Core/Inc/systick_timer.h:
+../Core/Src/../grblHALComm/parser.h:
+../Core/Src/../grblHALComm/../grblHALComm/grbl.h:
+../Core/Src/../grblHALComm/../grblHALComm/i2c_interface.h:

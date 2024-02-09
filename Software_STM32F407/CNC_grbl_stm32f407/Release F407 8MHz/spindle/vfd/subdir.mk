@@ -10,6 +10,7 @@ C_SRCS += \
 ../spindle/vfd/huanyang.c \
 ../spindle/vfd/huanyang2.c \
 ../spindle/vfd/modvfd.c \
+../spindle/vfd/nowforever.c \
 ../spindle/vfd/spindle.c \
 ../spindle/vfd/yl620.c 
 
@@ -19,6 +20,7 @@ OBJS += \
 ./spindle/vfd/huanyang.o \
 ./spindle/vfd/huanyang2.o \
 ./spindle/vfd/modvfd.o \
+./spindle/vfd/nowforever.o \
 ./spindle/vfd/spindle.o \
 ./spindle/vfd/yl620.o 
 
@@ -28,6 +30,7 @@ C_DEPS += \
 ./spindle/vfd/huanyang.d \
 ./spindle/vfd/huanyang2.d \
 ./spindle/vfd/modvfd.d \
+./spindle/vfd/nowforever.d \
 ./spindle/vfd/spindle.d \
 ./spindle/vfd/yl620.d 
 
@@ -39,7 +42,7 @@ spindle/vfd/%.o spindle/vfd/%.su spindle/vfd/%.cyclo: ../spindle/vfd/%.c spindle
 clean: clean-spindle-2f-vfd
 
 clean-spindle-2f-vfd:
-	-$(RM) ./spindle/vfd/gs20.cyclo ./spindle/vfd/gs20.d ./spindle/vfd/gs20.o ./spindle/vfd/gs20.su ./spindle/vfd/h100.cyclo ./spindle/vfd/h100.d ./spindle/vfd/h100.o ./spindle/vfd/h100.su ./spindle/vfd/huanyang.cyclo ./spindle/vfd/huanyang.d ./spindle/vfd/huanyang.o ./spindle/vfd/huanyang.su ./spindle/vfd/huanyang2.cyclo ./spindle/vfd/huanyang2.d ./spindle/vfd/huanyang2.o ./spindle/vfd/huanyang2.su ./spindle/vfd/modvfd.cyclo ./spindle/vfd/modvfd.d ./spindle/vfd/modvfd.o ./spindle/vfd/modvfd.su ./spindle/vfd/spindle.cyclo ./spindle/vfd/spindle.d ./spindle/vfd/spindle.o ./spindle/vfd/spindle.su ./spindle/vfd/yl620.cyclo ./spindle/vfd/yl620.d ./spindle/vfd/yl620.o ./spindle/vfd/yl620.su
+	-$(RM) ./spindle/vfd/gs20.cyclo ./spindle/vfd/gs20.d ./spindle/vfd/gs20.o ./spindle/vfd/gs20.su ./spindle/vfd/h100.cyclo ./spindle/vfd/h100.d ./spindle/vfd/h100.o ./spindle/vfd/h100.su ./spindle/vfd/huanyang.cyclo ./spindle/vfd/huanyang.d ./spindle/vfd/huanyang.o ./spindle/vfd/huanyang.su ./spindle/vfd/huanyang2.cyclo ./spindle/vfd/huanyang2.d ./spindle/vfd/huanyang2.o ./spindle/vfd/huanyang2.su ./spindle/vfd/modvfd.cyclo ./spindle/vfd/modvfd.d ./spindle/vfd/modvfd.o ./spindle/vfd/modvfd.su ./spindle/vfd/nowforever.cyclo ./spindle/vfd/nowforever.d ./spindle/vfd/nowforever.o ./spindle/vfd/nowforever.su ./spindle/vfd/spindle.cyclo ./spindle/vfd/spindle.d ./spindle/vfd/spindle.o ./spindle/vfd/spindle.su ./spindle/vfd/yl620.cyclo ./spindle/vfd/yl620.d ./spindle/vfd/yl620.o ./spindle/vfd/yl620.su
 
 .PHONY: clean-spindle-2f-vfd
 

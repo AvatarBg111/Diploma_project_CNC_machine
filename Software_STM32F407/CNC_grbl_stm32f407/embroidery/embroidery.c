@@ -2,7 +2,7 @@
 
   embroidery.c - plugin for reading and executing embroidery files from SD card.
 
-  Copyright (c) 2023 Terje Io
+  Copyright (c) 2023-2024 Terje Io
 
   Grbl is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -104,6 +104,17 @@ static driver_reset_ptr driver_reset;
 static limit_interrupt_callback_ptr limits_interrupt_callback;
 static embroidery_job_t job = {0};
 
+static bool spindle_control (bool on)
+{
+    if(job.spindle.on != on) {
+        job.spindle.on = on;
+        if(embroidery.sync_mode)
+            job.plan_data.spindle.hal->set_state(job.plan_data.spindle.hal, job.spindle, job.spindle.on ? 1.0f : 0.0f);
+    }
+
+    return on;
+}
+
 static void end_job (void)
 {
     job.completed = job.enqueued = true;
@@ -118,10 +129,7 @@ static void end_job (void)
         job.file = NULL;
     }
 
-    if(job.spindle.on) {
-        job.spindle.on = Off;
-        job.plan_data.spindle.hal->set_state(job.spindle, 0.0f);
-    }
+    spindle_control(Off);
 }
 
 // Start a tool change sequence. Called by gcode.c on a M6 command (via HAL).
@@ -129,10 +137,7 @@ static void thread_change (embroidery_thread_color_t color)
 {
     const char *thread_color = api.get_thread_color(color);
 
-    if(job.spindle.on) {
-        job.spindle.on = Off;
-        job.plan_data.spindle.hal->set_state(job.spindle, 0.0f);
-    }
+    spindle_control(Off);
 
     report_message(thread_color, Message_Info);
     protocol_buffer_synchronize();              // Sync and finish all remaining buffered motions before moving on.
@@ -142,17 +147,14 @@ static void thread_change (embroidery_thread_color_t color)
     job.executed.thread_changes++;
 }
 
-static void exec_thread_change (sys_state_t state)
+static void exec_thread_change (void *data)
 {
     api.thread_change(job.color);
 }
 
 static void thread_trim (void)
 {
-    if(job.spindle.on) {
-        job.spindle.on = Off;
-        job.plan_data.spindle.hal->set_state(job.spindle, 0.0f);
-    }
+    spindle_control(Off);
 
     report_message("trim", Message_Info);
     protocol_buffer_synchronize();              // Sync and finish all remaining buffered motions before moving on.
@@ -162,17 +164,14 @@ static void thread_trim (void)
     job.executed.trims++;
 }
 
-static void exec_thread_trim (sys_state_t state)
+static void exec_thread_trim (void *data)
 {
     api.thread_trim();
 }
 
-static void exec_hold (sys_state_t state)
+static void exec_hold (void *data)
 {
-    if(job.spindle.on) {
-        job.spindle.on = Off;
-        job.plan_data.spindle.hal->set_state(job.spindle, 0.0f);
-    }
+    spindle_control(Off);
 
     report_message("Jump", Message_Info);
     protocol_buffer_synchronize();              // Sync and finish all remaining buffered motions before moving on.
@@ -265,8 +264,7 @@ static void onExecuteRealtime (sys_state_t state)
         return;
 
     if(job.spindle_stop && hal.get_elapsed_ticks() - job.last_trigger >= job.spindle_stop) {
-        job.spindle.on = Off;
-        job.plan_data.spindle.hal->set_state(job.spindle, 0.0f);
+        spindle_control(Off);
         job.spindle_stop = 0;
     }
 
@@ -308,8 +306,7 @@ static void onExecuteRealtime (sys_state_t state)
     }
 
     if(!(job.stitching = stitch->type == Stitch_Normal) && embroidery.stop_delay == 0) {
-        job.spindle.on = Off;
-        job.plan_data.spindle.hal->set_state(job.spindle, 0.0f);
+        spindle_control(Off);
         job.spindle_stop = 0;
     }
 
@@ -322,10 +319,8 @@ static void onExecuteRealtime (sys_state_t state)
             job.position.x += stitch->target.x;
             job.position.y += stitch->target.y;
 
-            if((job.first = !job.spindle.on)) {
-                job.spindle.on = On;
-                job.plan_data.spindle.hal->set_state(job.spindle, 1.0f);
-            }
+            if((job.first = !job.spindle.on))
+                spindle_control(On);
 
             mc_line(job.position.values, &job.plan_data);
 
@@ -336,7 +331,6 @@ static void onExecuteRealtime (sys_state_t state)
                 job.position.z = embroidery.z_travel;
                 mc_line(job.position.values, &job.plan_data);
             }
-
             break;
 
         case Stitch_Jump:
@@ -348,7 +342,7 @@ static void onExecuteRealtime (sys_state_t state)
 
             if(was_stitching) {
                 job.paused = true;
-                protocol_enqueue_rt_command(exec_hold);
+                protocol_enqueue_foreground_task(exec_hold, NULL);
             } else
                 mc_line(job.position.values, &job.plan_data);
             break;
@@ -362,7 +356,7 @@ static void onExecuteRealtime (sys_state_t state)
             job.position.y += stitch->target.y;
             mc_line(job.position.values, &job.plan_data);
 
-            protocol_enqueue_rt_command(exec_thread_trim);
+            protocol_enqueue_foreground_task(exec_thread_trim, NULL);
             break;
 
         case Stitch_Stop:
@@ -374,7 +368,7 @@ static void onExecuteRealtime (sys_state_t state)
 //            mc_line(job.position.values, &job.plan_data);
 
             job.color = stitch->color;
-            protocol_enqueue_rt_command(exec_thread_change);
+            protocol_enqueue_foreground_task(exec_thread_change, NULL);
             job.spindle_stop = embroidery.stop_delay;
             break;
 
@@ -467,7 +461,8 @@ static status_code_t onFileOpen (const char *fname, vfs_file_t *file, bool strea
             job.queue.head = job.queue.tail = job.stitch_interval = job.trigger_interval = 0;
             job.plan_data.feed_rate = embroidery.feedrate;
             job.plan_data.condition.rapid_motion = On;
-            job.plan_data.spindle.hal->get_data = spindleGetData;
+            if(embroidery.sync_mode)
+                job.plan_data.spindle.hal->get_data = spindleGetData;
             job.plan_data.spindle.hal->cap.at_speed = On,
             system_convert_array_steps_to_mpos(job.position.values, sys.position);
 
@@ -575,16 +570,22 @@ static const setting_detail_t embroidery_settings[] = {
     { Setting_UserDefined_2, Group_AuxPorts, "Embroidery trigger port", NULL, Format_Int8, "#0", "0", max_port, Setting_NonCore, &embroidery.port, NULL, is_setting_available, { .reboot_required = On } },
     { Setting_UserDefined_3, Group_Embroidery, "Embroidery sync mode", NULL, Format_Bool, NULL, NULL, NULL, Setting_NonCore, &embroidery.sync_mode, NULL, NULL },
     { Setting_UserDefined_4, Group_Embroidery, "Embroidery stop delay", "milliseconds", Format_Int16, "##0", NULL, NULL, Setting_NonCore, &embroidery.stop_delay, NULL, NULL },
-    { Setting_UserDefined_5, Group_Embroidery, "Trigger edge", NULL, Format_RadioButtons, "Falling,Rising,Z limit", NULL, NULL, Setting_NonCore, &embroidery.edge, NULL, NULL, { .reboot_required = On } },
+    { Setting_UserDefined_5, Group_Embroidery, "Trigger edge/input", NULL, Format_RadioButtons, "Falling,Rising,Z limit", NULL, NULL, Setting_NonCore, &embroidery.edge, NULL, NULL, { .reboot_required = On } },
     { Setting_UserDefined_6, Group_Embroidery, "Debug", NULL, Format_Bool, NULL, NULL, NULL, Setting_NonCore, &embroidery.debug, NULL, is_setting_available },
 };
 
-#ifdef NO_SETTINGS_DESCRIPTIONS
+#ifndef NO_SETTINGS_DESCRIPTIONS
 
 static const setting_descr_t embroidery_settings_descr[] = {
-    { Setting_UserDefined_0, "Step jogging speed in millimeters per minute." },
-    { Setting_UserDefined_1, "Slow jogging speed in millimeters per minute." },
-    { Setting_UserDefined_2, "Fast jogging speed in millimeters per minute." }
+    { Setting_UserDefined_0, "Feedrate to be used when embroidering." },
+    { Setting_UserDefined_1, "Z travel per stitch when needle is controlled by a stepper (sync mode = 0)." },
+    { Setting_UserDefined_2, "Aux input port to use for needle trigger (sync mode = 1, trigger edge <> Z limit input)." },
+    { Setting_UserDefined_3, "When sync mode is enabled XY motion is controlled by needle trigger, else the Z axis stepper runs the needle motor." },
+    { Setting_UserDefined_4, "Delay after last needle trigger before stopping needle motor (sync mode = 1)." },
+    { Setting_UserDefined_5, "Trigger edge for needle trigger, from aux input or Z limit input (sync mode = 1).\\n\\n"
+                             "NOTE: When Z limit input is used hard limits has to be enabled!"
+    },
+    { Setting_UserDefined_6, "Debug mode, outputs high on aux port when XY motion is ongoing." }
 };
 
 #endif
@@ -608,7 +609,7 @@ static void embroidery_settings_restore (void)
         if(port > 0) do {
             port--;
             if((portinfo = hal.port.get_pin_info(Port_Digital, Port_Input, port))) {
-                if(!portinfo->cap.claimed && (portinfo->cap.irq_mode & (embroidery.edge ? IRQ_Mode_Rising : IRQ_Mode_Falling))) {
+                if(!portinfo->mode.claimed && (portinfo->cap.irq_mode & (embroidery.edge ? IRQ_Mode_Rising : IRQ_Mode_Falling))) {
                     embroidery.port = port;
                     break;
                 }
@@ -620,20 +621,11 @@ static void embroidery_settings_restore (void)
     embroidery.feedrate = 4000.0f;
     embroidery.z_travel = 10.0f;
     embroidery.stop_delay = 0;
+    embroidery.sync_mode = On;
     embroidery.debug = false;
     embroidery.edge = n_ports ? EmbroideryTrig_Falling : EmbroideryTrig_ZLimit;
 
     hal.nvs.memcpy_to_nvs(nvs_address, (uint8_t *)&embroidery, sizeof(embroidery_settings_t), true);
-}
-
-static void warning_pin (uint_fast16_t state)
-{
-    report_message("Embroidery plugin failed to initialize, no pin for needle trigger signal!", Message_Warning);
-}
-
-static void warning_mem (uint_fast16_t state)
-{
-    report_message("Embroidery plugin failed to initialize, no NVS storage for settings!", Message_Warning);
 }
 
 static void embroidery_settings_load (void)
@@ -659,10 +651,10 @@ static void embroidery_settings_load (void)
 
         xbar_t *portinfo = hal.port.get_pin_info(Port_Digital, Port_Input, port);
 
-        if(portinfo && !portinfo->cap.claimed && (portinfo->cap.irq_mode & (embroidery.edge ? IRQ_Mode_Rising : IRQ_Mode_Falling)) && ioport_claim(Port_Digital, Port_Input, &port, "Embroidery needle trigger"))
+        if(portinfo && !portinfo->mode.claimed && (portinfo->cap.irq_mode & (embroidery.edge ? IRQ_Mode_Rising : IRQ_Mode_Falling)) && ioport_claim(Port_Digital, Port_Input, &port, "Embroidery needle trigger"))
             hal.port.register_interrupt_handler(port, embroidery.edge ? IRQ_Mode_Rising : IRQ_Mode_Falling, needle_trigger);
         else
-            protocol_enqueue_rt_command(warning_pin);
+            protocol_enqueue_foreground_task(report_warning, "Embroidery plugin failed to initialize, no pin for needle trigger signal!");
     }
 }
 
@@ -671,7 +663,7 @@ static setting_details_t setting_details = {
     .n_groups = sizeof(embroidery_groups) / sizeof(setting_group_detail_t),
     .settings = embroidery_settings,
     .n_settings = sizeof(embroidery_settings) / sizeof(setting_detail_t),
-#ifdef NO_SETTINGS_DESCRIPTIONS
+#ifndef NO_SETTINGS_DESCRIPTIONS
     .descriptions = embroidery_settings_descr,
     .n_descriptions = sizeof(embroidery_settings_descr) / sizeof(setting_descr_t),
 #endif
@@ -685,7 +677,7 @@ static void onReportOptions (bool newopt)
     on_report_options(newopt);
 
     if(!newopt)
-        hal.stream.write("[PLUGIN:EMBROIDERY v0.03]" ASCII_EOL);
+        hal.stream.write("[PLUGIN:EMBROIDERY v0.06]" ASCII_EOL);
 }
 
 const char *embroidery_get_thread_color (embroidery_thread_color_t color)
@@ -730,7 +722,7 @@ void embroidery_init (void)
         api.thread_trim = thread_trim;
         api.thread_change = thread_change;
     } else
-        protocol_enqueue_rt_command(warning_mem);
+        protocol_enqueue_foreground_task(report_warning, "Embroidery plugin failed to initialize, no NVS storage for settings!");
 }
 
 #endif // EMBROIDERY_ENABLE

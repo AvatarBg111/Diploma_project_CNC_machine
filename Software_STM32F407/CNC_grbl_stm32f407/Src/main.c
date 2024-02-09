@@ -40,9 +40,13 @@ int main(void)
     /* Initialize all configured peripherals */
     MX_GPIO_Init();
 
-    grbl_enter();
+    if(!(CoreDebug->DEMCR & CoreDebug_DEMCR_TRCENA_Msk)) {
+        CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
+        DWT->CYCCNT = 0;
+        DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
+    }
 
-    while(1);
+    grbl_enter();
 }
 
 /**
@@ -392,4 +396,3 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-

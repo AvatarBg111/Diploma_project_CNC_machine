@@ -17,6 +17,11 @@ extern "C" {
 
 
 /* Exported types ------------------------------------------------------------*/
+enum ENCODER_STATUS{
+	ENCODER_FREE = 0,
+	ENCODER_INC = 1,
+	ENCODER_DEC = 2
+};
 
 /* Exported constants --------------------------------------------------------*/
 
@@ -24,6 +29,7 @@ extern "C" {
 
 /* Exported functions prototypes ---------------------------------------------*/
 void update_button_status(void);
+void update_encoder_status(void);
 void change_update_time(uint8_t, uint8_t);
 HAL_StatusTypeDef set_button_channel(GPIO_TypeDef*, uint16_t, uint8_t);
 GPIO_PinState get_button_state(uint8_t);

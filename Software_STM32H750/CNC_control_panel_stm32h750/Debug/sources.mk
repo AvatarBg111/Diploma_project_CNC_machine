@@ -22,11 +22,11 @@ C_DEPS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
-Core/Comm \
 Core/FT5436 \
 Core/R61529 \
 Core/SoundFX \
 Core/Src \
 Core/Startup \
+Core/grblHALParser \
 Drivers/STM32H7xx_HAL_Driver/Src \
 

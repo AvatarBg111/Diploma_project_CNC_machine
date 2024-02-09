@@ -6,15 +6,27 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../spindle/modbus_rtu.c \
-../spindle/select.c 
+../spindle/onoff.c \
+../spindle/pwm.c \
+../spindle/pwm_clone.c \
+../spindle/select.c \
+../spindle/stepper.c 
 
 OBJS += \
 ./spindle/modbus_rtu.o \
-./spindle/select.o 
+./spindle/onoff.o \
+./spindle/pwm.o \
+./spindle/pwm_clone.o \
+./spindle/select.o \
+./spindle/stepper.o 
 
 C_DEPS += \
 ./spindle/modbus_rtu.d \
-./spindle/select.d 
+./spindle/onoff.d \
+./spindle/pwm.d \
+./spindle/pwm_clone.d \
+./spindle/select.d \
+./spindle/stepper.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -24,7 +36,7 @@ spindle/%.o spindle/%.su spindle/%.cyclo: ../spindle/%.c spindle/subdir.mk
 clean: clean-spindle
 
 clean-spindle:
-	-$(RM) ./spindle/modbus_rtu.cyclo ./spindle/modbus_rtu.d ./spindle/modbus_rtu.o ./spindle/modbus_rtu.su ./spindle/select.cyclo ./spindle/select.d ./spindle/select.o ./spindle/select.su
+	-$(RM) ./spindle/modbus_rtu.cyclo ./spindle/modbus_rtu.d ./spindle/modbus_rtu.o ./spindle/modbus_rtu.su ./spindle/onoff.cyclo ./spindle/onoff.d ./spindle/onoff.o ./spindle/onoff.su ./spindle/pwm.cyclo ./spindle/pwm.d ./spindle/pwm.o ./spindle/pwm.su ./spindle/pwm_clone.cyclo ./spindle/pwm_clone.d ./spindle/pwm_clone.o ./spindle/pwm_clone.su ./spindle/select.cyclo ./spindle/select.d ./spindle/select.o ./spindle/select.su ./spindle/stepper.cyclo ./spindle/stepper.d ./spindle/stepper.o ./spindle/stepper.su
 
 .PHONY: clean-spindle
 

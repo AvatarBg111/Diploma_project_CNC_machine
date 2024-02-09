@@ -3,7 +3,7 @@
 
   Part of grblHAL
 
-  Copyright (c) 2022-2023 Terje Io
+  Copyright (c) 2022-2024 Terje Io
  
   Grbl is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -181,7 +181,7 @@ static int fs_chdir (const char *path)
     return -1;
 #endif
 }
-
+/*
 static char *fs_getcwd (char *buf, size_t size)
 {
     static char cwd[255];
@@ -203,7 +203,7 @@ static char *fs_getcwd (char *buf, size_t size)
 
     return cwd;
 }
-
+*/
 static vfs_dir_t *fs_opendir (const char *path)
 {
     vfs_dir_t *dir = malloc(sizeof(vfs_dir_t) + sizeof(lfs_dir_t));
@@ -295,11 +295,6 @@ static int fs_format (void)
     return ret;
 }
 
-static void fs_mount_failed (uint_fast16_t state)
-{
-    report_message("LittleFs mount failed!", Message_Warning);
-}
-
 void fs_littlefs_mount (const char *path, const struct lfs_config *config)
 {
     static const vfs_t littlefs = {
@@ -332,10 +327,12 @@ void fs_littlefs_mount (const char *path, const struct lfs_config *config)
     if (lfs_mount(&lfs, config) != LFS_ERR_OK)
         lfs_format(&lfs, config);
 
-    if (lfs_mount(&lfs, config) == LFS_ERR_OK)
-        vfs_mount(path, &littlefs);
-    else
-        protocol_enqueue_rt_command(fs_mount_failed);
+    if (lfs_mount(&lfs, config) == LFS_ERR_OK) {
+        vfs_st_mode_t mode = {0};
+        mode.hidden = settings.fs_options.lfs_hidden;
+        hal.driver_cap.littlefs = vfs_mount(path, &littlefs, mode);
+    } else
+        protocol_enqueue_foreground_task(report_warning, "LittleFS mount failed!");
 }
 
 #endif // LITTLEFS_ENABLE

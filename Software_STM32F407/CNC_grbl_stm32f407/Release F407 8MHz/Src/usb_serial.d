@@ -19,6 +19,9 @@ Src/usb_serial.o: ../Src/usb_serial.c ../Inc/driver.h ../Inc/my_machine.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_cortex.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h \
+ ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dac.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dac_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash.h \
@@ -52,6 +55,7 @@ Src/usb_serial.o: ../Src/usb_serial.c ../Inc/driver.h ../Inc/my_machine.h \
  E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/gcode.h \
  E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/coolant_control.h \
  E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/spindle_control.h \
+ E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/pid.h \
  E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/probe.h \
  E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/alarms.h \
  E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/messages.h \
@@ -67,7 +71,9 @@ Src/usb_serial.o: ../Src/usb_serial.c ../Inc/driver.h ../Inc/my_machine.h \
  E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/crossbar.h \
  E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/stepper.h \
  E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/ioports.h \
- ../Inc/generic_map.h ../Inc/usb_serial.h ../Inc/driver.h \
+ E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/rgb.h \
+ E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/boards/generic_map.h \
+ ../Inc/usb_serial.h ../Inc/driver.h \
  E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/hal.h \
  E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/protocol.h \
  ../Inc/main.h ../USB_DEVICE/App/usbd_cdc_if.h \
@@ -103,6 +109,9 @@ Src/usb_serial.o: ../Src/usb_serial.c ../Inc/driver.h ../Inc/my_machine.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma_ex.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_cortex.h:
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc.h:
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_adc.h:
+../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_adc_ex.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dac.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dac_ex.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash.h:
@@ -136,6 +145,7 @@ E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/system.h:
 E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/gcode.h:
 E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/coolant_control.h:
 E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/spindle_control.h:
+E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/pid.h:
 E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/probe.h:
 E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/alarms.h:
 E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/messages.h:
@@ -151,7 +161,8 @@ E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/machine_limits.h:
 E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/crossbar.h:
 E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/stepper.h:
 E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/ioports.h:
-../Inc/generic_map.h:
+E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/rgb.h:
+E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/boards/generic_map.h:
 ../Inc/usb_serial.h:
 ../Inc/driver.h:
 E:/Projects/STM32CubeIDE/CNC_grbl_stm32f407/grbl/hal.h:

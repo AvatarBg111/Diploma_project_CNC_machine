@@ -13,6 +13,7 @@ RM := rm -rf
 -include spindle/vfd/subdir.mk
 -include spindle/subdir.mk
 -include sdcard/subdir.mk
+-include plasma/subdir.mk
 -include odometer/subdir.mk
 -include networking/wiznet/port/subdir.mk
 -include networking/wiznet/arch/subdir.mk
@@ -37,7 +38,11 @@ RM := rm -rf
 -include keypad/subdir.mk
 -include grbl/kinematics/subdir.mk
 -include grbl/subdir.mk
+-include fans/subdir.mk
+-include encoder/subdir.mk
+-include embroidery/subdir.mk
 -include eeprom/subdir.mk
+-include boards/subdir.mk
 -include bluetooth/subdir.mk
 -include USB_DEVICE/Target/subdir.mk
 -include USB_DEVICE/App/subdir.mk

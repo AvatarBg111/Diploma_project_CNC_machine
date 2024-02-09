@@ -63,12 +63,12 @@ void EXTI9_5_IRQHandler(void);
 void TIM1_UP_IRQHandler(void);
 void TIM4_IRQHandler(void);
 void USART2_IRQHandler(void);
+void UART4_IRQHandler(void);
 void I2C3_EV_IRQHandler(void);
 void I2C3_ER_IRQHandler(void);
+void DMAMUX1_OVR_IRQHandler(void);
 /* USER CODE BEGIN EFP */
-
-void start_uart2_reception(uint8_t*,uint8_t*);
-bool uart2_reception_done(void);
+void start_grbl_uart_reception(void);
 bool turn_on_buzzer(uint16_t);
 
 /* USER CODE END EFP */

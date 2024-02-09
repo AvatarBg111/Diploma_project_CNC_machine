@@ -1,0 +1,4 @@
+../Core/grblHALComm/sender.c:37:6:enable_mpg	5
+../Core/grblHALComm/sender.c:62:6:disable_mpg	5
+../Core/grblHALComm/sender.c:87:9:grbl_send_packet	1
+../Core/grblHALComm/sender.c:95:6:request_report	1

@@ -4,20 +4,20 @@
 
   Part of grblHAL
 
-  Copyright (c) 2021-2023 Terje Io
+  Copyright (c) 2021-2024 Terje Io
 
-  Grbl is free software: you can redistribute it and/or modify
+  grblHAL is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
   the Free Software Foundation, either version 3 of the License, or
   (at your option) any later version.
 
-  Grbl is distributed in the hope that it will be useful,
+  grblHAL is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
   GNU General Public License for more details.
 
   You should have received a copy of the GNU General Public License
-  along with Grbl.  If not, see <http://www.gnu.org/licenses/>.
+  along with grblHAL. If not, see <http://www.gnu.org/licenses/>.
 
 */
 
@@ -63,24 +63,24 @@ static hc05_settings_t hc05_settings;
 static void hc05_settings_restore (void);
 static void hc05_settings_load (void);
 static void hc05_settings_save (void);
-static void select_stream (sys_state_t state);
+static void select_stream (void *data);
 static uint8_t n_ports;
 static char max_port[4];
 
 static void on_connect (uint8_t port, bool state)
 {
     if((bt_stream.state.connected = state))
-        select_stream(state_get());
+        select_stream(NULL);
     else if(hal.stream.type == StreamType_Bluetooth)
         stream_disconnect(&bt_stream);
 }
 
-static void connected (sys_state_t state)
+static void connected (void *data)
 {
     grbl.report.init_message();
 }
 
-void select_stream (sys_state_t state)
+void select_stream (void *data)
 {
     if(hc05_settings.options.enable) {
 
@@ -93,7 +93,7 @@ void select_stream (sys_state_t state)
         }
     }
 
-    protocol_enqueue_rt_command(connected);
+    protocol_enqueue_foreground_task(connected, NULL);
 }
 
 static bool send_command (char *command)
@@ -128,7 +128,7 @@ static bool send_command (char *command)
     return !strcmp(response.buffer, "OK");
 }
 
-static void auto_config (sys_state_t state)
+static void auto_config (void *data)
 {
     bool ok = false;
     char devname[45];
@@ -168,16 +168,16 @@ static void auto_config (sys_state_t state)
         hal.stream.write("HC-05 configuration failed, is the module set to AT mode?" ASCII_EOL);
 }
 
-static void hc05_setup (sys_state_t state)
+static void hc05_setup (void *data)
 {
     bool is_connected = (hal.port.wait_on_input(true, state_port, WaitMode_Immediate, 0.0f) == 1);
 
     if(!hc05_settings.options.enable && !is_connected)
-        protocol_enqueue_rt_command(auto_config);
+        protocol_enqueue_foreground_task(auto_config, NULL);
     else {
         hal.port.register_interrupt_handler(state_port, IRQ_Mode_Change, on_connect);
         if(is_connected)
-            protocol_enqueue_rt_command(select_stream);
+            protocol_enqueue_foreground_task(select_stream, NULL);
     }
 }
 
@@ -260,7 +260,7 @@ static void hc05_settings_restore (void)
         if(port > 0) do {
             port--;
             if((portinfo = hal.port.get_pin_info(Port_Digital, Port_Input, port))) {
-                if(!portinfo->cap.claimed && (portinfo->cap.irq_mode & IRQ_Mode_Change)) {
+                if(!portinfo->mode.claimed && (portinfo->cap.irq_mode & IRQ_Mode_Change)) {
                     hc05_settings.state_port = port;
                     break;
                 }
@@ -269,16 +269,6 @@ static void hc05_settings_restore (void)
     }
 
     hc05_settings_save();
-}
-
-static void warning_pin (uint_fast16_t state)
-{
-    report_message("Bluetooth plugin failed to initialize, no pin for STATE signal!", Message_Warning);
-}
-
-static void warning_stream (uint_fast16_t state)
-{
-    report_message("Bluetooth plugin failed to initialize, no serial stream available!", Message_Warning);
 }
 
 static void hc05_settings_load (void)
@@ -296,10 +286,10 @@ static void hc05_settings_load (void)
 
     xbar_t *portinfo = hal.port.get_pin_info(Port_Digital, Port_Input, state_port);
 
-    if(portinfo && !portinfo->cap.claimed && (portinfo->cap.irq_mode & IRQ_Mode_Change) && ioport_claim(Port_Digital, Port_Input, &state_port, "HC-05 STATE"))
-        protocol_enqueue_rt_command(hc05_setup);
+    if(portinfo && !portinfo->mode.claimed && (portinfo->cap.irq_mode & IRQ_Mode_Change) && ioport_claim(Port_Digital, Port_Input, &state_port, "HC-05 STATE"))
+        protocol_enqueue_foreground_task(hc05_setup, NULL);
     else
-        protocol_enqueue_rt_command(warning_pin);
+        protocol_enqueue_foreground_task(report_warning, "Bluetooth plugin failed to initialize, no pin for STATE signal!");
 }
 
 static void report_options (bool newopt)
@@ -307,24 +297,17 @@ static void report_options (bool newopt)
     on_report_options(newopt);
 
     if(!newopt)
-        hal.stream.write("[PLUGIN:Bluetooth HC-05 v0.07]" ASCII_EOL);
+        hal.stream.write("[PLUGIN:Bluetooth HC-05 v0.09]" ASCII_EOL);
 }
 
 bool bluetooth_init (void)
 {
     bool ok;
-    io_stream_t const *stream = stream_open_instance(255, 115200, NULL); // open first free serial port
+    io_stream_t const *stream = stream_open_instance(255, 115200, NULL, "Bluetooth"); // open first free serial port
 
     if((ok = stream != NULL)) {
-
         memcpy(&bt_stream, stream, sizeof(io_stream_t));
-
         bt_stream.type = StreamType_Bluetooth;
-
-        if(hal.periph_port.set_pin_description) {
-            hal.periph_port.set_pin_description(Output_TX, (pin_group_t)(PinGroup_UART + bt_stream.instance), "Bluetooth");
-            hal.periph_port.set_pin_description(Input_RX, (pin_group_t)(PinGroup_UART + bt_stream.instance), "Bluetooth");
-        }
     }
 
     if(ok) {
@@ -347,10 +330,10 @@ bool bluetooth_init (void)
             settings_register(&setting_details);
 
         } else
-            protocol_enqueue_rt_command(warning_pin);
+            protocol_enqueue_foreground_task(report_warning, "Bluetooth plugin failed to initialize, no pin for STATE signal!");
 
     } else
-        protocol_enqueue_rt_command(warning_stream);
+        protocol_enqueue_foreground_task(report_warning, "Bluetooth plugin failed to initialize, no serial stream available!");
 
     return ok;
 }

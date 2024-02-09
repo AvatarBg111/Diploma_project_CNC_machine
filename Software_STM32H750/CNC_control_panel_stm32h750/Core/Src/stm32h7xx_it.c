@@ -22,9 +22,11 @@
 #include "stm32h7xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "grbl_cpu_comm.h"
 #include "ft5436.h"
 #include "buttons.h"
+#include "systick_timer.h"
+
+#include "../grblHALComm/parser.h"
 
 /* USER CODE END Includes */
 
@@ -35,7 +37,10 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define RX_BUF_SIZE 160
+#define GRBL_BUF_SIZE 256
+#if(0)
+#define PRINT_DATA
+#endif
 
 /* USER CODE END PD */
 
@@ -46,22 +51,37 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
+// Touch IC communication
 uint8_t touch_detected = 0x00;
 uint8_t i2c3_dma_itr_sync = 0x00;
 
-uint8_t rx_buffer[RX_BUF_SIZE] = {0}, rx_buffer_len = 0;
-uint8_t *uart2_rx = NULL, *uart2_pckt_len = NULL;
-bool auto_flushing = true;
+// GRBL UART communication
+#if(0)
+uint8_t current_byte = 0;
+#else
+uint8_t uart2_rx_buffer[GRBL_BUF_SIZE] = {0};
+uint16_t uart2_rx_buf_size = 0;
+#endif
+uint8_t grbl_buffer[GRBL_BUF_SIZE] = {0};
+uint16_t grbl_buffer_size = 0;
+#if(PRINT_DATA)
+uint8_t print_buffer[GRBL_BUF_SIZE] = {0};
+uint16_t print_buffer_size = 0;
+#endif
+const char initial_grbl_message[] = "GrblHAL 1.1f ['$' or '$HELP' for help]";
 
+// Buzzer control
 bool buzzer_program_occupied = false;
 uint16_t buzzer_update_event_cnt = 0;
+
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN PFP */
+void grbl_uart_start_reception_stream(void);
+bool is_initial_grbl_message(uint8_t*);
 bool turn_on_buzzer(uint16_t);
-void start_uart2_reception(uint8_t*, uint8_t*);
-bool uart2_reception_done(void);
 
 /* USER CODE END PFP */
 
@@ -76,9 +96,12 @@ extern DMA_HandleTypeDef hdma_i2c3_tx;
 extern I2C_HandleTypeDef hi2c3;
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim4;
-extern DMA_HandleTypeDef hdma_usart2_tx;
+extern DMA_HandleTypeDef hdma_usart2_rx;
+extern UART_HandleTypeDef huart4;
 extern UART_HandleTypeDef huart2;
 /* USER CODE BEGIN EV */
+extern UART_HandleTypeDef huart4;
+extern DMA_HandleTypeDef hdma_uart4_tx;
 
 /* USER CODE END EV */
 
@@ -268,13 +291,22 @@ void DMA1_Stream1_IRQHandler(void)
 void DMA1_Stream2_IRQHandler(void)
 {
   /* USER CODE BEGIN DMA1_Stream2_IRQn 0 */
-	if(__HAL_DMA_STREAM_GET_IT_SOURCE(&hdma_usart2_tx, DMA_IT_TC)){
-		reset_pending_command();
+	bool interrupt_occured = false;
+	if(__HAL_DMA_GET_IT_SOURCE(&hdma_uart4_tx, DMA_IT_TC) == DMA_IT_TC && __HAL_DMA_GET_IT_SOURCE(&hdma_uart4_tx, DMA_IT_HT) != DMA_IT_HT){
+		interrupt_occured = true;
 	}
 
   /* USER CODE END DMA1_Stream2_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_usart2_tx);
+  HAL_DMA_IRQHandler(&hdma_usart2_rx);
   /* USER CODE BEGIN DMA1_Stream2_IRQn 1 */
+	if(interrupt_occured){
+		#if(PRINT_DATA)
+		for(uint16_t i = 0; i < print_buffer_size; i++){
+			print_buffer[i] = 0;
+		}
+		print_buffer_size = 0;
+		#endif
+	}
 
   /* USER CODE END DMA1_Stream2_IRQn 1 */
 }
@@ -347,6 +379,20 @@ void USART2_IRQHandler(void)
 }
 
 /**
+  * @brief This function handles UART4 global interrupt.
+  */
+void UART4_IRQHandler(void)
+{
+  /* USER CODE BEGIN UART4_IRQn 0 */
+
+  /* USER CODE END UART4_IRQn 0 */
+  HAL_UART_IRQHandler(&huart4);
+  /* USER CODE BEGIN UART4_IRQn 1 */
+
+  /* USER CODE END UART4_IRQn 1 */
+}
+
+/**
   * @brief This function handles I2C3 event interrupt.
   */
 void I2C3_EV_IRQHandler(void)
@@ -374,7 +420,74 @@ void I2C3_ER_IRQHandler(void)
   /* USER CODE END I2C3_ER_IRQn 1 */
 }
 
+/**
+  * @brief This function handles DMAMUX1 overrun interrupt.
+  */
+void DMAMUX1_OVR_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMAMUX1_OVR_IRQn 0 */
+
+  /* USER CODE END DMAMUX1_OVR_IRQn 0 */
+
+  /* USER CODE BEGIN DMAMUX1_OVR_IRQn 1 */
+
+  /* USER CODE END DMAMUX1_OVR_IRQn 1 */
+}
+
 /* USER CODE BEGIN 1 */
+// CALLBACKS
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size){
+	if(huart->Instance == USART2){
+		HAL_UART_RxEventTypeTypeDef eventId = HAL_UARTEx_GetRxEventType(huart);
+
+		if(eventId == HAL_UART_RXEVENT_IDLE || eventId == HAL_UART_RXEVENT_TC){
+			//HAL_GPIO_WritePin(TEST_GPIO_Port, TEST_Pin, GPIO_PIN_SET);
+
+			start_grbl_uart_reception();
+
+			uart2_rx_buf_size = strlen((char*)uart2_rx_buffer);
+			memcpy(grbl_buffer, uart2_rx_buffer, uart2_rx_buf_size);
+			memset(grbl_buffer + uart2_rx_buf_size, 0, GRBL_BUF_SIZE - uart2_rx_buf_size);
+			memset(uart2_rx_buffer, 0, uart2_rx_buf_size);
+
+			parseSettings((char*)grbl_buffer);
+			parseInfo((char*)grbl_buffer);
+			parseData((char*)grbl_buffer);
+
+			//HAL_GPIO_WritePin(TEST_GPIO_Port, TEST_Pin, GPIO_PIN_RESET);
+		}
+	}
+}
+
+
+// CUSTOM FUCNTIONS
+void start_grbl_uart_reception(void){
+#if(0)
+	if(HAL_UART_Receive_IT(&huart2, &current_byte, 1) != HAL_OK){
+		HAL_GPIO_WritePin(USER_LED_D_GPIO_Port, USER_LED_D_Pin, GPIO_PIN_SET);
+	}else{
+		HAL_GPIO_WritePin(USER_LED_D_GPIO_Port, USER_LED_D_Pin, GPIO_PIN_RESET);
+	}
+#else
+	if(HAL_UARTEx_ReceiveToIdle_DMA(&huart2, uart2_rx_buffer, GRBL_BUF_SIZE) != HAL_OK){
+		HAL_GPIO_WritePin(TEST_GPIO_Port, TEST_Pin, GPIO_PIN_SET);
+	}else{
+		HAL_GPIO_WritePin(TEST_GPIO_Port, TEST_Pin, GPIO_PIN_RESET);
+		__HAL_DMA_DISABLE_IT(&hdma_usart2_rx, DMA_IT_HT);
+	}
+#endif
+}
+
+bool is_initial_grbl_message(uint8_t*){
+	uint8_t message_length = strlen(initial_grbl_message);
+	for(uint8_t i = 0; i < message_length; i++){
+		if(grbl_buffer[i] != (uint8_t)initial_grbl_message[i]){
+			return false;
+		}
+	}
+	return true;
+}
+
 bool turn_on_buzzer(uint16_t cnt){
 	if(cnt == 0 || buzzer_program_occupied){
 		return false;
@@ -386,18 +499,6 @@ bool turn_on_buzzer(uint16_t cnt){
 	HAL_TIM_PWM_Start_IT(&htim4, TIM_CHANNEL_3);
 
 	return true;
-}
-
-void start_uart2_reception(uint8_t *buf, uint8_t *len){
-	__HAL_UART_ENABLE_IT(&huart2, UART_IT_RXNE);
-	uart2_rx = buf;
-	uart2_pckt_len = len;
-	*uart2_pckt_len = 0;
-	auto_flushing = false;
-}
-
-bool uart2_reception_done(void){
-	return auto_flushing;
 }
 
 /* USER CODE END 1 */

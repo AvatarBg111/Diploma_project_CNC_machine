@@ -35,7 +35,11 @@ StartupF407 \
 USB_DEVICE/App \
 USB_DEVICE/Target \
 bluetooth \
+boards \
 eeprom \
+embroidery \
+encoder \
+fans \
 grbl \
 grbl/kinematics \
 keypad/display \
@@ -60,6 +64,7 @@ networking/wiznet/arch \
 networking/wiznet \
 networking/wiznet/port \
 odometer \
+plasma \
 sdcard \
 spindle \
 spindle/vfd \

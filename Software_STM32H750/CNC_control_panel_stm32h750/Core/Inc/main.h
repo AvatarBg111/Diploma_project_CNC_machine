@@ -119,6 +119,8 @@ void Error_Handler(void);
 #define TFT_D15_GPIO_Port GPIOB
 #define USER_LED_A_Pin GPIO_PIN_14
 #define USER_LED_A_GPIO_Port GPIOB
+#define TEST_Pin GPIO_PIN_15
+#define TEST_GPIO_Port GPIOB
 #define USER_LED_B_Pin GPIO_PIN_8
 #define USER_LED_B_GPIO_Port GPIOD
 #define USER_LED_C_Pin GPIO_PIN_10

@@ -1,8 +1,0 @@
-../networking/strutils.c:49:7:stristr	12	static
-../networking/strutils.c:79:7:strappend	12	static
-../networking/strutils.c:99:10:strnumentries	16	static
-../networking/strutils.c:112:7:strgetentry	24	static
-../networking/strutils.c:139:9:strlookup	32	static
-../networking/strutils.c:164:6:strtotime	16	static
-../networking/strutils.c:261:7:strtoisodt	32	static
-../networking/strutils.c:271:7:strtointernetdt	40	static

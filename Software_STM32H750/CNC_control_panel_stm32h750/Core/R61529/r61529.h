@@ -44,6 +44,7 @@ extern "C" {
 #define  BLACK   0x0000
 #define  GRAY    0xAD55
 #define  WHITE   0xFFFF
+#define  BROWN   0xB380
 #define  RED     0xF800
 #define  ORANGE	 0xF564
 #define  YELLOW  0xFFE0
@@ -51,6 +52,7 @@ extern "C" {
 #define  CYAN    0x07FF
 #define  BLUE    0x001F
 #define  MAGENTA 0xF81F
+#define	 PURPLE  0xC01F
 
 #define ROTATE_DEFAULT 0
 #define ROTATE_RIGHT 1

@@ -3,7 +3,7 @@
 
   Part of grblHAL
 
-  Copyright (c) 2018-2023 Terje Io
+  Copyright (c) 2018-2024 Terje Io
 
   Grbl is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -30,16 +30,26 @@
 
 #if TRINAMIC_ENABLE
 
+#ifdef TRINAMIC_R_SENSE
+#define R_SENSE TRINAMIC_R_SENSE
+#endif
+
 #if TRINAMIC_ENABLE == 2130
+#ifndef R_SENSE
 #define R_SENSE 110
+#endif
 #include "../trinamic/tmc2130hal.h"
 #endif
 #if TRINAMIC_ENABLE == 2209
+#ifndef R_SENSE
 #define R_SENSE 110
+#endif
 #include "../trinamic/tmc2209hal.h"
 #endif
 #if TRINAMIC_ENABLE == 5160
+#ifndef R_SENSE
 #define R_SENSE 75
+#endif
 #include "../trinamic/tmc5160hal.h"
 #endif
 
@@ -82,13 +92,11 @@ static const TMC_chopper_timing_t chopper_timing = { .hstrt = 1, .hend = -1, .tb
 #endif
 #define TMC_X_MONITOR 1
 #define TMC_X_MICROSTEPS 16
-#define TMC_X_R_SENSE R_SENSE   // mOhm
+#define TMC_X_R_SENSE R_SENSE // mOhm
 
-#ifndef DEFAULT_X_CURRENT
-#define TMC_X_CURRENT 500       // mA RMS
-#else
-#define TMC_X_CURRENT DEFAULT_X_CURRENT       // mA RMS
-#endif 
+#ifndef TMC_X_CURRENT
+#define TMC_X_CURRENT DEFAULT_X_CURRENT // mA RMS
+#endif
 
 #define TMC_X_HOLD_CURRENT_PCT 50
 #define TMC_X_HOMING_SEEK_SGT 22
@@ -107,12 +115,10 @@ stepper[motor]->chopper_timing(motor, chopper_timing);
 #endif
 #define TMC_Y_MONITOR 1
 #define TMC_Y_MICROSTEPS 16
-#define TMC_Y_R_SENSE R_SENSE   // mOhm
+#define TMC_Y_R_SENSE R_SENSE // mOhm
 
-#ifndef DEFAULT_Y_CURRENT
-#define TMC_Y_CURRENT 500       // mA RMS
-#else
-#define TMC_Y_CURRENT DEFAULT_Y_CURRENT       // mA RMS
+#ifndef TMC_Y_CURRENT
+#define TMC_Y_CURRENT DEFAULT_Y_CURRENT // mA RMS
 #endif
 
 #define TMC_Y_HOLD_CURRENT_PCT 50
@@ -132,12 +138,10 @@ stepper[motor]->chopper_timing(motor, chopper_timing);
 #endif
 #define TMC_Z_MONITOR 1
 #define TMC_Z_MICROSTEPS 16
-#define TMC_Z_R_SENSE R_SENSE   // mOhm
+#define TMC_Z_R_SENSE R_SENSE // mOhm
 
-#ifndef DEFAULT_Z_CURRENT
-#define TMC_Z_CURRENT 500       // mA RMS
-#else
-#define TMC_Z_CURRENT DEFAULT_Z_CURRENT       // mA RMS
+#ifndef TMC_Z_CURRENT
+#define TMC_Z_CURRENT DEFAULT_Z_CURRENT // mA RMS
 #endif
 
 #define TMC_Z_HOLD_CURRENT_PCT 50
@@ -159,13 +163,11 @@ stepper[motor]->chopper_timing(motor, chopper_timing);
 #endif
 #define TMC_A_MONITOR 1
 #define TMC_A_MICROSTEPS 16
-#define TMC_A_R_SENSE R_SENSE   // mOhm
+#define TMC_A_R_SENSE R_SENSE // mOhm
 
-#ifndef DEFAULT_A_CURRENT
-#define TMC_A_CURRENT 500       // mA RMS
-#else
-#define TMC_A_CURRENT DEFAULT_A_CURRENT       // mA RMS
-#endif 
+#ifndef TMC_A_CURRENT
+#define TMC_A_CURRENT DEFAULT_A_CURRENT // mA RMS
+#endif
 
 #define TMC_A_HOLD_CURRENT_PCT 50
 #define TMC_A_HOMING_SEEK_SGT 22
@@ -188,13 +190,11 @@ stepper[motor]->chopper_timing(motor, chopper_timing);
 #endif
 #define TMC_B_MONITOR 1
 #define TMC_B_MICROSTEPS 16
-#define TMC_B_R_SENSE R_SENSE   // mOhm
+#define TMC_B_R_SENSE R_SENSE // mOhm
 
-#ifndef DEFAULT_B_CURRENT
-#define TMC_B_CURRENT 500       // mA RMS
-#else
-#define TMC_B_CURRENT DEFAULT_B_CURRENT       // mA RMS
-#endif 
+#ifndef TMC_B_CURRENT
+#define TMC_B_CURRENT DEFAULT_B_CURRENT // mA RMS
+#endif
 
 #define TMC_B_HOLD_CURRENT_PCT 50
 #define TMC_B_HOMING_SEEK_SGT 22
@@ -217,13 +217,11 @@ stepper[motor]->chopper_timing(motor, chopper_timing);
 #endif
 #define TMC_C_MONITOR 1
 #define TMC_C_MICROSTEPS 16
-#define TMC_C_R_SENSE R_SENSE   // mOhm
+#define TMC_C_R_SENSE R_SENSE // mOhm
 
-#ifndef DEFAULT_C_CURRENT
-#define TMC_C_CURRENT 500       // mA RMS
-#else
-#define TMC_C_CURRENT DEFAULT_C_CURRENT       // mA RMS
-#endif 
+#ifndef TMC_C_CURRENT
+#define TMC_C_CURRENT DEFAULT_C_CURRENT // mA RMS
+#endif
 
 #define TMC_C_HOLD_CURRENT_PCT 50
 #define TMC_C_HOMING_SEEK_SGT 22
@@ -231,6 +229,60 @@ stepper[motor]->chopper_timing(motor, chopper_timing);
 #define TMC_C_STEALTHCHOP TMC_STEALTHCHOP
 
 #define TMC_C_ADVANCED(motor) \
+stepper[motor]->sg_filter(motor, 1); \
+stepper[motor]->coolconf(motor, coolconf); \
+stepper[motor]->chopper_timing(motor, chopper_timing);
+
+#endif
+
+#ifdef U_AXIS
+
+#if TRINAMIC_MIXED_DRIVERS
+#define TMC_U_ENABLE 0
+#else
+#define TMC_U_ENABLE 1 // Do not change
+#endif
+#define TMC_U_MONITOR 1
+#define TMC_U_MICROSTEPS 16
+#define TMC_U_R_SENSE R_SENSE // mOhm
+
+#ifndef TMC_U_CURRENT
+#define TMC_U_CURRENT DEFAULT_U_CURRENT // mA RMS
+#endif
+
+#define TMC_U_HOLD_CURRENT_PCT 50
+#define TMC_U_HOMING_SEEK_SGT 22
+#define TMC_U_HOMING_FEED_SGT 22
+#define TMC_U_STEALTHCHOP TMC_STEALTHCHOP
+
+#define TMC_U_ADVANCED(motor) \
+stepper[motor]->sg_filter(motor, 1); \
+stepper[motor]->coolconf(motor, coolconf); \
+stepper[motor]->chopper_timing(motor, chopper_timing);
+
+#endif
+
+#ifdef V_AXIS
+
+#if TRINAMIC_MIXED_DRIVERS
+#define TMC_V_ENABLE 0
+#else
+#define TMC_V_ENABLE 1 // Do not change
+#endif
+#define TMC_V_MONITOR 1
+#define TMC_V_MICROSTEPS 16
+#define TMC_V_R_SENSE R_SENSE // mOhm
+
+#ifndef TMC_V_CURRENT
+#define TMC_V_CURRENT DEFAULT_V_CURRENT // mA RMS
+#endif
+
+#define TMC_V_HOLD_CURRENT_PCT 50
+#define TMC_V_HOMING_SEEK_SGT 22
+#define TMC_V_HOMING_FEED_SGT 22
+#define TMC_V_STEALTHCHOP TMC_STEALTHCHOP
+
+#define TMC_V_ADVANCED(motor) \
 stepper[motor]->sg_filter(motor, 1); \
 stepper[motor]->coolconf(motor, coolconf); \
 stepper[motor]->chopper_timing(motor, chopper_timing);

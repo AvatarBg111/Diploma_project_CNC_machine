@@ -1,4 +1,0 @@
-../lwip/src/core/def.c:105:1:lwip_strnstr	24	static
-../lwip/src/core/def.c:128:1:lwip_stricmp	12	static
-../lwip/src/core/def.c:163:1:lwip_strnicmp	20	static
-../lwip/src/core/def.c:199:1:lwip_itoa	12	static

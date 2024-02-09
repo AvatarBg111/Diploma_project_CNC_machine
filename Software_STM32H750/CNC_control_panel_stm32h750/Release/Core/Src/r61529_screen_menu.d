@@ -28,8 +28,6 @@ Core/Src/r61529_screen_menu.o: ../Core/Src/r61529_screen_menu.c \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_i2c_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pwr.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pwr_ex.h \
- ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h \
- ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h \
@@ -37,7 +35,10 @@ Core/Src/r61529_screen_menu.o: ../Core/Src/r61529_screen_menu.c \
  ../Core/R61529/r61529.h ../Core/Inc/main.h ../Core/R61529/fonts.h \
  ../Core/FT5436/ft5436.h ../Core/Inc/buttons.h \
  ../Core/Inc/systick_timer.h ../Core/SoundFX/sound_fx.h \
- ../Core/Inc/stm32h7xx_it.h
+ ../Core/Inc/stm32h7xx_it.h ../Core/Src/../grblHALComm/parser.h \
+ ../Core/Src/../grblHALComm/../grblHALComm/grbl.h \
+ ../Core/Src/../grblHALComm/../grblHALComm/i2c_interface.h \
+ ../Core/Src/../grblHALComm/sender.h
 ../Core/Inc/r61529_screen_menu.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
@@ -68,8 +69,6 @@ Core/Src/r61529_screen_menu.o: ../Core/Src/r61529_screen_menu.c \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_i2c_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pwr.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_pwr_ex.h:
-../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi.h:
-../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_spi_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h:
@@ -82,3 +81,7 @@ Core/Src/r61529_screen_menu.o: ../Core/Src/r61529_screen_menu.c \
 ../Core/Inc/systick_timer.h:
 ../Core/SoundFX/sound_fx.h:
 ../Core/Inc/stm32h7xx_it.h:
+../Core/Src/../grblHALComm/parser.h:
+../Core/Src/../grblHALComm/../grblHALComm/grbl.h:
+../Core/Src/../grblHALComm/../grblHALComm/i2c_interface.h:
+../Core/Src/../grblHALComm/sender.h:

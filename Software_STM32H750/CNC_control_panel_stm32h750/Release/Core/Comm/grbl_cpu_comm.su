@@ -1,7 +1,0 @@
-../Core/Comm/grbl_cpu_comm.c:44:19:grbl_send_msg	0	static
-../Core/Comm/grbl_cpu_comm.c:62:19:enable_mpg	8	static
-../Core/Comm/grbl_cpu_comm.c:78:19:disable_mpg	8	static
-../Core/Comm/grbl_cpu_comm.c:94:9:get_pending_command	0	static
-../Core/Comm/grbl_cpu_comm.c:101:6:reset_pending_command	0	static
-../Core/Comm/grbl_cpu_comm.c:108:6:set_mpg_state	0	static
-../Core/Comm/grbl_cpu_comm.c:115:6:get_mpg_state	0	static

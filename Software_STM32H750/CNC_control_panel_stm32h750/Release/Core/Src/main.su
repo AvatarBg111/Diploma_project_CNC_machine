@@ -1,5 +1,5 @@
-../Core/Src/main.c:158:6:SystemClock_Config	120	static,ignoring_inline_asm
-../Core/Src/main.c:217:6:PeriphCommonClock_Config	200	static,ignoring_inline_asm
-../Core/Src/main.c:723:6:Init_interfaces	16	static
-../Core/Src/main.c:96:5:main	80	static,ignoring_inline_asm
-../Core/Src/main.c:768:6:Error_Handler	0	static,ignoring_inline_asm
+../Core/Src/main.c:200:6:SystemClock_Config	120	static,ignoring_inline_asm
+../Core/Src/main.c:259:6:PeriphCommonClock_Config	200	static,ignoring_inline_asm
+../Core/Src/main.c:776:6:Init_interfaces	16	static
+../Core/Src/main.c:137:5:main	80	static,ignoring_inline_asm
+../Core/Src/main.c:823:6:Error_Handler	0	static,ignoring_inline_asm

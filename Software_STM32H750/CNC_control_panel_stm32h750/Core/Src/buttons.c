@@ -18,11 +18,17 @@ typedef struct button{
 
 /* Private define ------------------------------------------------------------*/
 #define BUTTON_CHANNELS 16
-#define UPDATE_TIME_LOW_TO_HIGH_DEFAULT 2		//TIM1 has 120Hz frequency -> 21 updates are equal to ~175ms
-#define UPDATE_TIME_HIGH_TO_LOW_DEFAULT 2		//TIM1 has 120Hz frequency -> 42 updates are equal to ~350ms
+#define UPDATE_TIME_LOW_TO_HIGH_DEFAULT 2		//TIM1 has 120Hz frequency -> e.g. 2 updates are equal to ~17ms
+#define UPDATE_TIME_HIGH_TO_LOW_DEFAULT 2		//TIM1 has 120Hz frequency -> e.g. 2 updates are equal to ~17ms
 
 
 /* Private macro -------------------------------------------------------------*/
+
+
+/* External variables --------------------------------------------------------*/
+extern TIM_HandleTypeDef htim2;
+
+
 /* Private variables ---------------------------------------------------------*/
 button_t button_matrix[BUTTON_CHANNELS] = {0};
 GPIO_PinState but_stat_channels[BUTTON_CHANNELS] = {0};

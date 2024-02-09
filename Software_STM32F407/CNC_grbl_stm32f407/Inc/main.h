@@ -59,10 +59,6 @@ void Error_Handler(void);
 
 /* Private defines -----------------------------------------------------------*/
 /* USER CODE BEGIN Private defines */
-#if(0)
-#define MPG_MODE_PIN 3
-#define MPG_MODE_PORT GPIOD
-#endif
 
 /* USER CODE END Private defines */
 

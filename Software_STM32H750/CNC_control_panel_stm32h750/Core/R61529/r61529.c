@@ -421,6 +421,11 @@ void R61529_FillScreen(uint16_t color){
   * @brief Draw a filled rectangle on screen
   */
 void R61529_FillRect(uint16_t color, uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2){
+	if((x1 == x2 && y1 != y2) || (x1 != x2 && y1 == y2)){
+		R61529_DrawLine(color, x1, y1, x2, y2);
+		return;
+	}
+
 	if(x2==480) x2=479;
 	if(y2==320) y2=319;
 	R61529_SetAddrWindow(x1,y1,x2,y2);
