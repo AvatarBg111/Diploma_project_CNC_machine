@@ -15,6 +15,8 @@ RM := rm -rf
 -include Core/Src/subdir.mk
 -include Core/SoundFX/subdir.mk
 -include Core/R61529/subdir.mk
+-include Core/MPGpendant/subdir.mk
+-include Core/MPGmovement/subdir.mk
 -include Core/FT5436/subdir.mk
 -include objects.mk
 

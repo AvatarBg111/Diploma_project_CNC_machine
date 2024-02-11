@@ -175,6 +175,8 @@
 									<listOptionValue builtIn="false" value="../Core/FT5436"/>
 									<listOptionValue builtIn="false" value="../Core/SoundFX"/>
 									<listOptionValue builtIn="false" value="../Core/grblHALParser"/>
+									<listOptionValue builtIn="false" value="../Core/MPGpendant"/>
+									<listOptionValue builtIn="false" value="../Core/MPGmovement"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.1147036431" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c"/>
 							</tool>

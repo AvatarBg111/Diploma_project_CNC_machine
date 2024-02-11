@@ -1,4 +1,6 @@
 "./Core/FT5436/ft5436.o"
+"./Core/MPGmovement/mpg_movement.o"
+"./Core/MPGpendant/mpg_pendant.o"
 "./Core/R61529/fonts.o"
 "./Core/R61529/r61529.o"
 "./Core/SoundFX/sound_fx.o"

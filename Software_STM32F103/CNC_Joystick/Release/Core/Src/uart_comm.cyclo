@@ -1,0 +1,4 @@
+../Core/Src/uart_comm.c:37:6:send_system_connected	1
+../Core/Src/uart_comm.c:43:6:send_system_disconnected	1
+../Core/Src/uart_comm.c:49:6:send_system_error	1
+../Core/Src/uart_comm.c:55:6:send_system_data	2

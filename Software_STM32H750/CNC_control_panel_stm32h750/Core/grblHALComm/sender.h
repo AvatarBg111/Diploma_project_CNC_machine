@@ -30,7 +30,6 @@ bool disable_mpg(void);
 uint8_t grbl_send_packet(uint8_t*,uint16_t);
 bool request_report(void);
 
-
 #ifdef __cplusplus
 }
 #endif

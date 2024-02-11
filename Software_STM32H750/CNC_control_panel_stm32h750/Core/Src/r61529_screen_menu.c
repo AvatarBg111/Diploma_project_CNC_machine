@@ -6,20 +6,22 @@
  */
 
 /* Private includes ----------------------------------------------------------*/
+#include <mpg_movement.h>
 #include "r61529_screen_menu.h"
 #include "r61529.h"
 #include "ft5436.h"
 #include "buttons.h"
-#include "systick_timer.h"
 #include "sound_fx.h"
-#include "stm32h7xx_it.h"
-#include "stm32h7xx_hal.h"
+#include "mpg_pendant.h"
 #include "../grblHALComm/parser.h"
 #include "../grblHALComm/sender.h"
+#include "systick_timer.h"
+#include "stm32h7xx_it.h"
+#include "stm32h7xx_hal.h"
 
 
 /* Private define ------------------------------------------------------------*/
-#define LEVELS 3
+#define LEVELS 4
 #define MAXIMUM_BRIGHTNESS	100
 #define MINIMUM_BRIGHTNESS	10
 
@@ -36,6 +38,20 @@
 #define SETTING_BLOCK_Y_OFFSET 20
 #define SETTING_BLOCK_X_MARGIN 20
 #define SETTING_BLOCK_Y_MARGIN 20
+
+#define MPG_AXES_SETTINGS 3
+#define MPG_AXES_SETTING_BLOCK_WIDTH 300
+#define MPG_AXES_SETTING_BLOCK_HEIGHT 30
+#define MPG_AXES_SETTING_BLOCK_Y_OFFSET 20
+#define MPG_AXES_SETTING_BLOCK_X_MARGIN 20
+#define MPG_AXES_SETTING_BLOCK_Y_MARGIN 20
+
+#define MPG_SPINDLE_SETTINGS 1
+#define MPG_SPINDLE_SETTING_BLOCK_WIDTH 250
+#define MPG_SPINDLE_SETTING_BLOCK_HEIGHT 40
+#define MPG_SPINDLE_SETTING_BLOCK_Y_OFFSET 20
+#define MPG_SPINDLE_SETTING_BLOCK_X_MARGIN 20
+#define MPG_SPINDLE_SETTING_BLOCK_Y_MARGIN 20
 
 #define SCREEN_BRIGHTNESS_SETTING_SLIDER_BASE_X	20
 #define SCREEN_BRIGHTNESS_SETTING_SLIDER_BASE_Y 60
@@ -74,20 +90,36 @@ typedef struct{
 #define GET_SUBMENU_BLOCK_BASE_Y SUBMENU_BLOCK_Y_MARGIN
 #define GET_SUBMENU_BLOCK_TEXT_BASE_X(index) (GET_SUBMENU_BLOCK_BASE_X(index) + ((SUBMENU_BLOCK_WIDTH - (strlen(main_menu_options[index]) * 11)) / 2))
 #define GET_SUBMENU_BLOCK_TEXT_BASE_Y (SUBMENU_BLOCK_Y_MARGIN + ((SUBMENU_BLOCK_HEIGHT - 18) / 2))
+
 #define GET_SETTING_BLOCK_BASE_X SETTING_BLOCK_X_MARGIN
 #define GET_SETTING_BLOCK_BASE_Y(index) (SETTING_BLOCK_Y_MARGIN + (index * SETTING_BLOCK_Y_OFFSET) + (index * SETTING_BLOCK_HEIGHT))
 #define GET_SETTING_BLOCK_TEXT_BASE_X (GET_SETTING_BLOCK_BASE_X + ((SETTING_BLOCK_WIDTH - (strlen(settings_options[index]) * 11)) / 2))
 #define GET_SETTING_BLOCK_TEXT_BASE_Y(index) (GET_SETTING_BLOCK_BASE_Y(index) + ((SETTING_BLOCK_HEIGHT - 18) / 2))
 
+#define GET_MPG_AXES_SETTING_BLOCK_BASE_X MPG_AXES_SETTING_BLOCK_X_MARGIN
+#define GET_MPG_AXES_SETTING_BLOCK_BASE_Y(index) (MPG_AXES_SETTING_BLOCK_Y_MARGIN + (index * MPG_AXES_SETTING_BLOCK_Y_OFFSET) + (index * MPG_AXES_SETTING_BLOCK_HEIGHT))
+#define GET_MPG_AXES_SETTING_BLOCK_TEXT_BASE_X (GET_MPG_AXES_SETTING_BLOCK_BASE_X + ((MPG_AXES_SETTING_BLOCK_WIDTH - (strlen(mpg_axes_settings[index]) * 11)) / 2))
+#define GET_MPG_AXES_SETTING_BLOCK_TEXT_BASE_Y(index) (GET_MPG_AXES_SETTING_BLOCK_BASE_Y(index) + ((MPG_AXES_SETTING_BLOCK_HEIGHT - 18) / 2))
+
+#define GET_MPG_SPINDLE_SETTING_BLOCK_BASE_X MPG_SPINDLE_SETTING_BLOCK_X_MARGIN
+#define GET_MPG_SPINDLE_SETTING_BLOCK_BASE_Y(index) (MPG_SPINDLE_SETTING_BLOCK_Y_MARGIN + (index * MPG_SPINDLE_SETTING_BLOCK_Y_OFFSET) + (index * MPG_SPINDLE_SETTING_BLOCK_HEIGHT))
+#define GET_MPG_SPINDLE_SETTING_BLOCK_TEXT_BASE_X (GET_MPG_SPINDLE_SETTING_BLOCK_BASE_X + ((MPG_SPINDLE_SETTING_BLOCK_WIDTH - (strlen(mpg_spindle_settings[index]) * 11)) / 2))
+#define GET_MPG_SPINDLE_SETTING_BLOCK_TEXT_BASE_Y(index) (GET_MPG_SPINDLE_SETTING_BLOCK_BASE_Y(index) + ((MPG_SPINDLE_SETTING_BLOCK_HEIGHT - 18) / 2))
+
 
 /* External variables --------------------------------------------------------*/
 extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
+
 extern uint8_t touch_detected;
 extern uint16_t touchX[FT_REG_NUMTOUCHES];
 extern uint16_t touchY[FT_REG_NUMTOUCHES];
+
 extern grbl_data_t grbl_data;
 extern settings_t settings;
+
+extern pendant_data_t pendant_data;
+
 
 /* Private variables ---------------------------------------------------------*/
 _menu_controller menu_controller = {0};
@@ -101,6 +133,14 @@ static const char *settings_options[SETTINGS_SUBMENUS] = {
 	"MPG axes settings",
 	"MPG spindle settings",
 };
+static const char *mpg_axes_settings[MPG_AXES_SETTINGS] = {
+	"X axis jogging distances",
+	"Y/Z axes jogging distances",
+	"Jogging feed rates",
+};
+static const char *mpg_spindle_settings[MPG_SPINDLE_SETTINGS] = {
+	"Jogging spindle speeds",
+};
 
 //Auto and Manual mode variables
 static grbl_state_t grbl_state = -1;
@@ -109,24 +149,44 @@ static double grbl_offset[3] = {-1,-1,-1};
 static bool grbl_coolant_status[3] = {false, false, false};
 static double grbl_rpm = -1;
 static uint8_t mpg_state = -1;
+static uint8_t pendant_status = -1;
 
 
 /* Private function prototypes -----------------------------------------------*/
+// Button functions
 void init_button_inputs(void);
 void clear_button_channel_cnts(void);
-void process_user_input(void);
+
+// Menu logic functions
 int8_t touch_select_submenu(uint8_t);
 bool touch_exit_submenu(uint8_t);
+void process_user_input(void);
 void r61529_screen_menu(void);
 void draw_loading_screen(void);
+
+// Menu drawing functions
 void draw_menu(void);
 void delete_menu(void);
+
+// Sub-menu drawing functions
 void delete_submenu(uint8_t);
 void select_submenu(uint8_t);
 void unselect_submenu(uint8_t);
+
+// Setting drawing functions
 void delete_setting(uint8_t);
 void select_setting(uint8_t);
 void unselect_setting(uint8_t);
+
+// MPG axes setting drawing functions
+void mpg_axes_delete_setting(uint8_t);
+void mpg_axes_select_setting(uint8_t);
+void mpg_axes_unselect_setting(uint8_t);
+
+// MPG spindle setting drawing functions
+void mpg_spindle_delete_setting(uint8_t);
+void mpg_spindle_select_setting(uint8_t);
+void mpg_spindle_unselect_setting(uint8_t);
 
 // Level 1 menu special functions
 void auto_mode_update_screen(void);
@@ -134,6 +194,13 @@ void manual_mode_update_screen(void);
 
 // Level 2 menu special functions
 void screen_brightness_setting_update_screen(void);
+
+// Level 4 menu special functions
+void mpg_axes_settings_update_setting_screen(void);
+void mpg_spindle_settings_update_setting_screen(void);
+
+// Other functions
+void process_pendant_data_to_action(void);
 
 
 /* Private user code -----------------------------------------------*/
@@ -209,6 +276,25 @@ int8_t touch_select_submenu(uint8_t level){
 						break;
 				}
 				break;
+			case 2:
+				if(((menu_controller.level_indexes[0] & 0xFF00) >> 8) == 2){
+					switch(((menu_controller.level_indexes[1] & 0xFF00) >> 8)){
+						case 1:
+							for(uint8_t i = 0; i < MPG_AXES_SETTINGS; i++){
+								uint16_t base_x = GET_MPG_AXES_SETTING_BLOCK_BASE_X;
+								uint16_t base_y = GET_MPG_AXES_SETTING_BLOCK_BASE_Y(i);
+
+								if((x > base_x && x < (base_x + MPG_AXES_SETTING_BLOCK_WIDTH)) && (y > base_y && y < (base_y + MPG_AXES_SETTING_BLOCK_HEIGHT))){
+									submenu = i;
+									break;
+								}
+							}
+							break;
+						default:
+							break;
+					}
+				}
+				break;
 			default:
 				break;
 		}
@@ -231,6 +317,11 @@ bool touch_exit_submenu(uint8_t level){
 					return true;
 				}
 			case 2:
+				if(x > 410 && y < 40){
+					return true;
+				}
+				break;
+			case 3:
 				if(x > 410 && y < 40){
 					return true;
 				}
@@ -334,47 +425,64 @@ void r61529_screen_menu(void){
 
 					if(get_button_state(BUTTON_ENTER_CH) == GPIO_PIN_RESET){
 						if(++menu_controller.button_delay_cnts[BUTTON_ENTER_CH] == menu_controller.button_delay){
+							static uint8_t procedure_id = 0x00;
 							menu_controller.button_delay_cnts[BUTTON_ENTER_CH] = 0;
 
-							HAL_GPIO_WritePin(TEST_GPIO_Port, TEST_Pin, GPIO_PIN_SET);
-							if(grbl_data.mpgMode){
-								disable_mpg();
-							}else{
-								enable_mpg();
+							if(get_pendant_status() == PENDANT_DISCONNECTED || \
+							  (get_pendant_status() == PENDANT_ERROR && procedure_id == 0x00)){
+								procedure_id = 0x00;
+								connect_pendant();
+							}else if(get_pendant_status() == PENDANT_CONNECTED || \
+							  (get_pendant_status() == PENDANT_ERROR && procedure_id == 0x01)){
+								procedure_id = 0x01;
+								disconnect_pendant();
 							}
-							HAL_GPIO_WritePin(TEST_GPIO_Port, TEST_Pin, GPIO_PIN_RESET);
 						}
 					}
 
+					if(get_pendant_status() == PENDANT_CONNECTED && !grbl_data.mpgMode){
+						enable_mpg();
+					}else if(get_pendant_status() == PENDANT_DISCONNECTED && grbl_data.mpgMode){
+						disable_mpg();
+					}
+
 					if(grbl_data.mpgMode){
-						// Request GRBL data every 100ms
+						// Request GRBL data
 						if(wait_ms_ch(4, 100)){
 							request_report();
 						}
 
-						HAL_GPIO_WritePin(TEST_GPIO_Port, TEST_Pin, GPIO_PIN_SET);
-						/*MOVE X axis +1mm*/if(get_button_state(BUTTON_RIGHT_CH) == GPIO_PIN_RESET){
+						// Request pendant data
+						if(wait_ms_ch(5, 100) && get_pendant_status() == PENDANT_CONNECTED){
+							request_pendant_data();
+						}else if(get_pendant_status() == PENDANT_DATA_RECEIVED){
+							reset_wait_ms_ch(5);
+							process_pendant_data_to_action();
+							set_pendant_status(PENDANT_CONNECTED);
+						}
+
+						// Use button presses for machine movement
+						if(get_button_state(BUTTON_RIGHT_CH) == GPIO_PIN_RESET){ // X -> +1mm
 							if(++menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] == menu_controller.button_delay){
 								menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] = 0;
 								grbl_send_packet((uint8_t*)"$J=G91G21X1F1000\n", 17);
 							}
-						/*MOVE X axis -1mm*/}else if(get_button_state(BUTTON_LEFT_CH) == GPIO_PIN_RESET){
+						}else if(get_button_state(BUTTON_LEFT_CH) == GPIO_PIN_RESET){ // X -> -1mm
 							if(++menu_controller.button_delay_cnts[BUTTON_LEFT_CH] == menu_controller.button_delay){
 								menu_controller.button_delay_cnts[BUTTON_LEFT_CH] = 0;
 								grbl_send_packet((uint8_t*)"$J=G91G21X-1F1000\n", 18);
 							}
-						/*MOVE Y axis +1mm*/}else if(get_button_state(BUTTON_UP_CH) == GPIO_PIN_RESET){
+						}else if(get_button_state(BUTTON_UP_CH) == GPIO_PIN_RESET){ // Y -> +1mm
 							if(++menu_controller.button_delay_cnts[BUTTON_UP_CH] == menu_controller.button_delay){
 								menu_controller.button_delay_cnts[BUTTON_UP_CH] = 0;
 								grbl_send_packet((uint8_t*)"$J=G91G21Y1F1000\n", 17);
 							}
-						/*MOVE Y axis -1mm*/}else if(get_button_state(BUTTON_DOWN_CH) == GPIO_PIN_RESET){
+						}else if(get_button_state(BUTTON_DOWN_CH) == GPIO_PIN_RESET){ // Y -> -1mm
 							if(++menu_controller.button_delay_cnts[BUTTON_DOWN_CH] == menu_controller.button_delay){
 								menu_controller.button_delay_cnts[BUTTON_DOWN_CH] = 0;
 								grbl_send_packet((uint8_t*)"$J=G91G21Y-1F1000\n", 18);
 							}
 						}
-						HAL_GPIO_WritePin(TEST_GPIO_Port, TEST_Pin, GPIO_PIN_RESET);
 					}
 				}else if(((menu_controller.level_indexes[0] & 0xFF00) >> 8) == 2){
 					int8_t index = menu_controller.level_indexes[1] & 0x00FF;
@@ -448,6 +556,73 @@ void r61529_screen_menu(void){
 							htim3.Instance->CCR2 = (menu_controller.brightness_value * htim3.Instance->ARR) / 100;
 							screen_brightness_setting_update_screen();
 						}
+					}else if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 1 || \
+							 ((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 2){
+						int8_t index = menu_controller.level_indexes[2] & 0x00FF;
+						if(get_button_state(BUTTON_DOWN_CH) == GPIO_PIN_RESET){
+							if(++menu_controller.button_delay_cnts[BUTTON_DOWN_CH] == menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_DOWN_CH] == 1){
+								menu_controller.button_delay_cnts[BUTTON_DOWN_CH] = 0;
+								if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 1){
+									if(++index == MPG_AXES_SETTINGS)	index = 0;
+								}else{
+									if(++index == MPG_SPINDLE_SETTINGS)	index = 0;
+								}
+							}
+						}else if(get_button_state(BUTTON_UP_CH) == GPIO_PIN_RESET){
+							if(++menu_controller.button_delay_cnts[BUTTON_UP_CH] == menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_UP_CH] == 1){
+								menu_controller.button_delay_cnts[BUTTON_UP_CH] = 0;
+								if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 1){
+									if(--index < 0)	index = MPG_AXES_SETTINGS - 1;
+								}else{
+									if(--index < 0)	index = MPG_SPINDLE_SETTINGS - 1;
+								}
+							}
+						}else if(get_button_state(BUTTON_ENTER_CH) == GPIO_PIN_RESET){
+							delete_menu();
+							menu_controller.level = 3;
+							menu_controller.level_indexes[2] &= 0x00FF;
+							menu_controller.level_indexes[2] |= menu_controller.level_indexes[2] << 8;
+							draw_menu();
+							break;
+						}
+
+						if(index != (menu_controller.level_indexes[2] & 0x00FF)){
+							if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 1)
+								mpg_axes_unselect_setting((menu_controller.level_indexes[2] & 0x00FF));
+							else
+								mpg_spindle_unselect_setting((menu_controller.level_indexes[2] & 0x00FF));
+
+							menu_controller.level_indexes[2] &= 0x0000;
+							menu_controller.level_indexes[2] |= index;
+
+							if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 1)
+								mpg_axes_select_setting((menu_controller.level_indexes[2] & 0x00FF));
+							else
+								mpg_spindle_select_setting((menu_controller.level_indexes[2] & 0x00FF));
+
+							buzzer_short_ring(2500, 100);
+							//buzzer_short_ring(1250, (uint16_t)(menu_controller.button_delay * INPUT_DELAY_TIME));
+						}
+					}
+				}
+				break;
+			case 3:
+				if(touch_exit_submenu(3)){
+					delete_menu();
+					menu_controller.level = 2;
+					menu_controller.level_indexes[3] = 0;
+					menu_controller.level_indexes[2] &= 0x00FF;
+					draw_menu();
+					break;
+				}else if(get_button_state(BUTTON_BACK_CH) == GPIO_PIN_RESET){
+					if(++menu_controller.button_delay_cnts[BUTTON_BACK_CH] == menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_BACK_CH] == 1){
+						menu_controller.button_delay_cnts[BUTTON_BACK_CH] = 0;
+						delete_menu();
+						menu_controller.level = 2;
+						menu_controller.level_indexes[3] = 0;
+						menu_controller.level_indexes[2] &= 0x00FF;
+						draw_menu();
+						break;
 					}
 				}
 				break;
@@ -548,25 +723,65 @@ void draw_menu(void){
 			}
 			break;
 		case 2:
-			R61529_WriteString(20, 5, settings_options[(menu_controller.level_indexes[1] & 0xFF00 >> 8)], Font_16x26, CYAN, BLACK);
 			R61529_WriteString(410, 5, "Back", Font_16x26, WHITE, RED);
-
 			switch((menu_controller.level_indexes[0] & 0xFF00 >> 8)){
-				case 0:		//MPG Auto mode
+				case 0:		// MPG Auto mode
 					break;
-				case 1:		//MPG Manual mode
+				case 1:		// MPG Manual mode
 					break;
-				case 2:		//Settings
-					if((menu_controller.level_indexes[1] & 0xFF00 >> 8) == 0){				//Screen brightness
+				case 2:		// Settings
+					if((menu_controller.level_indexes[1] & 0xFF00 >> 8) == 0){				// Screen brightness
 						R61529_DrawRect(WHITE, SCREEN_BRIGHTNESS_SETTING_SLIDER_BASE_X, SCREEN_BRIGHTNESS_SETTING_SLIDER_BASE_Y, SCREEN_BRIGHTNESS_SETTING_SLIDER_END_X, SCREEN_BRIGHTNESS_SETTING_SLIDER_END_Y);
 						R61529_WriteString(SCREEN_BRIGHTNESS_SETTING_SLIDER_BASE_X, SCREEN_BRIGHTNESS_SETTING_SLIDER_BASE_Y + SCREEN_BRIGHTNESS_SETTING_SLIDER_HEIGHT + 10, "Brightness - ", Font_11x18, GREEN, BLACK);
 						screen_brightness_setting_update_screen();
-					}else if((menu_controller.level_indexes[1] & 0xFF00 >> 8) == 1){		//MPG axes settings
-					}else if((menu_controller.level_indexes[1] & 0xFF00 >> 8) == 2){		//MPG spindle settings
+					}else if((menu_controller.level_indexes[1] & 0xFF00 >> 8) == 1){		// MPG axes settings
+						for(uint8_t i = 0; i < MPG_AXES_SETTINGS; i++){
+							if(i == (menu_controller.level_indexes[2] & 0x00FF)){
+								mpg_axes_select_setting(i);
+							}else{
+								mpg_axes_unselect_setting(i);
+							}
+						}
+					}else if((menu_controller.level_indexes[1] & 0xFF00 >> 8) == 2){		// MPG spindle settings
+						for(uint8_t i = 0; i < MPG_SPINDLE_SETTINGS; i++){
+							if(i == (menu_controller.level_indexes[2] & 0x00FF)){
+								mpg_spindle_select_setting(i);
+							}else{
+								mpg_spindle_unselect_setting(i);
+							}
+						}
 					}
 					break;
 				default:
 					break;
+			}
+			break;
+		case 3:
+			R61529_WriteString(410, 5, "Back", Font_16x26, WHITE, RED);
+			if((menu_controller.level_indexes[0] & 0xFF00 >> 8) == 2){
+				if((menu_controller.level_indexes[1] & 0xFF00 >> 8) == 1){
+					switch((menu_controller.level_indexes[2] & 0xFF00 >> 8)){
+						case 0:		// X axis jogging distances
+							R61529_WriteString(20, 150, mpg_axes_settings[0], Font_11x18, WHITE, RED);
+							break;
+						case 1:		// Y/Z axes jogging distances
+							R61529_WriteString(20, 150, mpg_axes_settings[1], Font_11x18, WHITE, RED);
+							break;
+						case 2:		// Jogging feed rates
+							R61529_WriteString(20, 150, mpg_axes_settings[2], Font_11x18, WHITE, RED);
+							break;
+						default:
+							break;
+					}
+				}else if((menu_controller.level_indexes[1] & 0xFF00 >> 8) == 2){
+					switch((menu_controller.level_indexes[2] & 0xFF00 >> 8)){
+						case 0:		// Jogging spindle speeds
+							R61529_WriteString(20, 150, mpg_spindle_settings[0], Font_11x18, WHITE, RED);
+							break;
+						default:
+							break;
+					}
+				}
 			}
 			break;
 		default:
@@ -586,27 +801,32 @@ void delete_menu(void){
 			break;
 		case 1:
 			R61529_WriteString(410, 5, "Back", Font_16x26, BLACK, BLACK);
+
+			grbl_rpm = -1;
+			mpg_state = -1;
+			grbl_state = -1;
+			pendant_status = -1;
+			for(uint8_t i = 0; i < 3; i++){
+				grbl_offset[i] = -1;
+				grbl_position[i] = -1;
+				grbl_coolant_status[i] = -1;
+			}
+
 			switch((menu_controller.level_indexes[0] & 0xFF00 >> 8)){
 				case 0: 	//TODO: Auto mode sub-menu screen deletion
 					R61529_FillScreen(BLACK);
-					grbl_state = -1;
-					grbl_rpm = -1;
-					for(uint8_t i = 0; i < 3; i++){
-						grbl_position[i] = -1;
-						grbl_offset[i] = -1;
-						grbl_coolant_status[i] = -1;
-					}
 					break;
 				case 1: 	//TODO: Manual mode sub-menu screen deletion
-					R61529_FillScreen(BLACK);
-					grbl_state = -1;
-					grbl_rpm = -1;
-					mpg_state = -1;
-					for(uint8_t i = 0; i < 3; i++){
-						grbl_position[i] = -1;
-						grbl_offset[i] = -1;
-						grbl_coolant_status[i] = -1;
+					disconnect_pendant();
+					while(get_pendant_status() == PENDANT_DISCONNECTING){
+						disconnect_pendant();
 					}
+
+					if(grbl_data.mpgMode){
+						disable_mpg();
+					}
+
+					R61529_FillScreen(BLACK);
 					break;
 				case 2:		//Settings
 					for(uint8_t i = 0; i < SETTINGS_SUBMENUS; i++){
@@ -618,7 +838,6 @@ void delete_menu(void){
 			}
 			break;
 		case 2:
-			R61529_WriteString(20, 5, settings_options[(menu_controller.level_indexes[1] & 0xFF00 >> 8)], Font_16x26, BLACK, BLACK);
 			R61529_WriteString(410, 5, "Back", Font_16x26, BLACK, BLACK);
 			switch((menu_controller.level_indexes[0] & 0xFF00 >> 8)){
 				case 0:		//MPG Auto mode
@@ -629,11 +848,45 @@ void delete_menu(void){
 					if((menu_controller.level_indexes[1] & 0xFF00 >> 8) == 0){				//Screen brightness
 						R61529_FillRect(BLACK, SCREEN_BRIGHTNESS_SETTING_SLIDER_BASE_X, SCREEN_BRIGHTNESS_SETTING_SLIDER_BASE_Y, SCREEN_BRIGHTNESS_SETTING_SLIDER_END_X, SCREEN_BRIGHTNESS_SETTING_SLIDER_END_Y + 30);
 					}else if((menu_controller.level_indexes[1] & 0xFF00 >> 8) == 1){		//MPG axes settings
+						for(uint8_t i = 0; i < MPG_AXES_SETTINGS; i++){
+							mpg_axes_delete_setting(i);
+						}
 					}else if((menu_controller.level_indexes[1] & 0xFF00 >> 8) == 2){		//MPG spindle settings
+						for(uint8_t i = 0; i < MPG_SPINDLE_SETTINGS; i++){
+							mpg_spindle_delete_setting(i);
+						}
 					}
 					break;
 				default:
 					break;
+			}
+			break;
+		case 3:
+			R61529_WriteString(410, 5, "Back", Font_16x26, BLACK, BLACK);
+			if((menu_controller.level_indexes[0] & 0xFF00 >> 8) == 2){
+				if((menu_controller.level_indexes[1] & 0xFF00 >> 8) == 1){
+					switch((menu_controller.level_indexes[2] & 0xFF00 >> 8)){
+						case 0:		// X axis jogging distances
+							R61529_WriteString(20, 150, mpg_axes_settings[0], Font_11x18, BLACK, BLACK);
+							break;
+						case 1:		// Y/Z axes jogging distances
+							R61529_WriteString(20, 150, mpg_axes_settings[1], Font_11x18, BLACK, BLACK);
+							break;
+						case 2:		// Jogging feed rates
+							R61529_WriteString(20, 150, mpg_axes_settings[2], Font_11x18, BLACK, BLACK);
+							break;
+						default:
+							break;
+					}
+				}else if((menu_controller.level_indexes[1] & 0xFF00 >> 8) == 2){
+					switch((menu_controller.level_indexes[2] & 0xFF00 >> 8)){
+						case 0:		// Jogging spindle speeds
+							R61529_WriteString(20, 150, mpg_spindle_settings[0], Font_11x18, BLACK, BLACK);
+							break;
+						default:
+							break;
+					}
+				}
 			}
 			break;
 		default:
@@ -669,6 +922,10 @@ void draw_loading_screen(void){
 	R61529_FillScreen(BLACK);
 	draw_menu();
 }
+
+
+
+
 
 /**
   * @brief Delete a given sub-menu
@@ -718,6 +975,10 @@ void unselect_submenu(uint8_t index){
 	R61529_WriteString(submenu_text_base_x, submenu_text_base_y, main_menu_options[index], Font_11x18, WHITE, ORANGE);
 }
 
+
+
+
+
 /**
   * @brief Delete a given setting in Settings sub-menu
   */
@@ -765,6 +1026,113 @@ void unselect_setting(uint8_t index){
 	R61529_FillRect(GRAY, setting_base_x, setting_base_y, setting_base_x + SETTING_BLOCK_WIDTH, setting_base_y + SETTING_BLOCK_HEIGHT);
 	R61529_WriteString(setting_text_base_x, setting_text_base_y, settings_options[index], Font_11x18, WHITE, GRAY);
 }
+
+
+
+
+
+/**
+  * @brief Select a given mpg axis setting in "MPG axes settings" sub-menu
+  */
+void mpg_axes_delete_setting(uint8_t index){
+	uint16_t setting_base_x = GET_MPG_AXES_SETTING_BLOCK_BASE_X;
+	uint16_t setting_base_y = GET_MPG_AXES_SETTING_BLOCK_BASE_Y(index);
+
+	if(index > (MPG_AXES_SETTINGS - 1)){
+		return;
+	}
+
+	R61529_FillRect(BLACK, setting_base_x, setting_base_y, setting_base_x + MPG_AXES_SETTING_BLOCK_WIDTH, setting_base_y + MPG_AXES_SETTING_BLOCK_HEIGHT);
+}
+
+/**
+  * @brief Select a given mpg axis setting in "MPG axes settings" sub-menu
+  */
+void mpg_axes_select_setting(uint8_t index){
+	uint16_t setting_base_x = GET_MPG_AXES_SETTING_BLOCK_BASE_X;
+	uint16_t setting_base_y = GET_MPG_AXES_SETTING_BLOCK_BASE_Y(index);
+	uint16_t setting_text_base_x = GET_MPG_AXES_SETTING_BLOCK_TEXT_BASE_X;
+	uint16_t setting_text_base_y = GET_MPG_AXES_SETTING_BLOCK_TEXT_BASE_Y(index);
+
+	if(index > (MPG_AXES_SETTINGS - 1)){
+		return;
+	}
+
+	R61529_FillRect(GREEN, setting_base_x, setting_base_y, setting_base_x + MPG_AXES_SETTING_BLOCK_WIDTH, setting_base_y + MPG_AXES_SETTING_BLOCK_HEIGHT);
+	R61529_WriteString(setting_text_base_x, setting_text_base_y, mpg_axes_settings[index], Font_11x18, BROWN, GREEN);
+}
+
+/**
+  * @brief Un-select a given mpg axis setting in "MPG axes settings" sub-menu
+  */
+void mpg_axes_unselect_setting(uint8_t index){
+	uint16_t setting_base_x = GET_MPG_AXES_SETTING_BLOCK_BASE_X;
+	uint16_t setting_base_y = GET_MPG_AXES_SETTING_BLOCK_BASE_Y(index);
+	uint16_t setting_text_base_x = GET_MPG_AXES_SETTING_BLOCK_TEXT_BASE_X;
+	uint16_t setting_text_base_y = GET_MPG_AXES_SETTING_BLOCK_TEXT_BASE_Y(index);
+
+	if(index > (MPG_AXES_SETTINGS - 1)){
+		return;
+	}
+
+	R61529_FillRect(GRAY, setting_base_x, setting_base_y, setting_base_x + MPG_AXES_SETTING_BLOCK_WIDTH, setting_base_y + MPG_AXES_SETTING_BLOCK_HEIGHT);
+	R61529_WriteString(setting_text_base_x, setting_text_base_y, mpg_axes_settings[index], Font_11x18, WHITE, GRAY);
+}
+
+
+
+
+
+/**
+  * @brief Select a given mpg spindle setting in "MPG spindle settings" sub-menu
+  */
+void mpg_spindle_delete_setting(uint8_t index){
+	uint16_t setting_base_x = GET_MPG_SPINDLE_SETTING_BLOCK_BASE_X;
+	uint16_t setting_base_y = GET_MPG_SPINDLE_SETTING_BLOCK_BASE_Y(index);
+
+	if(index > (MPG_SPINDLE_SETTINGS - 1)){
+		return;
+	}
+
+	R61529_FillRect(BLACK, setting_base_x, setting_base_y, setting_base_x + MPG_SPINDLE_SETTING_BLOCK_WIDTH, setting_base_y + MPG_SPINDLE_SETTING_BLOCK_HEIGHT);
+}
+
+/**
+  * @brief Select a given mpg spindle setting in "MPG spindle settings" sub-menu
+  */
+void mpg_spindle_select_setting(uint8_t index){
+	uint16_t setting_base_x = GET_MPG_SPINDLE_SETTING_BLOCK_BASE_X;
+	uint16_t setting_base_y = GET_MPG_SPINDLE_SETTING_BLOCK_BASE_Y(index);
+	uint16_t setting_text_base_x = GET_MPG_SPINDLE_SETTING_BLOCK_TEXT_BASE_X;
+	uint16_t setting_text_base_y = GET_MPG_SPINDLE_SETTING_BLOCK_TEXT_BASE_Y(index);
+
+	if(index > (MPG_SPINDLE_SETTINGS - 1)){
+		return;
+	}
+
+	R61529_FillRect(GREEN, setting_base_x, setting_base_y, setting_base_x + MPG_SPINDLE_SETTING_BLOCK_WIDTH, setting_base_y + MPG_SPINDLE_SETTING_BLOCK_HEIGHT);
+	R61529_WriteString(setting_text_base_x, setting_text_base_y, mpg_spindle_settings[index], Font_11x18, BROWN, GREEN);
+}
+
+/**
+  * @brief Un-select a given mpg spindle setting in "MPG spindle settings" sub-menu
+  */
+void mpg_spindle_unselect_setting(uint8_t index){
+	uint16_t setting_base_x = GET_MPG_SPINDLE_SETTING_BLOCK_BASE_X;
+	uint16_t setting_base_y = GET_MPG_SPINDLE_SETTING_BLOCK_BASE_Y(index);
+	uint16_t setting_text_base_x = GET_MPG_SPINDLE_SETTING_BLOCK_TEXT_BASE_X;
+	uint16_t setting_text_base_y = GET_MPG_SPINDLE_SETTING_BLOCK_TEXT_BASE_Y(index);
+
+	if(index > (MPG_SPINDLE_SETTINGS - 1)){
+		return;
+	}
+
+	R61529_FillRect(GRAY, setting_base_x, setting_base_y, setting_base_x + MPG_SPINDLE_SETTING_BLOCK_WIDTH, setting_base_y + MPG_SPINDLE_SETTING_BLOCK_HEIGHT);
+	R61529_WriteString(setting_text_base_x, setting_text_base_y, mpg_spindle_settings[index], Font_11x18, WHITE, GRAY);
+}
+
+
+
 
 
 /**
@@ -1053,6 +1421,43 @@ void manual_mode_update_screen(void){
 		R61529_WriteString(10, 40, mpg_state_str, Font_11x18, color, BLACK);
 	}
 
+	// Display MPG pendant status
+	if(pendant_status == -1 || (pendant_status != get_pendant_status() && \
+	   get_pendant_status() != PENDANT_AWAITING_DATA && \
+	   get_pendant_status() != PENDANT_DATA_RECEIVED)){
+		uint16_t color = WHITE;
+		char pendant_status_str[30] = {0};
+
+		pendant_status = get_pendant_status();
+		switch(pendant_status){
+			case PENDANT_DISCONNECTED:
+				strcpy(pendant_status_str, "Pendant DISCONNECTED");
+				color = RED;
+				break;
+			case PENDANT_CONNECTED:
+				strcpy(pendant_status_str, "Pendant CONNECTED");
+				color = GREEN;
+				break;
+			case PENDANT_CONNECTING:
+				strcpy(pendant_status_str, "Pendant CONNECTING");
+				color = ORANGE;
+				break;
+			case PENDANT_DISCONNECTING:
+				color = ORANGE;
+				strcpy(pendant_status_str, "Pendant DISCONNECTING");
+				break;
+			case PENDANT_ERROR:
+				strcpy(pendant_status_str, "Pendant COMM. ERROR");
+				color = YELLOW;
+				break;
+			default:
+				break;
+		}
+
+		R61529_FillRect(BLACK, 160, 40, 395, 60);
+		R61529_WriteString(160, 40, pendant_status_str, Font_11x18, color, BLACK);
+	}
+
 	// Display RPM
 	if(grbl_rpm != grbl_data.spindle.rpm_programmed){
 		uint16_t color = WHITE;
@@ -1089,4 +1494,50 @@ void screen_brightness_setting_update_screen(void){
 	if((end_x + 1) != SCREEN_BRIGHTNESS_SETTING_SLIDER_END_X){
 		R61529_FillRect(GRAY, end_x + 1, SCREEN_BRIGHTNESS_SETTING_SLIDER_BASE_Y + 1, SCREEN_BRIGHTNESS_SETTING_SLIDER_END_X - 1, SCREEN_BRIGHTNESS_SETTING_SLIDER_END_Y - 1);
 	}
+}
+
+
+void process_pendant_data_to_action(void){
+	static pendant_data_t data = {0};
+	pendant_data_t current_data;
+	pendant_action_t action = {0};
+
+	// Copy current pendant data into local structure
+	memcpy(&current_data, &pendant_data, sizeof(pendant_data_t));
+
+	// Encoder X
+	if((current_data.encoder1_val > data.encoder1_val) && (current_data.encoder1_val - data.encoder1_val) < 300){
+		action.encoder1_val_diff = current_data.encoder1_val - data.encoder1_val;
+	}else if(current_data.encoder1_val > data.encoder1_val){
+		action.encoder1_val_diff = -((0xFFFF - current_data.encoder1_val) + data.encoder1_val);
+	}else if((current_data.encoder1_val < data.encoder1_val) && (data.encoder1_val - current_data.encoder1_val) < 300){
+		action.encoder1_val_diff = current_data.encoder1_val - data.encoder1_val;
+	}else if(current_data.encoder1_val < data.encoder1_val){
+		action.encoder1_val_diff = -((0xFFFF - data.encoder1_val) + current_data.encoder1_val);
+	}
+
+	// Encoder YZ
+	if((current_data.encoder2_val > data.encoder2_val) && (current_data.encoder2_val - data.encoder2_val) < 300){
+		action.encoder2_val_diff = current_data.encoder2_val - data.encoder2_val;
+	}else if(current_data.encoder2_val > data.encoder2_val){
+		action.encoder2_val_diff = -((0xFFFF - current_data.encoder2_val) + data.encoder2_val);
+	}else if((current_data.encoder2_val < data.encoder2_val) && (data.encoder2_val - current_data.encoder2_val) < 300){
+		action.encoder2_val_diff = current_data.encoder2_val - data.encoder2_val;
+	}else if(current_data.encoder2_val < data.encoder2_val){
+		action.encoder2_val_diff = -((0xFFFF - data.encoder2_val) + current_data.encoder2_val);
+	}
+
+	// Copy the rest of the data
+	action.x_axis_multiplicity = current_data.x_axis_multiplicity;
+	action.yz_axis_multiplicity = current_data.yz_axis_multiplicity;
+	action.y_or_z = current_data.y_or_z;
+	action.spindle_mode = current_data.spindle_mode;
+	action.jog_mode = current_data.jog_mode;
+	action.buttons = current_data.buttons;
+
+	// Translate pendant data into actions
+	pendant_data_to_action(action);
+
+	// Save current data
+	memcpy(&data, &current_data, sizeof(pendant_data_t));
 }

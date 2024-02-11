@@ -85,7 +85,7 @@ bool disable_mpg(void){
 }
 
 uint8_t grbl_send_packet(uint8_t *packet, uint16_t packet_size){
-	if(HAL_UART_Transmit(&MPG_UART, packet, packet_size, 20) != HAL_OK){
+	if(packet_size && HAL_UART_Transmit(&MPG_UART, packet, packet_size, 20) != HAL_OK){
     	return 1;
     }
 

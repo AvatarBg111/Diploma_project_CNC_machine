@@ -1,0 +1,5 @@
+../Core/Src/main.c:134:6:SystemClock_Config	3
+../Core/Src/main.c:464:6:Init_interfaces	1
+../Core/Src/main.c:84:5:main	15
+../Core/Src/main.c:485:9:get_3pos_sw_state	3
+../Core/Src/main.c:510:6:Error_Handler	1

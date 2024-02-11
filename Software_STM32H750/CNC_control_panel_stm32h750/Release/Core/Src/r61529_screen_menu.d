@@ -1,5 +1,5 @@
 Core/Src/r61529_screen_menu.o: ../Core/Src/r61529_screen_menu.c \
- ../Core/Inc/r61529_screen_menu.h ../Core/Inc/main.h \
+ ../Core/MPGmovement/mpg_movement.h ../Core/Inc/main.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h \
  ../Core/Inc/stm32h7xx_hal_conf.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc.h \
@@ -32,14 +32,15 @@ Core/Src/r61529_screen_menu.o: ../Core/Src/r61529_screen_menu.c \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h \
- ../Core/R61529/r61529.h ../Core/Inc/main.h ../Core/R61529/fonts.h \
- ../Core/FT5436/ft5436.h ../Core/Inc/buttons.h \
- ../Core/Inc/systick_timer.h ../Core/SoundFX/sound_fx.h \
- ../Core/Inc/stm32h7xx_it.h ../Core/Src/../grblHALComm/parser.h \
+ ../Core/Inc/r61529_screen_menu.h ../Core/Inc/main.h \
+ ../Core/R61529/r61529.h ../Core/R61529/fonts.h ../Core/FT5436/ft5436.h \
+ ../Core/Inc/buttons.h ../Core/SoundFX/sound_fx.h \
+ ../Core/Inc/stm32h7xx_it.h ../Core/MPGpendant/mpg_pendant.h \
+ ../Core/Src/../grblHALComm/parser.h \
  ../Core/Src/../grblHALComm/../grblHALComm/grbl.h \
  ../Core/Src/../grblHALComm/../grblHALComm/i2c_interface.h \
- ../Core/Src/../grblHALComm/sender.h
-../Core/Inc/r61529_screen_menu.h:
+ ../Core/Src/../grblHALComm/sender.h ../Core/Inc/systick_timer.h
+../Core/MPGmovement/mpg_movement.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 ../Core/Inc/stm32h7xx_hal_conf.h:
@@ -73,15 +74,17 @@ Core/Src/r61529_screen_menu.o: ../Core/Src/r61529_screen_menu.c \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h:
-../Core/R61529/r61529.h:
+../Core/Inc/r61529_screen_menu.h:
 ../Core/Inc/main.h:
+../Core/R61529/r61529.h:
 ../Core/R61529/fonts.h:
 ../Core/FT5436/ft5436.h:
 ../Core/Inc/buttons.h:
-../Core/Inc/systick_timer.h:
 ../Core/SoundFX/sound_fx.h:
 ../Core/Inc/stm32h7xx_it.h:
+../Core/MPGpendant/mpg_pendant.h:
 ../Core/Src/../grblHALComm/parser.h:
 ../Core/Src/../grblHALComm/../grblHALComm/grbl.h:
 ../Core/Src/../grblHALComm/../grblHALComm/i2c_interface.h:
 ../Core/Src/../grblHALComm/sender.h:
+../Core/Inc/systick_timer.h:
