@@ -21,6 +21,7 @@
 
 /* External variables --------------------------------------------------------*/
 extern grbl_data_t grbl_data;
+extern pendant_data_t pendant_data;
 
 
 /* Private variables ---------------------------------------------------------*/
@@ -31,6 +32,9 @@ mpg_settings_t mpg_settings = {
 	.spindle_speed = SPINDLE_SPEED_DEFAULT,
 	.spindle_mode = SPINDLE_MODE_OFF,
 };
+const double X_AXIS_MULTIPLICITY_DIFF[3] = {0.01, 0.1, 0.1};
+const double YZ_AXIS_MULTIPLICITY_DIFF[3] = {0.01, 0.1, 0.1};
+const double JOG_SPEED_DIFF[3] = {10, 50, 100};
 
 
 /* Private function prototypes -----------------------------------------------*/
@@ -39,8 +43,12 @@ void pendant_data_to_action(pendant_action_t);
 
 /* Private user code -----------------------------------------------*/
 void pendant_data_to_action(pendant_action_t data){
+	double x_multiplicity = mpg_settings.x_axis_multiplicity[pendant_data.jog_mode];
+	double yz_multiplicity = mpg_settings.yz_axis_multiplicity[pendant_data.jog_mode];
+	/*
 	double x_multiplicity = mpg_settings.x_axis_multiplicity[data.x_axis_multiplicity];
 	double yz_multiplicity = mpg_settings.yz_axis_multiplicity[data.yz_axis_multiplicity];
+	*/
 	double x_movement = data.encoder1_val_diff * x_multiplicity;
 	double yz_movement = data.encoder2_val_diff * yz_multiplicity;
 	char grbl_movement_str[50] = {0};

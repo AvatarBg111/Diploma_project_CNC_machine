@@ -13,6 +13,7 @@
 #include "buttons.h"
 #include "sound_fx.h"
 #include "mpg_pendant.h"
+#include "mpg_movement.h"
 #include "../grblHALComm/parser.h"
 #include "../grblHALComm/sender.h"
 #include "systick_timer.h"
@@ -33,25 +34,53 @@
 #define SUBMENU_BLOCK_Y_MARGIN 30
 
 #define SETTINGS_SUBMENUS 3
-#define SETTING_BLOCK_WIDTH 250
+#define SETTING_BLOCK_WIDTH 300
 #define SETTING_BLOCK_HEIGHT 40
-#define SETTING_BLOCK_Y_OFFSET 20
 #define SETTING_BLOCK_X_MARGIN 20
-#define SETTING_BLOCK_Y_MARGIN 20
+#define SETTING_BLOCK_Y_MARGIN 60
+#define SETTING_BLOCK_Y_OFFSET 20
 
 #define MPG_AXES_SETTINGS 3
 #define MPG_AXES_SETTING_BLOCK_WIDTH 300
 #define MPG_AXES_SETTING_BLOCK_HEIGHT 30
-#define MPG_AXES_SETTING_BLOCK_Y_OFFSET 20
 #define MPG_AXES_SETTING_BLOCK_X_MARGIN 20
-#define MPG_AXES_SETTING_BLOCK_Y_MARGIN 20
+#define MPG_AXES_SETTING_BLOCK_Y_MARGIN 80
+#define MPG_AXES_SETTING_BLOCK_Y_OFFSET 20
+
+#define X_AXIS_DIST_SETTINGS 3
+#define X_AXIS_DIST_SETTING_BLOCK_WIDTH 300
+#define X_AXIS_DIST_SETTING_BLOCK_HEIGHT 50
+#define X_AXIS_DIST_SETTING_X_MARGIN 40
+#define X_AXIS_DIST_SETTING_Y_MARGIN 80
+#define X_AXIS_DIST_SETTING_Y_OFFSET 20
+
+#define YZ_AXIS_DIST_SETTINGS 3
+#define YZ_AXIS_DIST_SETTING_BLOCK_WIDTH 300
+#define YZ_AXIS_DIST_SETTING_BLOCK_HEIGHT 50
+#define YZ_AXIS_DIST_SETTING_X_MARGIN 40
+#define YZ_AXIS_DIST_SETTING_Y_MARGIN 80
+#define YZ_AXIS_DIST_SETTING_Y_OFFSET 20
+
+#define JOG_FEED_SETTINGS 3
+#define JOG_FEED_SETTING_BLOCK_WIDTH 300
+#define JOG_FEED_SETTING_BLOCK_HEIGHT 50
+#define JOG_FEED_SETTING_X_MARGIN 40
+#define JOG_FEED_SETTING_Y_MARGIN 80
+#define JOG_FEED_SETTING_Y_OFFSET 20
 
 #define MPG_SPINDLE_SETTINGS 1
 #define MPG_SPINDLE_SETTING_BLOCK_WIDTH 250
 #define MPG_SPINDLE_SETTING_BLOCK_HEIGHT 40
-#define MPG_SPINDLE_SETTING_BLOCK_Y_OFFSET 20
 #define MPG_SPINDLE_SETTING_BLOCK_X_MARGIN 20
-#define MPG_SPINDLE_SETTING_BLOCK_Y_MARGIN 20
+#define MPG_SPINDLE_SETTING_BLOCK_Y_MARGIN 80
+#define MPG_SPINDLE_SETTING_BLOCK_Y_OFFSET 20
+
+#define SPINDLE_SPEED_SETTING_SLIDER_BASE_X	40
+#define SPINDLE_SPEED_SETTING_SLIDER_BASE_Y 80
+#define SPINDLE_SPEED_SETTING_SLIDER_WIDTH	300
+#define SPINDLE_SPEED_SETTING_SLIDER_HEIGHT	30
+#define SPINDLE_SPEED_SETTING_SLIDER_END_X	(SPINDLE_SPEED_SETTING_SLIDER_WIDTH + SPINDLE_SPEED_SETTING_SLIDER_BASE_X)
+#define SPINDLE_SPEED_SETTING_SLIDER_END_Y	(SPINDLE_SPEED_SETTING_SLIDER_HEIGHT + SPINDLE_SPEED_SETTING_SLIDER_BASE_Y)
 
 #define SCREEN_BRIGHTNESS_SETTING_SLIDER_BASE_X	20
 #define SCREEN_BRIGHTNESS_SETTING_SLIDER_BASE_Y 60
@@ -67,6 +96,7 @@
 #define BUTTON_RIGHT_CH 3
 #define BUTTON_ENTER_CH 4
 #define BUTTON_BACK_CH 5
+
 #define INPUT_DELAY_TIME 20
 #define DEFAULT_DELAY 200
 
@@ -101,6 +131,21 @@ typedef struct{
 #define GET_MPG_AXES_SETTING_BLOCK_TEXT_BASE_X (GET_MPG_AXES_SETTING_BLOCK_BASE_X + ((MPG_AXES_SETTING_BLOCK_WIDTH - (strlen(mpg_axes_settings[index]) * 11)) / 2))
 #define GET_MPG_AXES_SETTING_BLOCK_TEXT_BASE_Y(index) (GET_MPG_AXES_SETTING_BLOCK_BASE_Y(index) + ((MPG_AXES_SETTING_BLOCK_HEIGHT - 18) / 2))
 
+#define GET_X_AXIS_DIST_SETTING_BLOCK_BASE_X X_AXIS_DIST_SETTING_X_MARGIN
+#define GET_X_AXIS_DIST_SETTING_BLOCK_BASE_Y(index) (X_AXIS_DIST_SETTING_Y_MARGIN + (index * X_AXIS_DIST_SETTING_Y_OFFSET) + (index * X_AXIS_DIST_SETTING_BLOCK_HEIGHT))
+#define GET_X_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_X (GET_X_AXIS_DIST_SETTING_BLOCK_BASE_X + 10)
+#define GET_X_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_Y(index) (GET_X_AXIS_DIST_SETTING_BLOCK_BASE_Y(index) + ((X_AXIS_DIST_SETTING_BLOCK_HEIGHT - 26) / 2))
+
+#define GET_YZ_AXIS_DIST_SETTING_BLOCK_BASE_X YZ_AXIS_DIST_SETTING_X_MARGIN
+#define GET_YZ_AXIS_DIST_SETTING_BLOCK_BASE_Y(index) (YZ_AXIS_DIST_SETTING_Y_MARGIN + (index * YZ_AXIS_DIST_SETTING_Y_OFFSET) + (index * YZ_AXIS_DIST_SETTING_BLOCK_HEIGHT))
+#define GET_YZ_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_X (GET_YZ_AXIS_DIST_SETTING_BLOCK_BASE_X + 10)
+#define GET_YZ_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_Y(index) (GET_YZ_AXIS_DIST_SETTING_BLOCK_BASE_Y(index) + ((YZ_AXIS_DIST_SETTING_BLOCK_HEIGHT - 26) / 2))
+
+#define GET_JOG_FEED_SETTING_BLOCK_BASE_X JOG_FEED_SETTING_X_MARGIN
+#define GET_JOG_FEED_SETTING_BLOCK_BASE_Y(index) (JOG_FEED_SETTING_Y_MARGIN + (index * JOG_FEED_SETTING_Y_OFFSET) + (index * JOG_FEED_SETTING_BLOCK_HEIGHT))
+#define GET_JOG_FEED_SETTING_BLOCK_TEXT_BASE_X (GET_JOG_FEED_SETTING_BLOCK_BASE_X + 10)
+#define GET_JOG_FEED_SETTING_BLOCK_TEXT_BASE_Y(index) (GET_JOG_FEED_SETTING_BLOCK_BASE_Y(index) + ((JOG_FEED_SETTING_BLOCK_HEIGHT - 26) / 2))
+
 #define GET_MPG_SPINDLE_SETTING_BLOCK_BASE_X MPG_SPINDLE_SETTING_BLOCK_X_MARGIN
 #define GET_MPG_SPINDLE_SETTING_BLOCK_BASE_Y(index) (MPG_SPINDLE_SETTING_BLOCK_Y_MARGIN + (index * MPG_SPINDLE_SETTING_BLOCK_Y_OFFSET) + (index * MPG_SPINDLE_SETTING_BLOCK_HEIGHT))
 #define GET_MPG_SPINDLE_SETTING_BLOCK_TEXT_BASE_X (GET_MPG_SPINDLE_SETTING_BLOCK_BASE_X + ((MPG_SPINDLE_SETTING_BLOCK_WIDTH - (strlen(mpg_spindle_settings[index]) * 11)) / 2))
@@ -117,6 +162,11 @@ extern uint16_t touchY[FT_REG_NUMTOUCHES];
 
 extern grbl_data_t grbl_data;
 extern settings_t settings;
+
+extern mpg_settings_t mpg_settings;
+extern const double X_AXIS_MULTIPLICITY_DIFF[3];
+extern const double YZ_AXIS_MULTIPLICITY_DIFF[3];
+extern const double JOG_SPEED_DIFF[3];
 
 extern pendant_data_t pendant_data;
 
@@ -139,8 +189,24 @@ static const char *mpg_axes_settings[MPG_AXES_SETTINGS] = {
 	"Jogging feed rates",
 };
 static const char *mpg_spindle_settings[MPG_SPINDLE_SETTINGS] = {
-	"Jogging spindle speeds",
+	"Jogging spindle speed",
 };
+static const char *x_axis_dist_settings[X_AXIS_DIST_SETTINGS] = {
+	"SLOW",
+	"MEDIUM",
+	"FAST",
+};
+static const char *yz_axis_dist_settings[YZ_AXIS_DIST_SETTINGS] = {
+	"SLOW",
+	"MEDIUM",
+	"FAST",
+};
+static const char *jog_feed_settings[JOG_FEED_SETTINGS] = {
+	"SLOW",
+	"MEDIUM",
+	"FAST",
+};
+
 
 //Auto and Manual mode variables
 static grbl_state_t grbl_state = -1;
@@ -150,6 +216,7 @@ static bool grbl_coolant_status[3] = {false, false, false};
 static double grbl_rpm = -1;
 static uint8_t mpg_state = -1;
 static uint8_t pendant_status = -1;
+static uint8_t pendant_jog_mode = -1;
 
 
 /* Private function prototypes -----------------------------------------------*/
@@ -162,11 +229,11 @@ int8_t touch_select_submenu(uint8_t);
 bool touch_exit_submenu(uint8_t);
 void process_user_input(void);
 void r61529_screen_menu(void);
-void draw_loading_screen(void);
 
 // Menu drawing functions
 void draw_menu(void);
 void delete_menu(void);
+void draw_loading_screen(void);
 
 // Sub-menu drawing functions
 void delete_submenu(uint8_t);
@@ -196,14 +263,24 @@ void manual_mode_update_screen(void);
 void screen_brightness_setting_update_screen(void);
 
 // Level 4 menu special functions
-void mpg_axes_settings_update_setting_screen(void);
-void mpg_spindle_settings_update_setting_screen(void);
+void delete_x_axis_dist_setting(uint8_t);
+void select_x_axis_dist_setting(uint8_t);
+void unselect_x_axis_dist_setting(uint8_t);
+void delete_yz_axis_dist_setting(uint8_t);
+void select_yz_axis_dist_setting(uint8_t);
+void unselect_yz_axis_dist_setting(uint8_t);
+void delete_jog_feed_setting(uint8_t);
+void select_jog_feed_setting(uint8_t);
+void unselect_jog_feed_setting(uint8_t);
+void mpg_axes_update_settings(void);
+void mpg_spindle_update_setting(void);
 
 // Other functions
 void process_pendant_data_to_action(void);
 
 
 /* Private user code -----------------------------------------------*/
+//// Button functions ////
 /**
   * @brief Initialize button inputs
   * Button channels (physical to logical representation)
@@ -238,6 +315,11 @@ void clear_button_channel_cnts(void){
 	}
 }
 
+
+
+
+
+//// Menu logic functions////
 /**
   * @brief Return if sub-menu is selected using touch screen
   */
@@ -248,7 +330,7 @@ int8_t touch_select_submenu(uint8_t level){
 		uint16_t x = menu_controller.touch_points[0][0];
 		uint16_t y = menu_controller.touch_points[0][1];
 		switch(level){
-			case 0:		//Main menu
+			case 0:	// Main menu
 				for(uint8_t i = 0; i < SUBMENUS; i++){
 					uint16_t base_x = GET_SUBMENU_BLOCK_BASE_X(i);
 					uint16_t base_y = GET_SUBMENU_BLOCK_BASE_Y;
@@ -261,7 +343,7 @@ int8_t touch_select_submenu(uint8_t level){
 				break;
 			case 1:
 				switch(((menu_controller.level_indexes[0] & 0xFF00) >> 8)){
-					case 2:
+					case 2: // Settings
 						for(uint8_t i = 0; i < SUBMENUS; i++){
 							uint16_t base_x = GET_SETTING_BLOCK_BASE_X;
 							uint16_t base_y = GET_SETTING_BLOCK_BASE_Y(i);
@@ -279,12 +361,23 @@ int8_t touch_select_submenu(uint8_t level){
 			case 2:
 				if(((menu_controller.level_indexes[0] & 0xFF00) >> 8) == 2){
 					switch(((menu_controller.level_indexes[1] & 0xFF00) >> 8)){
-						case 1:
+						case 1: // MPG axes settings
 							for(uint8_t i = 0; i < MPG_AXES_SETTINGS; i++){
 								uint16_t base_x = GET_MPG_AXES_SETTING_BLOCK_BASE_X;
 								uint16_t base_y = GET_MPG_AXES_SETTING_BLOCK_BASE_Y(i);
 
 								if((x > base_x && x < (base_x + MPG_AXES_SETTING_BLOCK_WIDTH)) && (y > base_y && y < (base_y + MPG_AXES_SETTING_BLOCK_HEIGHT))){
+									submenu = i;
+									break;
+								}
+							}
+							break;
+						case 2: // MPG spindle settings
+							for(uint8_t i = 0; i < MPG_SPINDLE_SETTINGS; i++){
+								uint16_t base_x = GET_MPG_SPINDLE_SETTING_BLOCK_BASE_X;
+								uint16_t base_y = GET_MPG_SPINDLE_SETTING_BLOCK_BASE_Y(i);
+
+								if((x > base_x && x < (base_x + MPG_SPINDLE_SETTING_BLOCK_WIDTH)) && (y > base_y && y < (base_y + MPG_SPINDLE_SETTING_BLOCK_HEIGHT))){
 									submenu = i;
 									break;
 								}
@@ -340,6 +433,7 @@ bool touch_exit_submenu(uint8_t level){
 void r61529_screen_menu(void){
 	if(wait_ms_ch(0, INPUT_DELAY_TIME)){
 		int8_t touch_selected_submenu;
+		int8_t index;
 
 		// Check for screen touch data
 		menu_controller.touch_point_cnt = touch_detected;
@@ -353,10 +447,34 @@ void r61529_screen_menu(void){
 			}
 		}
 
-		//Clear the counters of the button channels
+		// Clear the counters of the button channels
 		clear_button_channel_cnts();
 
-		//Go to a given sub-menu based on touch screen data
+		// Set LEDs
+		if(grbl_data.grbl.state == Run || grbl_data.grbl.state == Jog){
+			HAL_GPIO_WritePin(USER_LED_B_GPIO_Port, USER_LED_B_Pin, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(USER_LED_C_GPIO_Port, USER_LED_C_Pin, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(USER_LED_D_GPIO_Port, USER_LED_D_Pin, GPIO_PIN_RESET);
+		}else if(grbl_data.grbl.state == Hold){
+			HAL_GPIO_WritePin(USER_LED_B_GPIO_Port, USER_LED_B_Pin, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(USER_LED_C_GPIO_Port, USER_LED_C_Pin, GPIO_PIN_SET);
+			HAL_GPIO_WritePin(USER_LED_D_GPIO_Port, USER_LED_D_Pin, GPIO_PIN_RESET);
+		}else if(grbl_data.grbl.state == Alarm || grbl_data.grbl.state == Check || grbl_data.grbl.state == Door){
+			HAL_GPIO_WritePin(USER_LED_B_GPIO_Port, USER_LED_B_Pin, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(USER_LED_C_GPIO_Port, USER_LED_C_Pin, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(USER_LED_D_GPIO_Port, USER_LED_D_Pin, GPIO_PIN_SET);
+		}else if(grbl_data.grbl.state == Idle){
+			HAL_GPIO_WritePin(USER_LED_B_GPIO_Port, USER_LED_B_Pin, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(USER_LED_C_GPIO_Port, USER_LED_C_Pin, GPIO_PIN_RESET);
+			HAL_GPIO_WritePin(USER_LED_D_GPIO_Port, USER_LED_D_Pin, GPIO_PIN_RESET);
+		}
+		if(grbl_data.coolant.flood || grbl_data.coolant.mist || grbl_data.coolant.shower || grbl_data.coolant.trough_spindle){
+			HAL_GPIO_WritePin(USER_LED_A_GPIO_Port, USER_LED_A_Pin, GPIO_PIN_SET);
+		}else{
+			HAL_GPIO_WritePin(USER_LED_A_GPIO_Port, USER_LED_A_Pin, GPIO_PIN_RESET);
+		}
+
+		// Go to a given sub-menu based on touch screen data
 		touch_selected_submenu = touch_select_submenu(menu_controller.level);
 		if(touch_selected_submenu != -1){
 			delete_menu();
@@ -368,15 +486,21 @@ void r61529_screen_menu(void){
 
 		switch(menu_controller.level){
 			case 0:		//Main menu
-				int8_t index = menu_controller.level_indexes[0] & 0x00FF;
+				index = (int8_t)menu_controller.level_indexes[0] & 0x00FF;
 				if(get_button_state(BUTTON_RIGHT_CH) == GPIO_PIN_RESET){
 					if(++menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] == menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] == 1){
-						menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] = 0;
-						if(++index == SUBMENUS)	index = 0;
+						if(menu_controller.button_delay_cnts[BUTTON_RIGHT_CH]++ != 1){
+							menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] = 0;
+						}
+
+						if(++index >= SUBMENUS)	index = 0;
 					}
 				}else if(get_button_state(BUTTON_LEFT_CH) == GPIO_PIN_RESET){
 					if(++menu_controller.button_delay_cnts[BUTTON_LEFT_CH] == menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_LEFT_CH] == 1){
-						menu_controller.button_delay_cnts[BUTTON_LEFT_CH] = 0;
+						if(menu_controller.button_delay_cnts[BUTTON_LEFT_CH]++ != 1){
+							menu_controller.button_delay_cnts[BUTTON_LEFT_CH] = 0;
+						}
+
 						if(--index < 0)	index = SUBMENUS - 1;
 					}
 				}else if(get_button_state(BUTTON_ENTER_CH) == GPIO_PIN_RESET){
@@ -396,7 +520,6 @@ void r61529_screen_menu(void){
 					buzzer_short_ring(2500, 100);
 					//buzzer_short_ring(1250, (uint16_t)(menu_controller.button_delay * INPUT_DELAY_TIME));
 				}
-
 				break;
 			case 1:
 				if(touch_exit_submenu(1)){
@@ -407,26 +530,26 @@ void r61529_screen_menu(void){
 					draw_menu();
 					break;
 				}else if(get_button_state(BUTTON_BACK_CH) == GPIO_PIN_RESET){
-					if(++menu_controller.button_delay_cnts[BUTTON_BACK_CH] == menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_BACK_CH] == 1){
-						menu_controller.button_delay_cnts[BUTTON_BACK_CH] = 0;
-						delete_menu();
-						menu_controller.level = 0;
-						menu_controller.level_indexes[1] = 0;
-						menu_controller.level_indexes[0] &= 0x00FF;
-						draw_menu();
-						break;
-					}
+					delete_menu();
+					menu_controller.level = 0;
+					menu_controller.level_indexes[1] = 0;
+					menu_controller.level_indexes[0] &= 0x00FF;
+					draw_menu();
+					break;
 				}
 
 				if(((menu_controller.level_indexes[0] & 0xFF00) >> 8) == 0){
 					auto_mode_update_screen();
-				}else if(((menu_controller.level_indexes[0] & 0xFF00) >> 8) == 1){		//TODO: Manual mode sub-menu controls
+				}else if(((menu_controller.level_indexes[0] & 0xFF00) >> 8) == 1){
 					manual_mode_update_screen();
 
 					if(get_button_state(BUTTON_ENTER_CH) == GPIO_PIN_RESET){
-						if(++menu_controller.button_delay_cnts[BUTTON_ENTER_CH] == menu_controller.button_delay){
+						if(++menu_controller.button_delay_cnts[BUTTON_ENTER_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_ENTER_CH] == 1){
 							static uint8_t procedure_id = 0x00;
-							menu_controller.button_delay_cnts[BUTTON_ENTER_CH] = 0;
+
+							if(menu_controller.button_delay_cnts[BUTTON_ENTER_CH]++ != 1){
+								menu_controller.button_delay_cnts[BUTTON_ENTER_CH] = 0;
+							}
 
 							if(get_pendant_status() == PENDANT_DISCONNECTED || \
 							  (get_pendant_status() == PENDANT_ERROR && procedure_id == 0x00)){
@@ -463,23 +586,35 @@ void r61529_screen_menu(void){
 
 						// Use button presses for machine movement
 						if(get_button_state(BUTTON_RIGHT_CH) == GPIO_PIN_RESET){ // X -> +1mm
-							if(++menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] == menu_controller.button_delay){
-								menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] = 0;
+							if(++menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] == 1){
+								if(menu_controller.button_delay_cnts[BUTTON_RIGHT_CH]++ != 1){
+									menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] = 0;
+								}
+
 								grbl_send_packet((uint8_t*)"$J=G91G21X1F1000\n", 17);
 							}
 						}else if(get_button_state(BUTTON_LEFT_CH) == GPIO_PIN_RESET){ // X -> -1mm
-							if(++menu_controller.button_delay_cnts[BUTTON_LEFT_CH] == menu_controller.button_delay){
-								menu_controller.button_delay_cnts[BUTTON_LEFT_CH] = 0;
+							if(++menu_controller.button_delay_cnts[BUTTON_LEFT_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_LEFT_CH] == 1){
+								if(menu_controller.button_delay_cnts[BUTTON_LEFT_CH]++ != 1){
+									menu_controller.button_delay_cnts[BUTTON_LEFT_CH] = 0;
+								}
+
 								grbl_send_packet((uint8_t*)"$J=G91G21X-1F1000\n", 18);
 							}
 						}else if(get_button_state(BUTTON_UP_CH) == GPIO_PIN_RESET){ // Y -> +1mm
-							if(++menu_controller.button_delay_cnts[BUTTON_UP_CH] == menu_controller.button_delay){
-								menu_controller.button_delay_cnts[BUTTON_UP_CH] = 0;
+							if(++menu_controller.button_delay_cnts[BUTTON_UP_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_UP_CH] == 1){
+								if(menu_controller.button_delay_cnts[BUTTON_UP_CH]++ != 1){
+									menu_controller.button_delay_cnts[BUTTON_UP_CH] = 0;
+								}
+
 								grbl_send_packet((uint8_t*)"$J=G91G21Y1F1000\n", 17);
 							}
 						}else if(get_button_state(BUTTON_DOWN_CH) == GPIO_PIN_RESET){ // Y -> -1mm
-							if(++menu_controller.button_delay_cnts[BUTTON_DOWN_CH] == menu_controller.button_delay){
-								menu_controller.button_delay_cnts[BUTTON_DOWN_CH] = 0;
+							if(++menu_controller.button_delay_cnts[BUTTON_DOWN_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_DOWN_CH] == 1){
+								if(menu_controller.button_delay_cnts[BUTTON_DOWN_CH]++ != 1){
+									menu_controller.button_delay_cnts[BUTTON_DOWN_CH] = 0;
+								}
+
 								grbl_send_packet((uint8_t*)"$J=G91G21Y-1F1000\n", 18);
 							}
 						}
@@ -487,13 +622,19 @@ void r61529_screen_menu(void){
 				}else if(((menu_controller.level_indexes[0] & 0xFF00) >> 8) == 2){
 					int8_t index = menu_controller.level_indexes[1] & 0x00FF;
 					if(get_button_state(BUTTON_DOWN_CH) == GPIO_PIN_RESET){
-						if(++menu_controller.button_delay_cnts[BUTTON_DOWN_CH] == menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_DOWN_CH] == 1){
-							menu_controller.button_delay_cnts[BUTTON_DOWN_CH] = 0;
+						if(++menu_controller.button_delay_cnts[BUTTON_DOWN_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_DOWN_CH] == 1){
+							if(menu_controller.button_delay_cnts[BUTTON_DOWN_CH]++ != 1){
+								menu_controller.button_delay_cnts[BUTTON_DOWN_CH] = 0;
+							}
+
 							if(++index == SETTINGS_SUBMENUS)	index = 0;
 						}
 					}else if(get_button_state(BUTTON_UP_CH) == GPIO_PIN_RESET){
-						if(++menu_controller.button_delay_cnts[BUTTON_UP_CH] == menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_UP_CH] == 1){
-							menu_controller.button_delay_cnts[BUTTON_UP_CH] = 0;
+						if(++menu_controller.button_delay_cnts[BUTTON_UP_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_UP_CH] == 1){
+							if(menu_controller.button_delay_cnts[BUTTON_UP_CH]++ != 1){
+								menu_controller.button_delay_cnts[BUTTON_UP_CH] = 0;
+							}
+
 							if(--index < 0)	index = SETTINGS_SUBMENUS - 1;
 						}
 					}else if(get_button_state(BUTTON_ENTER_CH) == GPIO_PIN_RESET){
@@ -524,15 +665,12 @@ void r61529_screen_menu(void){
 					draw_menu();
 					break;
 				}else if(get_button_state(BUTTON_BACK_CH) == GPIO_PIN_RESET){
-					if(++menu_controller.button_delay_cnts[BUTTON_BACK_CH] == menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_BACK_CH] == 1){
-						menu_controller.button_delay_cnts[BUTTON_BACK_CH] = 0;
-						delete_menu();
-						menu_controller.level = 1;
-						menu_controller.level_indexes[2] = 0;
-						menu_controller.level_indexes[1] &= 0x00FF;
-						draw_menu();
-						break;
-					}
+					delete_menu();
+					menu_controller.level = 1;
+					menu_controller.level_indexes[2] = 0;
+					menu_controller.level_indexes[1] &= 0x00FF;
+					draw_menu();
+					break;
 				}
 
 				if(((menu_controller.level_indexes[0] & 0xFF00) >> 8) == 2){
@@ -540,13 +678,19 @@ void r61529_screen_menu(void){
 						int8_t previous_brightness_value = menu_controller.brightness_value;
 
 						if(get_button_state(BUTTON_RIGHT_CH) == GPIO_PIN_RESET){
-							if(++menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] == menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] == 1){
-								menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] = 0;
+							if(++menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] == 1){
+								if(menu_controller.button_delay_cnts[BUTTON_RIGHT_CH]++ != 1){
+									menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] = 0;
+								}
+
 								if(++previous_brightness_value > MAXIMUM_BRIGHTNESS)	previous_brightness_value = MAXIMUM_BRIGHTNESS;
 							}
 						}else if(get_button_state(BUTTON_LEFT_CH) == GPIO_PIN_RESET){
-							if(++menu_controller.button_delay_cnts[BUTTON_LEFT_CH] == menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_LEFT_CH] == 1){
-								menu_controller.button_delay_cnts[BUTTON_LEFT_CH] = 0;
+							if(++menu_controller.button_delay_cnts[BUTTON_LEFT_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_LEFT_CH] == 1){
+								if(menu_controller.button_delay_cnts[BUTTON_LEFT_CH]++ != 1){
+									menu_controller.button_delay_cnts[BUTTON_LEFT_CH] = 0;
+								}
+
 								if(--previous_brightness_value < MINIMUM_BRIGHTNESS)	previous_brightness_value = MINIMUM_BRIGHTNESS;
 							}
 						}
@@ -558,19 +702,25 @@ void r61529_screen_menu(void){
 						}
 					}else if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 1 || \
 							 ((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 2){
-						int8_t index = menu_controller.level_indexes[2] & 0x00FF;
+						index = menu_controller.level_indexes[2] & 0x00FF;
 						if(get_button_state(BUTTON_DOWN_CH) == GPIO_PIN_RESET){
-							if(++menu_controller.button_delay_cnts[BUTTON_DOWN_CH] == menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_DOWN_CH] == 1){
-								menu_controller.button_delay_cnts[BUTTON_DOWN_CH] = 0;
+							if(++menu_controller.button_delay_cnts[BUTTON_DOWN_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_DOWN_CH] == 1){
+								if(menu_controller.button_delay_cnts[BUTTON_DOWN_CH]++ != 1){
+									menu_controller.button_delay_cnts[BUTTON_DOWN_CH] = 0;
+								}
+
 								if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 1){
-									if(++index == MPG_AXES_SETTINGS)	index = 0;
+									if(++index >= MPG_AXES_SETTINGS) index = 0;
 								}else{
-									if(++index == MPG_SPINDLE_SETTINGS)	index = 0;
+									if(++index >= MPG_SPINDLE_SETTINGS)	index = 0;
 								}
 							}
 						}else if(get_button_state(BUTTON_UP_CH) == GPIO_PIN_RESET){
-							if(++menu_controller.button_delay_cnts[BUTTON_UP_CH] == menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_UP_CH] == 1){
-								menu_controller.button_delay_cnts[BUTTON_UP_CH] = 0;
+							if(++menu_controller.button_delay_cnts[BUTTON_UP_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_UP_CH] == 1){
+								if(menu_controller.button_delay_cnts[BUTTON_UP_CH]++ != 1){
+									menu_controller.button_delay_cnts[BUTTON_UP_CH] = 0;
+								}
+
 								if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 1){
 									if(--index < 0)	index = MPG_AXES_SETTINGS - 1;
 								}else{
@@ -587,18 +737,20 @@ void r61529_screen_menu(void){
 						}
 
 						if(index != (menu_controller.level_indexes[2] & 0x00FF)){
-							if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 1)
+							if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 1){
 								mpg_axes_unselect_setting((menu_controller.level_indexes[2] & 0x00FF));
-							else
+							}else{
 								mpg_spindle_unselect_setting((menu_controller.level_indexes[2] & 0x00FF));
+							}
 
 							menu_controller.level_indexes[2] &= 0x0000;
 							menu_controller.level_indexes[2] |= index;
 
-							if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 1)
+							if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 1){
 								mpg_axes_select_setting((menu_controller.level_indexes[2] & 0x00FF));
-							else
+							}else{
 								mpg_spindle_select_setting((menu_controller.level_indexes[2] & 0x00FF));
+							}
 
 							buzzer_short_ring(2500, 100);
 							//buzzer_short_ring(1250, (uint16_t)(menu_controller.button_delay * INPUT_DELAY_TIME));
@@ -607,6 +759,8 @@ void r61529_screen_menu(void){
 				}
 				break;
 			case 3:
+				index = menu_controller.level_indexes[3] & 0x00FF;
+
 				if(touch_exit_submenu(3)){
 					delete_menu();
 					menu_controller.level = 2;
@@ -615,14 +769,215 @@ void r61529_screen_menu(void){
 					draw_menu();
 					break;
 				}else if(get_button_state(BUTTON_BACK_CH) == GPIO_PIN_RESET){
-					if(++menu_controller.button_delay_cnts[BUTTON_BACK_CH] == menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_BACK_CH] == 1){
-						menu_controller.button_delay_cnts[BUTTON_BACK_CH] = 0;
-						delete_menu();
-						menu_controller.level = 2;
-						menu_controller.level_indexes[3] = 0;
-						menu_controller.level_indexes[2] &= 0x00FF;
-						draw_menu();
-						break;
+					delete_menu();
+					menu_controller.level = 2;
+					menu_controller.level_indexes[3] = 0;
+					menu_controller.level_indexes[2] &= 0x00FF;
+					draw_menu();
+					break;
+				}
+
+				if((menu_controller.level_indexes[0] & 0x00FF) == 2){
+					if((menu_controller.level_indexes[1] & 0x00FF) == 1){
+						if(get_button_state(BUTTON_DOWN_CH) == GPIO_PIN_RESET){
+							if(++menu_controller.button_delay_cnts[BUTTON_DOWN_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_DOWN_CH] == 1){
+								if(menu_controller.button_delay_cnts[BUTTON_DOWN_CH]++ != 1){
+									menu_controller.button_delay_cnts[BUTTON_DOWN_CH] = 0;
+								}
+
+								if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 0){
+									if(++index >= X_AXIS_DIST_SETTINGS)	index = 0;
+								}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 1){
+									if(++index >= YZ_AXIS_DIST_SETTINGS) index = 0;
+								}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 2){
+									if(++index >= JOG_FEED_SETTINGS) index = 0;
+								}
+							}
+						}else if(get_button_state(BUTTON_UP_CH) == GPIO_PIN_RESET){
+							if(++menu_controller.button_delay_cnts[BUTTON_UP_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_UP_CH] == 1){
+								if(menu_controller.button_delay_cnts[BUTTON_UP_CH]++ != 1){
+									menu_controller.button_delay_cnts[BUTTON_UP_CH] = 0;
+								}
+
+								if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 0){
+									if(--index < 0)	index = X_AXIS_DIST_SETTINGS - 1;
+								}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 1){
+									if(--index < 0)	index = YZ_AXIS_DIST_SETTINGS - 1;
+								}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 2){
+									if(--index < 0) index = JOG_FEED_SETTINGS - 1;
+								}
+							}
+						}else if(get_button_state(BUTTON_RIGHT_CH) == GPIO_PIN_RESET){
+							if(++menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] == 1){
+								if(menu_controller.button_delay_cnts[BUTTON_RIGHT_CH]++ != 1){
+									menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] = 0;
+								}
+
+								if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 0){	//TODO
+									switch(menu_controller.level_indexes[3] & 0x00FF){
+										case 0:	//Slow jogging x axis distance
+											mpg_settings.x_axis_multiplicity[0] += X_AXIS_MULTIPLICITY_DIFF[0];
+											if(mpg_settings.x_axis_multiplicity[0] > (X_AXIS_MULTIPLICITY_DEFAULT_0 + X_AXIS_MULTIPLICITY_DIFF[0] * 9))	mpg_settings.x_axis_multiplicity[0] = (X_AXIS_MULTIPLICITY_DEFAULT_0 + X_AXIS_MULTIPLICITY_DIFF[0] * 9);
+											break;
+										case 1:	//Medium jogging x axis distance
+											mpg_settings.x_axis_multiplicity[1] += X_AXIS_MULTIPLICITY_DIFF[1];
+											if(mpg_settings.x_axis_multiplicity[1] > (X_AXIS_MULTIPLICITY_DEFAULT_1 + X_AXIS_MULTIPLICITY_DIFF[1] * 9))	mpg_settings.x_axis_multiplicity[1] = (X_AXIS_MULTIPLICITY_DEFAULT_1 + X_AXIS_MULTIPLICITY_DIFF[1] * 9);
+											break;
+										case 2:	//Fast jogging x axis distance
+											mpg_settings.x_axis_multiplicity[2] += X_AXIS_MULTIPLICITY_DIFF[2];
+											if(mpg_settings.x_axis_multiplicity[2] > (X_AXIS_MULTIPLICITY_DEFAULT_2 + X_AXIS_MULTIPLICITY_DIFF[2] * 5))	mpg_settings.x_axis_multiplicity[2] = (X_AXIS_MULTIPLICITY_DEFAULT_2 + X_AXIS_MULTIPLICITY_DIFF[2] * 5);
+											break;
+										default:
+											break;
+									}
+								}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 1){ //TODO
+									switch(menu_controller.level_indexes[3] & 0x00FF){
+										case 0:	//Slow jogging y/z axis distance
+											mpg_settings.yz_axis_multiplicity[0] += YZ_AXIS_MULTIPLICITY_DIFF[0];
+											if(mpg_settings.yz_axis_multiplicity[0] > (YZ_AXIS_MULTIPLICITY_DEFAULT_0 + YZ_AXIS_MULTIPLICITY_DIFF[0] * 9))	mpg_settings.yz_axis_multiplicity[0] = (YZ_AXIS_MULTIPLICITY_DEFAULT_0 + YZ_AXIS_MULTIPLICITY_DIFF[0] * 9);
+											break;
+										case 1:	//Medium jogging y/z axis distance
+											mpg_settings.yz_axis_multiplicity[1] += YZ_AXIS_MULTIPLICITY_DIFF[1];
+											if(mpg_settings.yz_axis_multiplicity[1] > (YZ_AXIS_MULTIPLICITY_DEFAULT_1 + YZ_AXIS_MULTIPLICITY_DIFF[1] * 9))	mpg_settings.yz_axis_multiplicity[1] = (YZ_AXIS_MULTIPLICITY_DEFAULT_1 + YZ_AXIS_MULTIPLICITY_DIFF[1] * 9);
+											break;
+										case 2:	//Fast jogging y/z axis distance
+											mpg_settings.yz_axis_multiplicity[2] += YZ_AXIS_MULTIPLICITY_DIFF[2];
+											if(mpg_settings.yz_axis_multiplicity[2] > (YZ_AXIS_MULTIPLICITY_DEFAULT_2 + YZ_AXIS_MULTIPLICITY_DIFF[2] * 5))	mpg_settings.yz_axis_multiplicity[2] = (YZ_AXIS_MULTIPLICITY_DEFAULT_2 + YZ_AXIS_MULTIPLICITY_DIFF[2] * 5);
+											break;
+										default:
+											break;
+									}
+								}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 2){	//TODO
+									switch(menu_controller.level_indexes[3] & 0x00FF){
+										case 0:	//Slow jogging feed rate
+											mpg_settings.jog_speeds[0] += JOG_SPEED_DIFF[0];
+											if(mpg_settings.jog_speeds[0] > (JOG_SPEED_DEFAULT_SLOW + JOG_SPEED_DIFF[0] * 9))	mpg_settings.jog_speeds[0] = (JOG_SPEED_DEFAULT_SLOW + JOG_SPEED_DIFF[0] * 25);
+											break;
+										case 1:	//Medium jogging feed rate
+											mpg_settings.jog_speeds[1] += JOG_SPEED_DIFF[1];
+											if(mpg_settings.jog_speeds[1] > (JOG_SPEED_DEFAULT_MEDIUM + JOG_SPEED_DIFF[1] * 5))	mpg_settings.jog_speeds[1] = (JOG_SPEED_DEFAULT_MEDIUM + JOG_SPEED_DIFF[1] * 5);
+											break;
+										case 2:	//Fast jogging feed rate
+											mpg_settings.jog_speeds[2] += JOG_SPEED_DIFF[2];
+											if(mpg_settings.jog_speeds[2] > (JOG_SPEED_DEFAULT_FAST + JOG_SPEED_DIFF[2] * 5))	mpg_settings.jog_speeds[2] = (JOG_SPEED_DEFAULT_FAST + JOG_SPEED_DIFF[2] * 5);
+											break;
+										default:
+											break;
+									}
+								}
+							}
+						}else if(get_button_state(BUTTON_LEFT_CH) == GPIO_PIN_RESET){
+							if(++menu_controller.button_delay_cnts[BUTTON_LEFT_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_LEFT_CH] == 1){
+								if(menu_controller.button_delay_cnts[BUTTON_LEFT_CH]++ != 1){
+									menu_controller.button_delay_cnts[BUTTON_LEFT_CH] = 0;
+								}
+
+								if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 0){
+									switch(menu_controller.level_indexes[3] & 0x00FF){
+										case 0:	//Slow jogging x axis distance
+											mpg_settings.x_axis_multiplicity[0] -= X_AXIS_MULTIPLICITY_DIFF[0];
+											if(mpg_settings.x_axis_multiplicity[0] < X_AXIS_MULTIPLICITY_DEFAULT_0)	mpg_settings.x_axis_multiplicity[0] = X_AXIS_MULTIPLICITY_DEFAULT_0;
+											break;
+										case 1:	//Medium jogging x axis distance
+											mpg_settings.x_axis_multiplicity[1] -= X_AXIS_MULTIPLICITY_DIFF[1];
+											if(mpg_settings.x_axis_multiplicity[1] < X_AXIS_MULTIPLICITY_DEFAULT_1)	mpg_settings.x_axis_multiplicity[1] = X_AXIS_MULTIPLICITY_DEFAULT_1;
+											break;
+										case 2:	//Fast jogging x axis distance
+											mpg_settings.x_axis_multiplicity[2] -= X_AXIS_MULTIPLICITY_DIFF[2];
+											if(mpg_settings.x_axis_multiplicity[2] < X_AXIS_MULTIPLICITY_DEFAULT_2)	mpg_settings.x_axis_multiplicity[2] = X_AXIS_MULTIPLICITY_DEFAULT_2;
+											break;
+										default:
+											break;
+									}
+								}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 1){
+									switch(menu_controller.level_indexes[3] & 0x00FF){
+										case 0:	//Slow jogging y/z axis distance
+											mpg_settings.yz_axis_multiplicity[0] -= YZ_AXIS_MULTIPLICITY_DIFF[0];
+											if(mpg_settings.yz_axis_multiplicity[0] < YZ_AXIS_MULTIPLICITY_DEFAULT_0)	mpg_settings.yz_axis_multiplicity[0] = YZ_AXIS_MULTIPLICITY_DEFAULT_0;
+											break;
+										case 1:	//Medium jogging y/z axis distance
+											mpg_settings.yz_axis_multiplicity[1] -= YZ_AXIS_MULTIPLICITY_DIFF[1];
+											if(mpg_settings.yz_axis_multiplicity[1] < YZ_AXIS_MULTIPLICITY_DEFAULT_1)	mpg_settings.yz_axis_multiplicity[1] = YZ_AXIS_MULTIPLICITY_DEFAULT_1;
+											break;
+										case 2:	//Fast jogging y/z axis distance
+											mpg_settings.yz_axis_multiplicity[2] -= YZ_AXIS_MULTIPLICITY_DIFF[2];
+											if(mpg_settings.yz_axis_multiplicity[2] < YZ_AXIS_MULTIPLICITY_DEFAULT_2)	mpg_settings.yz_axis_multiplicity[2] = YZ_AXIS_MULTIPLICITY_DEFAULT_2;
+											break;
+										default:
+											break;
+									}
+								}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 2){
+									switch(menu_controller.level_indexes[3] & 0x00FF){
+										case 0:	//Slow jogging feed rate
+											mpg_settings.jog_speeds[0] -= JOG_SPEED_DIFF[0];
+											if(mpg_settings.jog_speeds[0] < JOG_SPEED_DEFAULT_SLOW)	mpg_settings.jog_speeds[0] = JOG_SPEED_DEFAULT_SLOW;
+											break;
+										case 1:	//Medium jogging feed rate
+											mpg_settings.jog_speeds[1] -= JOG_SPEED_DIFF[1];
+											if(mpg_settings.jog_speeds[1] < JOG_SPEED_DEFAULT_MEDIUM)	mpg_settings.jog_speeds[1] = JOG_SPEED_DEFAULT_MEDIUM;
+											break;
+										case 2:	//Fast jogging feed rate
+											mpg_settings.jog_speeds[2] -= JOG_SPEED_DIFF[2];
+											if(mpg_settings.jog_speeds[2] < JOG_SPEED_DEFAULT_FAST)	mpg_settings.jog_speeds[2] = JOG_SPEED_DEFAULT_FAST;
+											break;
+										default:
+											break;
+									}
+								}
+							}
+						}
+
+						mpg_axes_update_settings();
+
+						if(index != (menu_controller.level_indexes[3] & 0x00FF)){
+							if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 0){
+								unselect_x_axis_dist_setting((menu_controller.level_indexes[3] & 0x00FF));
+							}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 1){
+								unselect_yz_axis_dist_setting((menu_controller.level_indexes[3] & 0x00FF));
+							}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 2){
+								unselect_jog_feed_setting((menu_controller.level_indexes[3] & 0x00FF));
+							}
+
+							menu_controller.level_indexes[3] &= 0x0000;
+							menu_controller.level_indexes[3] |= index;
+
+							if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 0){
+								select_x_axis_dist_setting((menu_controller.level_indexes[3] & 0x00FF));
+							}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 1){
+								select_yz_axis_dist_setting((menu_controller.level_indexes[3] & 0x00FF));
+							}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 2){
+								select_jog_feed_setting((menu_controller.level_indexes[3] & 0x00FF));
+							}
+
+							buzzer_short_ring(2500, 100);
+							//buzzer_short_ring(1250, (uint16_t)(menu_controller.button_delay * INPUT_DELAY_TIME));
+						}
+					}else if((menu_controller.level_indexes[1] & 0xFF00 >> 8) == 2){		//TODO: MPG spindle settings
+						if(get_button_state(BUTTON_RIGHT_CH) == GPIO_PIN_RESET){
+							if(++menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] == 1){
+								if(menu_controller.button_delay_cnts[BUTTON_RIGHT_CH]++ != 1){
+									menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] = 0;
+								}
+
+								if((menu_controller.level_indexes[2] & 0x00FF) == 0){
+									mpg_settings.spindle_speed += SPINDLE_SPEED_DIFF;
+									if(mpg_settings.spindle_speed > SPINDLE_SPEED_MAX)	mpg_settings.spindle_speed = SPINDLE_SPEED_MAX;
+								}
+							}
+							mpg_spindle_update_setting();
+						}else if(get_button_state(BUTTON_LEFT_CH) == GPIO_PIN_RESET){
+							if(++menu_controller.button_delay_cnts[BUTTON_LEFT_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_LEFT_CH] == 1){
+								if(menu_controller.button_delay_cnts[BUTTON_LEFT_CH]++ != 1){
+									menu_controller.button_delay_cnts[BUTTON_LEFT_CH] = 0;
+								}
+
+								if((menu_controller.level_indexes[2] & 0x00FF) == 0){
+									mpg_settings.spindle_speed -= SPINDLE_SPEED_DIFF;
+									if(mpg_settings.spindle_speed < SPINDLE_SPEED_MIN)	mpg_settings.spindle_speed = SPINDLE_SPEED_MIN;
+								}
+							}
+							mpg_spindle_update_setting();
+						}
 					}
 				}
 				break;
@@ -632,6 +987,11 @@ void r61529_screen_menu(void){
 	}
 }
 
+
+
+
+
+//// Menu drawing functions ////
 /**
   * @brief Menu draw selector
   */
@@ -647,34 +1007,33 @@ void draw_menu(void){
 			}
 			break;
 		case 1:
-			R61529_WriteString(410, 5, "Back", Font_16x26, WHITE, RED);
 			switch((menu_controller.level_indexes[0] & 0xFF00 >> 8)){
 				case 0: 	//TODO: Auto mode sub-menu draw
 					R61529_WriteString(10, 10, "Auto mode engaged", Font_11x18, PURPLE, BLACK);
 
 					// Position section
-					R61529_WriteString(10, 80,  "Position", Font_11x18, YELLOW, BLACK);
+					R61529_WriteString(10, 80,  "Position(mm)", Font_11x18, YELLOW, BLACK);
 					R61529_WriteString(10, 100, "X:", Font_16x26, WHITE, BLACK);
 					R61529_WriteString(10, 130, "Y:", Font_16x26, WHITE, BLACK);
 					R61529_WriteString(10, 160, "Z:", Font_16x26, WHITE, BLACK);
 
 					// Offset section
-					R61529_WriteString(150, 80,  "Offset", Font_11x18, WHITE, BLACK);
-					R61529_WriteString(150, 100, "X:", Font_16x26, WHITE, BLACK);
-					R61529_WriteString(150, 130, "Y:", Font_16x26, WHITE, BLACK);
-					R61529_WriteString(150, 160, "Z:", Font_16x26, WHITE, BLACK);
+					R61529_WriteString(200, 80,  "Offset(mm)", Font_11x18, WHITE, BLACK);
+					R61529_WriteString(200, 100, "X:", Font_16x26, WHITE, BLACK);
+					R61529_WriteString(200, 130, "Y:", Font_16x26, WHITE, BLACK);
+					R61529_WriteString(200, 160, "Z:", Font_16x26, WHITE, BLACK);
 
 					// Coolant status section
-					R61529_WriteString(290, 80,  "Coolant", Font_11x18, WHITE, BLACK);
-					R61529_WriteString(290, 100, "MIST", Font_11x18, RED, GRAY);
-					R61529_WriteString(290, 130, "FLOOD", Font_11x18, RED, GRAY);
-					R61529_WriteString(290, 160, "SPINDLE", Font_11x18, RED, GRAY);
+					R61529_WriteString(390, 80,  "Coolant", Font_11x18, CYAN, BLACK);
+					R61529_WriteString(390, 100, "MIST", Font_11x18, RED, GRAY);
+					R61529_WriteString(390, 130, "FLOOD", Font_11x18, RED, GRAY);
+					R61529_WriteString(390, 160, "SPINDLE", Font_11x18, RED, GRAY);
 
 					// RPM
-					R61529_WriteString(10, 215,  "RPM:", Font_16x26, WHITE, BLACK);
+					R61529_WriteString(10, 250,  "RPM:", Font_16x26, WHITE, BLACK);
 
-					// Status
-					R61529_WriteString(10, 270,  "Status:", Font_11x18, WHITE, BLACK);
+					// Machine status
+					R61529_WriteString(10, 290,  "Status:", Font_11x18, WHITE, BLACK);
 
 					// Show data on screen
 					auto_mode_update_screen();
@@ -683,33 +1042,42 @@ void draw_menu(void){
 					R61529_WriteString(10, 10, "Manual mode engaged", Font_11x18, PURPLE, BLACK);
 
 					// Position section
-					R61529_WriteString(10, 80,  "Position", Font_11x18, YELLOW, BLACK);
+					R61529_WriteString(10, 80,  "Position(mm)", Font_11x18, YELLOW, BLACK);
 					R61529_WriteString(10, 100, "X:", Font_16x26, WHITE, BLACK);
 					R61529_WriteString(10, 130, "Y:", Font_16x26, WHITE, BLACK);
 					R61529_WriteString(10, 160, "Z:", Font_16x26, WHITE, BLACK);
 
+					// Axes movement steps section
+					R61529_WriteString(140, 100 + (26 - 10), "x", Font_7x10, WHITE, BLACK);
+					R61529_WriteString(140, 130 + (26 - 10), "x", Font_7x10, WHITE, BLACK);
+					R61529_WriteString(140, 160 + (26 - 10), "x", Font_7x10, WHITE, BLACK);
+
 					// Offset section
-					R61529_WriteString(150, 80,  "Offset", Font_11x18, WHITE, BLACK);
-					R61529_WriteString(150, 100, "X:", Font_16x26, WHITE, BLACK);
-					R61529_WriteString(150, 130, "Y:", Font_16x26, WHITE, BLACK);
-					R61529_WriteString(150, 160, "Z:", Font_16x26, WHITE, BLACK);
+					R61529_WriteString(250, 80,  "Offset(mm)", Font_11x18, WHITE, BLACK);
+					R61529_WriteString(250, 100, "X:", Font_16x26, WHITE, BLACK);
+					R61529_WriteString(250, 130, "Y:", Font_16x26, WHITE, BLACK);
+					R61529_WriteString(250, 160, "Z:", Font_16x26, WHITE, BLACK);
 
 					// Coolant status section
-					R61529_WriteString(290, 80,  "Coolant", Font_11x18, WHITE, BLACK);
-					R61529_WriteString(290, 100, "MIST", Font_11x18, RED, GRAY);
-					R61529_WriteString(290, 130, "FLOOD", Font_11x18, RED, GRAY);
-					R61529_WriteString(290, 160, "SPINDLE", Font_11x18, RED, GRAY);
+					R61529_WriteString(390, 80,  "Coolant", Font_11x18, CYAN, BLACK);
+					R61529_WriteString(390, 100, "MIST", Font_11x18, RED, GRAY);
+					R61529_WriteString(390, 130, "FLOOD", Font_11x18, RED, GRAY);
+					R61529_WriteString(390, 160, "SPINDLE", Font_11x18, RED, GRAY);
 
 					// RPM
-					R61529_WriteString(10, 215,  "RPM:", Font_16x26, WHITE, BLACK);
+					R61529_WriteString(10, 250,  "RPM:", Font_16x26, WHITE, BLACK);
 
-					// Status
-					R61529_WriteString(10, 270,  "Status:", Font_11x18, WHITE, BLACK);
+					// Machine status
+					R61529_WriteString(10, 290,  "Status:", Font_11x18, WHITE, BLACK);
+
+					// Jogging mode
+					R61529_WriteString(350, 270,  "Jog:", Font_11x18, WHITE, BLACK);
 
 					// Show data on screen
 					manual_mode_update_screen();
 					break;
 				case 2:		// Settings
+					R61529_WriteString(SETTING_BLOCK_X_MARGIN, 10, "Settings", Font_16x26, YELLOW, BLACK);
 					for(uint8_t i = 0; i < SETTINGS_SUBMENUS; i++){
 						if(i == (menu_controller.level_indexes[1] & 0x00FF)){
 							select_setting(i);
@@ -721,20 +1089,21 @@ void draw_menu(void){
 				default:
 					break;
 			}
+			R61529_WriteString(410, 5, "Back", Font_16x26, WHITE, RED);
 			break;
 		case 2:
-			R61529_WriteString(410, 5, "Back", Font_16x26, WHITE, RED);
 			switch((menu_controller.level_indexes[0] & 0xFF00 >> 8)){
 				case 0:		// MPG Auto mode
 					break;
 				case 1:		// MPG Manual mode
 					break;
 				case 2:		// Settings
-					if((menu_controller.level_indexes[1] & 0xFF00 >> 8) == 0){				// Screen brightness
+					R61529_WriteString(SETTING_BLOCK_X_MARGIN, 10, settings_options[(menu_controller.level_indexes[1] & 0xFF00) >> 8], Font_16x26, CYAN, BLACK);
+					if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 0){ // Screen brightness
 						R61529_DrawRect(WHITE, SCREEN_BRIGHTNESS_SETTING_SLIDER_BASE_X, SCREEN_BRIGHTNESS_SETTING_SLIDER_BASE_Y, SCREEN_BRIGHTNESS_SETTING_SLIDER_END_X, SCREEN_BRIGHTNESS_SETTING_SLIDER_END_Y);
 						R61529_WriteString(SCREEN_BRIGHTNESS_SETTING_SLIDER_BASE_X, SCREEN_BRIGHTNESS_SETTING_SLIDER_BASE_Y + SCREEN_BRIGHTNESS_SETTING_SLIDER_HEIGHT + 10, "Brightness - ", Font_11x18, GREEN, BLACK);
 						screen_brightness_setting_update_screen();
-					}else if((menu_controller.level_indexes[1] & 0xFF00 >> 8) == 1){		// MPG axes settings
+					}else if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 1){ // MPG axes settings
 						for(uint8_t i = 0; i < MPG_AXES_SETTINGS; i++){
 							if(i == (menu_controller.level_indexes[2] & 0x00FF)){
 								mpg_axes_select_setting(i);
@@ -742,7 +1111,7 @@ void draw_menu(void){
 								mpg_axes_unselect_setting(i);
 							}
 						}
-					}else if((menu_controller.level_indexes[1] & 0xFF00 >> 8) == 2){		// MPG spindle settings
+					}else if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 2){ // MPG spindle settings
 						for(uint8_t i = 0; i < MPG_SPINDLE_SETTINGS; i++){
 							if(i == (menu_controller.level_indexes[2] & 0x00FF)){
 								mpg_spindle_select_setting(i);
@@ -755,34 +1124,57 @@ void draw_menu(void){
 				default:
 					break;
 			}
+			R61529_WriteString(410, 5, "Back", Font_16x26, WHITE, RED);
 			break;
 		case 3:
-			R61529_WriteString(410, 5, "Back", Font_16x26, WHITE, RED);
 			if((menu_controller.level_indexes[0] & 0xFF00 >> 8) == 2){
 				if((menu_controller.level_indexes[1] & 0xFF00 >> 8) == 1){
+					R61529_WriteString(MPG_AXES_SETTING_BLOCK_X_MARGIN, 10, mpg_axes_settings[(menu_controller.level_indexes[2] & 0xFF00) >> 8], Font_16x26, CYAN, BLACK);
 					switch((menu_controller.level_indexes[2] & 0xFF00 >> 8)){
-						case 0:		// X axis jogging distances
-							R61529_WriteString(20, 150, mpg_axes_settings[0], Font_11x18, WHITE, RED);
+						case 0: // X axis jogging distances
+							for(uint8_t i = 0; i < X_AXIS_DIST_SETTINGS; i++){
+								if(i == (menu_controller.level_indexes[3] & 0x00FF)){
+									select_x_axis_dist_setting(i);
+								}else{
+									unselect_x_axis_dist_setting(i);
+								}
+							}
 							break;
-						case 1:		// Y/Z axes jogging distances
-							R61529_WriteString(20, 150, mpg_axes_settings[1], Font_11x18, WHITE, RED);
+						case 1:	// Y/Z axes jogging distances
+							for(uint8_t i = 0; i < YZ_AXIS_DIST_SETTINGS; i++){
+								if(i == (menu_controller.level_indexes[3] & 0x00FF)){
+									select_yz_axis_dist_setting(i);
+								}else{
+									unselect_yz_axis_dist_setting(i);
+								}
+							}
 							break;
-						case 2:		// Jogging feed rates
-							R61529_WriteString(20, 150, mpg_axes_settings[2], Font_11x18, WHITE, RED);
+						case 2:	// Jogging feed rates
+							for(uint8_t i = 0; i < JOG_FEED_SETTINGS; i++){
+								if(i == (menu_controller.level_indexes[3] & 0x00FF)){
+									select_jog_feed_setting(i);
+								}else{
+									unselect_jog_feed_setting(i);
+								}
+							}
 							break;
 						default:
 							break;
 					}
 				}else if((menu_controller.level_indexes[1] & 0xFF00 >> 8) == 2){
-					switch((menu_controller.level_indexes[2] & 0xFF00 >> 8)){
-						case 0:		// Jogging spindle speeds
-							R61529_WriteString(20, 150, mpg_spindle_settings[0], Font_11x18, WHITE, RED);
+					R61529_WriteString(MPG_SPINDLE_SETTING_BLOCK_X_MARGIN, 10, mpg_spindle_settings[(menu_controller.level_indexes[2] & 0xFF00) >> 8], Font_16x26, CYAN, BLACK);
+					switch((menu_controller.level_indexes[2] & 0xFF00) >> 8){
+						case 0:		// Jogging spindle speed
+							R61529_DrawRect(WHITE, SPINDLE_SPEED_SETTING_SLIDER_BASE_X, SPINDLE_SPEED_SETTING_SLIDER_BASE_Y, SPINDLE_SPEED_SETTING_SLIDER_END_X, SPINDLE_SPEED_SETTING_SLIDER_END_Y);
+							R61529_WriteString(SPINDLE_SPEED_SETTING_SLIDER_BASE_X, SPINDLE_SPEED_SETTING_SLIDER_BASE_Y + SPINDLE_SPEED_SETTING_SLIDER_HEIGHT + 10, "Spindle speed: ", Font_11x18, GREEN, BLACK);
 							break;
 						default:
 							break;
 					}
+					mpg_spindle_update_setting();
 				}
 			}
+			R61529_WriteString(410, 5, "Back", Font_16x26, WHITE, RED);
 			break;
 		default:
 			break;
@@ -806,6 +1198,7 @@ void delete_menu(void){
 			mpg_state = -1;
 			grbl_state = -1;
 			pendant_status = -1;
+			pendant_jog_mode = -1;
 			for(uint8_t i = 0; i < 3; i++){
 				grbl_offset[i] = -1;
 				grbl_position[i] = -1;
@@ -814,21 +1207,33 @@ void delete_menu(void){
 
 			switch((menu_controller.level_indexes[0] & 0xFF00 >> 8)){
 				case 0: 	//TODO: Auto mode sub-menu screen deletion
-					R61529_FillScreen(BLACK);
+					R61529_FillRect(BLACK, 10, 10, 200, 30);
+					R61529_FillRect(BLACK, 10, 80, 200, 190);
+					R61529_FillRect(BLACK, 200, 80, 400, 190);
+					R61529_FillRect(BLACK, 390, 80, 470, 180);
+					R61529_FillRect(BLACK, 10, 250, 165, 280);
+					R61529_FillRect(BLACK, 10, 290, 200, 310);
 					break;
 				case 1: 	//TODO: Manual mode sub-menu screen deletion
 					disconnect_pendant();
 					while(get_pendant_status() == PENDANT_DISCONNECTING){
 						disconnect_pendant();
 					}
-
 					if(grbl_data.mpgMode){
 						disable_mpg();
 					}
 
-					R61529_FillScreen(BLACK);
+					R61529_FillRect(BLACK, 10, 10, 450, 80);
+					R61529_FillRect(BLACK, 10, 80, 200, 190);
+					R61529_FillRect(BLACK, 200, 80, 400, 190);
+					R61529_FillRect(BLACK, 390, 80, 470, 180);
+					R61529_FillRect(BLACK, 10, 250, 165, 280);
+					R61529_FillRect(BLACK, 10, 290, 200, 310);
+					R61529_FillRect(BLACK, 140, 100, 190, 170);
+					R61529_FillRect(BLACK, 350, 270, 470, 290);
 					break;
 				case 2:		//Settings
+					R61529_WriteString(SETTING_BLOCK_X_MARGIN, 10, "Settings", Font_16x26, BLACK, BLACK);
 					for(uint8_t i = 0; i < SETTINGS_SUBMENUS; i++){
 						delete_setting(i);
 					}
@@ -845,8 +1250,9 @@ void delete_menu(void){
 				case 1:		//MPG Manual mode
 					break;
 				case 2:		//Settings
+					R61529_WriteString(SETTING_BLOCK_X_MARGIN, 10, settings_options[(menu_controller.level_indexes[1] & 0xFF00) >> 8], Font_16x26, BLACK, BLACK);
 					if((menu_controller.level_indexes[1] & 0xFF00 >> 8) == 0){				//Screen brightness
-						R61529_FillRect(BLACK, SCREEN_BRIGHTNESS_SETTING_SLIDER_BASE_X, SCREEN_BRIGHTNESS_SETTING_SLIDER_BASE_Y, SCREEN_BRIGHTNESS_SETTING_SLIDER_END_X, SCREEN_BRIGHTNESS_SETTING_SLIDER_END_Y + 30);
+						R61529_FillRect(BLACK, SCREEN_BRIGHTNESS_SETTING_SLIDER_BASE_X, 5, SCREEN_BRIGHTNESS_SETTING_SLIDER_END_X, SCREEN_BRIGHTNESS_SETTING_SLIDER_END_Y + 30);
 					}else if((menu_controller.level_indexes[1] & 0xFF00 >> 8) == 1){		//MPG axes settings
 						for(uint8_t i = 0; i < MPG_AXES_SETTINGS; i++){
 							mpg_axes_delete_setting(i);
@@ -865,23 +1271,32 @@ void delete_menu(void){
 			R61529_WriteString(410, 5, "Back", Font_16x26, BLACK, BLACK);
 			if((menu_controller.level_indexes[0] & 0xFF00 >> 8) == 2){
 				if((menu_controller.level_indexes[1] & 0xFF00 >> 8) == 1){
+					R61529_WriteString(MPG_AXES_SETTING_BLOCK_X_MARGIN, 10, mpg_axes_settings[(menu_controller.level_indexes[2] & 0xFF00) >> 8], Font_16x26, BLACK, BLACK);
 					switch((menu_controller.level_indexes[2] & 0xFF00 >> 8)){
 						case 0:		// X axis jogging distances
-							R61529_WriteString(20, 150, mpg_axes_settings[0], Font_11x18, BLACK, BLACK);
+							for(uint8_t i = 0; i < X_AXIS_DIST_SETTINGS; i++){
+								delete_x_axis_dist_setting(i);
+							}
 							break;
 						case 1:		// Y/Z axes jogging distances
-							R61529_WriteString(20, 150, mpg_axes_settings[1], Font_11x18, BLACK, BLACK);
+							for(uint8_t i = 0; i < YZ_AXIS_DIST_SETTINGS; i++){
+								delete_yz_axis_dist_setting(i);
+							}
 							break;
 						case 2:		// Jogging feed rates
-							R61529_WriteString(20, 150, mpg_axes_settings[2], Font_11x18, BLACK, BLACK);
+							for(uint8_t i = 0; i < JOG_FEED_SETTINGS; i++){
+								delete_jog_feed_setting(i);
+							}
 							break;
 						default:
 							break;
 					}
 				}else if((menu_controller.level_indexes[1] & 0xFF00 >> 8) == 2){
+					R61529_WriteString(MPG_SPINDLE_SETTING_BLOCK_X_MARGIN, 10, mpg_spindle_settings[(menu_controller.level_indexes[2] & 0xFF00) >> 8], Font_16x26, BLACK, BLACK);
 					switch((menu_controller.level_indexes[2] & 0xFF00 >> 8)){
 						case 0:		// Jogging spindle speeds
-							R61529_WriteString(20, 150, mpg_spindle_settings[0], Font_11x18, BLACK, BLACK);
+							R61529_FillRect(BLACK, SPINDLE_SPEED_SETTING_SLIDER_BASE_X, SPINDLE_SPEED_SETTING_SLIDER_BASE_Y, SPINDLE_SPEED_SETTING_SLIDER_END_X, SPINDLE_SPEED_SETTING_SLIDER_END_Y);
+							R61529_WriteString(SPINDLE_SPEED_SETTING_SLIDER_BASE_X, SPINDLE_SPEED_SETTING_SLIDER_BASE_Y + SPINDLE_SPEED_SETTING_SLIDER_HEIGHT + 10, "Spindle speed:      ", Font_11x18, BLACK, BLACK);
 							break;
 						default:
 							break;
@@ -927,6 +1342,7 @@ void draw_loading_screen(void){
 
 
 
+//// Sub-menu drawing functions ////
 /**
   * @brief Delete a given sub-menu
   */
@@ -979,6 +1395,7 @@ void unselect_submenu(uint8_t index){
 
 
 
+//// Setting drawing functions ////
 /**
   * @brief Delete a given setting in Settings sub-menu
   */
@@ -1031,6 +1448,7 @@ void unselect_setting(uint8_t index){
 
 
 
+// MPG axes setting drawing functions
 /**
   * @brief Select a given mpg axis setting in "MPG axes settings" sub-menu
   */
@@ -1083,6 +1501,7 @@ void mpg_axes_unselect_setting(uint8_t index){
 
 
 
+// MPG spindle setting drawing functions
 /**
   * @brief Select a given mpg spindle setting in "MPG spindle settings" sub-menu
   */
@@ -1135,6 +1554,7 @@ void mpg_spindle_unselect_setting(uint8_t index){
 
 
 
+// Level 1 menu special functions
 /**
   * @brief Update screen data for auto mode sub-menu
   */
@@ -1161,8 +1581,8 @@ void auto_mode_update_screen(void){
 			grbl_position[i] = coordinate;
 
 			if(pos_str_len < prev_pos_str_len)
-				R61529_FillRect(BLACK, 50, 104 + (30 * i), 50 + (prev_pos_str_len * 11), 104 + (30 * i) + 18);
-			R61529_WriteString(50, 104 + (30 * i), pos_str, Font_11x18, PURPLE, BLACK);
+				R61529_FillRect(BLACK, 50, 100 + ((26 - 18) / 2) + (30 * i), 50 + (prev_pos_str_len * 11), 100 + ((26 - 18) / 2) + (30 * i) + 18);
+			R61529_WriteString(50, 100 + ((26 - 18) / 2) + (30 * i), pos_str, Font_11x18, PURPLE, BLACK);
 		}
 	}
 
@@ -1188,46 +1608,44 @@ void auto_mode_update_screen(void){
 			grbl_offset[i] = _offset;
 
 			if(offset_str_len < prev_offset_str_len)
-				R61529_FillRect(BLACK, 190, 104 + (30 * i), 190 + (prev_offset_str_len * 11), 104 + (30 * i) + 18);
-			R61529_WriteString(190, 104 + (30 * i), offset_str, Font_11x18, PURPLE, BLACK);
+				R61529_FillRect(BLACK, 240, 100 + ((26 - 18) / 2) + (30 * i), 240 + (prev_offset_str_len * 11), 100 + ((26 - 18) / 2) + (30 * i) + 18);
+			R61529_WriteString(240, 100 + ((26 - 18) / 2) + (30 * i), offset_str, Font_11x18, PURPLE, BLACK);
 		}
 	}
 
 	// Display coolant status
-	for(uint8_t i = 0; i < 3; i++){
-		if(grbl_data.coolant.mist != grbl_coolant_status[0]){
-			uint16_t color = RED, bg_color = GRAY;
-			grbl_coolant_status[0] = grbl_data.coolant.mist;
+	if(grbl_data.coolant.mist != grbl_coolant_status[0]){
+		uint16_t color = RED, bg_color = GRAY;
+		grbl_coolant_status[0] = grbl_data.coolant.mist;
 
-			if(grbl_data.coolant.mist){
-				color = GREEN;
-				bg_color = BLACK;
-			}
-
-			R61529_WriteString(290, 100, "MIST", Font_11x18, color, bg_color);
+		if(grbl_data.coolant.mist){
+			color = GREEN;
+			bg_color = BLACK;
 		}
-		if(grbl_data.coolant.flood != grbl_coolant_status[1]){
-			uint16_t color = RED, bg_color = GRAY;
-			grbl_coolant_status[1] = grbl_data.coolant.flood;
 
-			if(grbl_data.coolant.flood){
-				color = GREEN;
-				bg_color = BLACK;
-			}
+		R61529_WriteString(390, 100, "MIST", Font_11x18, color, bg_color);
+	}
+	if(grbl_data.coolant.flood != grbl_coolant_status[1]){
+		uint16_t color = RED, bg_color = GRAY;
+		grbl_coolant_status[1] = grbl_data.coolant.flood;
 
-			R61529_WriteString(290, 130, "FLOOD", Font_11x18, color, bg_color);
+		if(grbl_data.coolant.flood){
+			color = GREEN;
+			bg_color = BLACK;
 		}
-		if(grbl_data.coolant.trough_spindle != grbl_coolant_status[2]){
-			uint16_t color = RED, bg_color = GRAY;
-			grbl_coolant_status[2] = grbl_data.coolant.trough_spindle;
 
-			if(grbl_data.coolant.trough_spindle){
-				color = GREEN;
-				bg_color = BLACK;
-			}
+		R61529_WriteString(390, 130, "FLOOD", Font_11x18, color, bg_color);
+	}
+	if(grbl_data.coolant.trough_spindle != grbl_coolant_status[2]){
+		uint16_t color = RED, bg_color = GRAY;
+		grbl_coolant_status[2] = grbl_data.coolant.trough_spindle;
 
-			R61529_WriteString(290, 160, "SPINDLE", Font_11x18, color, bg_color);
+		if(grbl_data.coolant.trough_spindle){
+			color = GREEN;
+			bg_color = BLACK;
 		}
+
+		R61529_WriteString(390, 160, "SPINDLE", Font_11x18, color, bg_color);
 	}
 
 	// Display machine state
@@ -1255,8 +1673,8 @@ void auto_mode_update_screen(void){
 			color = BLUE;
 		}
 
-		R61529_FillRect(BLACK, 90, 270, 170, 290);
-		R61529_WriteString(90, 270, state_str, Font_11x18, color, BLACK);
+		R61529_FillRect(BLACK, 90, 290, 170, 310);
+		R61529_WriteString(90, 290, state_str, Font_11x18, color, BLACK);
 	}
 
 	// Display RPM
@@ -1275,8 +1693,8 @@ void auto_mode_update_screen(void){
 		grbl_rpm = grbl_data.spindle.rpm_programmed;
 
 		if(rpm_str_len < prev_rpm_str_len)
-			R61529_FillRect(BLACK, 80, 219, 80 + (prev_rpm_str_len * 11), 219 + 18);
-		R61529_WriteString(80, 219, rpm_str, Font_11x18, color, BLACK);
+			R61529_FillRect(BLACK, 80, 250, 80 + (prev_rpm_str_len * 11), 270);
+		R61529_WriteString(80, 250 + ((26 - 18) / 2), rpm_str, Font_11x18, color, BLACK);
 	}
 }
 
@@ -1306,10 +1724,24 @@ void manual_mode_update_screen(void){
 			grbl_position[i] = coordinate;
 
 			if(pos_str_len < prev_pos_str_len)
-				R61529_FillRect(BLACK, 50, 104 + (30 * i), 50 + (prev_pos_str_len * 11), 104 + (30 * i) + 18);
-			R61529_WriteString(50, 104 + (30 * i), pos_str, Font_11x18, PURPLE, BLACK);
+				R61529_FillRect(BLACK, 50, 100 + ((26 - 18) / 2) + (30 * i), 50 + (prev_pos_str_len * 11), 100 + ((26 - 18) / 2) + (30 * i) + 18);
+			R61529_WriteString(50, 100 + ((26 - 18) / 2) + (30 * i), pos_str, Font_11x18, PURPLE, BLACK);
 		}
 	}
+
+	// Display axes movement steps
+	for(uint8_t i = 0; i < 3; i++){
+		char multiplier[5] = {0};
+
+		if(i == 0){
+			sprintf(multiplier, "%3.2f", mpg_settings.x_axis_multiplicity[pendant_data.jog_mode]);
+		}else{
+			sprintf(multiplier, "%3.2f", mpg_settings.yz_axis_multiplicity[pendant_data.jog_mode]);
+		}
+
+		R61529_WriteString(150, 100 + (i * 30) + (26 - 10), multiplier, Font_7x10, YELLOW, BLACK);
+	}
+
 
 	// Display offset
 	for(uint8_t i = 0; i < 3; i++){
@@ -1333,46 +1765,44 @@ void manual_mode_update_screen(void){
 			grbl_offset[i] = _offset;
 
 			if(offset_str_len < prev_offset_str_len)
-				R61529_FillRect(BLACK, 190, 104 + (30 * i), 190 + (prev_offset_str_len * 11), 104 + (30 * i) + 18);
-			R61529_WriteString(190, 104 + (30 * i), offset_str, Font_11x18, PURPLE, BLACK);
+				R61529_FillRect(BLACK, 290, 100 + ((26 - 18) / 2) + (30 * i), 290 + (prev_offset_str_len * 11), 100 + ((26 - 18) / 2) + (30 * i) + 18);
+			R61529_WriteString(290, 100 + ((26 - 18) / 2) + (30 * i), offset_str, Font_11x18, PURPLE, BLACK);
 		}
 	}
 
 	// Display coolant status
-	for(uint8_t i = 0; i < 3; i++){
-		if(grbl_data.coolant.mist != grbl_coolant_status[0]){
-			uint16_t color = RED, bg_color = GRAY;
-			grbl_coolant_status[0] = grbl_data.coolant.mist;
+	if(grbl_data.coolant.mist != grbl_coolant_status[0]){
+		uint16_t color = RED, bg_color = GRAY;
+		grbl_coolant_status[0] = grbl_data.coolant.mist;
 
-			if(grbl_data.coolant.mist){
-				color = GREEN;
-				bg_color = BLACK;
-			}
-
-			R61529_WriteString(290, 100, "MIST", Font_11x18, color, bg_color);
+		if(grbl_data.coolant.mist){
+			color = GREEN;
+			bg_color = BLACK;
 		}
-		if(grbl_data.coolant.flood != grbl_coolant_status[1]){
-			uint16_t color = RED, bg_color = GRAY;
-			grbl_coolant_status[1] = grbl_data.coolant.flood;
 
-			if(grbl_data.coolant.flood){
-				color = GREEN;
-				bg_color = BLACK;
-			}
+		R61529_WriteString(390, 100, "MIST", Font_11x18, color, bg_color);
+	}
+	if(grbl_data.coolant.flood != grbl_coolant_status[1]){
+		uint16_t color = RED, bg_color = GRAY;
+		grbl_coolant_status[1] = grbl_data.coolant.flood;
 
-			R61529_WriteString(290, 130, "FLOOD", Font_11x18, color, bg_color);
+		if(grbl_data.coolant.flood){
+			color = GREEN;
+			bg_color = BLACK;
 		}
-		if(grbl_data.coolant.trough_spindle != grbl_coolant_status[2]){
-			uint16_t color = RED, bg_color = GRAY;
-			grbl_coolant_status[2] = grbl_data.coolant.trough_spindle;
 
-			if(grbl_data.coolant.trough_spindle){
-				color = GREEN;
-				bg_color = BLACK;
-			}
+		R61529_WriteString(390, 130, "FLOOD", Font_11x18, color, bg_color);
+	}
+	if(grbl_data.coolant.trough_spindle != grbl_coolant_status[2]){
+		uint16_t color = RED, bg_color = GRAY;
+		grbl_coolant_status[2] = grbl_data.coolant.trough_spindle;
 
-			R61529_WriteString(290, 160, "SPINDLE", Font_11x18, color, bg_color);
+		if(grbl_data.coolant.trough_spindle){
+			color = GREEN;
+			bg_color = BLACK;
 		}
+
+		R61529_WriteString(390, 160, "SPINDLE", Font_11x18, color, bg_color);
 	}
 
 	// Display machine state
@@ -1400,8 +1830,8 @@ void manual_mode_update_screen(void){
 			color = BLUE;
 		}
 
-		R61529_FillRect(BLACK, 90, 270, 170, 290);
-		R61529_WriteString(90, 270, state_str, Font_11x18, color, BLACK);
+		R61529_FillRect(BLACK, 90, 290, 170, 310);
+		R61529_WriteString(90, 290, state_str, Font_11x18, color, BLACK);
 	}
 
 	// Display MPG mode state
@@ -1474,12 +1904,35 @@ void manual_mode_update_screen(void){
 		grbl_rpm = grbl_data.spindle.rpm_programmed;
 
 		if(rpm_str_len < prev_rpm_str_len)
-			R61529_FillRect(BLACK, 80, 219, 80 + (prev_rpm_str_len * 11), 219 + 18);
-		R61529_WriteString(80, 219, rpm_str, Font_11x18, color, BLACK);
+			R61529_FillRect(BLACK, 80, 250, 80 + (prev_rpm_str_len * 11), 270);
+		R61529_WriteString(80, 250 + ((26 - 18) / 2), rpm_str, Font_11x18, color, BLACK);
+	}
+
+	// Display jogging mode
+	if(pendant_jog_mode != pendant_data.jog_mode){
+		pendant_jog_mode = pendant_data.jog_mode;
+		R61529_FillRect(BLACK, 400, 270, 470, 290);
+		switch(pendant_data.jog_mode){
+			case 0:
+				R61529_WriteString(400, 270, "SLOW", Font_11x18, GREEN, BLACK);
+				break;
+			case 1:
+				R61529_WriteString(400, 270, "MEDIUM", Font_11x18, ORANGE, BLACK);
+				break;
+			case 2:
+				R61529_WriteString(400, 270, "FAST", Font_11x18, RED, BLACK);
+				break;
+			default:
+				break;
+		}
 	}
 }
 
 
+
+
+
+// Level 2 menu special functions
 /**
   * @brief Update screen data for screen brightness setting sub-menu
   */
@@ -1497,6 +1950,296 @@ void screen_brightness_setting_update_screen(void){
 }
 
 
+
+
+
+// Level 4 menu special functions
+/**
+  * @brief Delete a given x axis distance setting
+  */
+void delete_x_axis_dist_setting(uint8_t index){
+	uint16_t setting_base_x = GET_X_AXIS_DIST_SETTING_BLOCK_BASE_X;
+	uint16_t setting_base_y = GET_X_AXIS_DIST_SETTING_BLOCK_BASE_Y(index);
+
+	if(index > (X_AXIS_DIST_SETTINGS - 1)){
+		return;
+	}
+
+	R61529_FillRect(BLACK, setting_base_x, setting_base_y, setting_base_x + X_AXIS_DIST_SETTING_BLOCK_WIDTH, setting_base_y + X_AXIS_DIST_SETTING_BLOCK_HEIGHT);
+}
+
+/**
+  * @brief Select a given x axis distance setting
+  */
+void select_x_axis_dist_setting(uint8_t index){
+	uint16_t setting_base_x = GET_X_AXIS_DIST_SETTING_BLOCK_BASE_X;
+	uint16_t setting_base_y = GET_X_AXIS_DIST_SETTING_BLOCK_BASE_Y(index);
+	uint16_t setting_text_base_x = GET_X_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_X;
+	uint16_t setting_text_base_y = GET_X_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_Y(index);
+	uint16_t setting_decimal_base_x, setting_decimal_base_y;
+	char decimal_str[10] = {0};
+
+	if(index > (X_AXIS_DIST_SETTINGS - 1)){
+		return;
+	}
+
+	sprintf(decimal_str, "%1.3f", mpg_settings.x_axis_multiplicity[index]);
+	setting_decimal_base_x = GET_X_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_X + X_AXIS_DIST_SETTING_BLOCK_WIDTH - 40 - (strlen(decimal_str) * 11);
+	setting_decimal_base_y = setting_text_base_y + 4; // + ((26 - 18) / 2)
+
+	R61529_FillRect(GREEN, setting_base_x, setting_base_y, setting_base_x + X_AXIS_DIST_SETTING_BLOCK_WIDTH, setting_base_y + X_AXIS_DIST_SETTING_BLOCK_HEIGHT);
+	R61529_WriteString(setting_text_base_x, setting_text_base_y, x_axis_dist_settings[index], Font_16x26, BROWN, GREEN);
+	R61529_WriteString(setting_decimal_base_x, setting_decimal_base_y, decimal_str, Font_11x18, PURPLE, GREEN);
+}
+
+/**
+  * @brief Un-select a given x axis distance setting
+  */
+void unselect_x_axis_dist_setting(uint8_t index){
+	uint16_t setting_base_x = GET_X_AXIS_DIST_SETTING_BLOCK_BASE_X;
+	uint16_t setting_base_y = GET_X_AXIS_DIST_SETTING_BLOCK_BASE_Y(index);
+	uint16_t setting_text_base_x = GET_X_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_X;
+	uint16_t setting_text_base_y = GET_X_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_Y(index);
+	uint16_t setting_decimal_base_x, setting_decimal_base_y;
+	char decimal_str[10] = {0};
+
+	if(index > (X_AXIS_DIST_SETTINGS - 1)){
+		return;
+	}
+
+	sprintf(decimal_str, "%1.3f", mpg_settings.x_axis_multiplicity[index]);
+	setting_decimal_base_x = GET_X_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_X + X_AXIS_DIST_SETTING_BLOCK_WIDTH - 40 - (strlen(decimal_str) * 11);
+	setting_decimal_base_y = setting_text_base_y + 4; // + ((26 - 18) / 2)
+
+	R61529_FillRect(GRAY, setting_base_x, setting_base_y, setting_base_x + X_AXIS_DIST_SETTING_BLOCK_WIDTH, setting_base_y + X_AXIS_DIST_SETTING_BLOCK_HEIGHT);
+	R61529_WriteString(setting_text_base_x, setting_text_base_y, x_axis_dist_settings[index], Font_16x26, WHITE, GRAY);
+	R61529_WriteString(setting_decimal_base_x, setting_decimal_base_y, decimal_str, Font_11x18, BROWN, GRAY);
+}
+
+/**
+  * @brief Delete a given y/z axis distance setting
+  */
+void delete_yz_axis_dist_setting(uint8_t index){
+	uint16_t setting_base_x = GET_YZ_AXIS_DIST_SETTING_BLOCK_BASE_X;
+	uint16_t setting_base_y = GET_YZ_AXIS_DIST_SETTING_BLOCK_BASE_Y(index);
+
+	if(index > (YZ_AXIS_DIST_SETTINGS - 1)){
+		return;
+	}
+
+	R61529_FillRect(BLACK, setting_base_x, setting_base_y, setting_base_x + YZ_AXIS_DIST_SETTING_BLOCK_WIDTH, setting_base_y + YZ_AXIS_DIST_SETTING_BLOCK_HEIGHT);
+}
+
+/**
+  * @brief Select a given yz axis distance setting
+  */
+void select_yz_axis_dist_setting(uint8_t index){
+	uint16_t setting_base_x = GET_YZ_AXIS_DIST_SETTING_BLOCK_BASE_X;
+	uint16_t setting_base_y = GET_YZ_AXIS_DIST_SETTING_BLOCK_BASE_Y(index);
+	uint16_t setting_text_base_x = GET_YZ_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_X;
+	uint16_t setting_text_base_y = GET_YZ_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_Y(index);
+	uint16_t setting_decimal_base_x, setting_decimal_base_y;
+	char decimal_str[10] = {0};
+
+	if(index > (X_AXIS_DIST_SETTINGS - 1)){
+		return;
+	}
+
+	sprintf(decimal_str, "%1.3f", mpg_settings.yz_axis_multiplicity[index]);
+	setting_decimal_base_x = GET_YZ_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_X + YZ_AXIS_DIST_SETTING_BLOCK_WIDTH - 40 - (strlen(decimal_str) * 11);
+	setting_decimal_base_y = setting_text_base_y + 4; // + ((26 - 18) / 2)
+
+	R61529_FillRect(GREEN, setting_base_x, setting_base_y, setting_base_x + YZ_AXIS_DIST_SETTING_BLOCK_WIDTH, setting_base_y + YZ_AXIS_DIST_SETTING_BLOCK_HEIGHT);
+	R61529_WriteString(setting_text_base_x, setting_text_base_y, yz_axis_dist_settings[index], Font_16x26, BROWN, GREEN);
+	R61529_WriteString(setting_decimal_base_x, setting_decimal_base_y, decimal_str, Font_11x18, PURPLE, GREEN);
+}
+
+/**
+  * @brief Un-select a given yz axis distance setting
+  */
+void unselect_yz_axis_dist_setting(uint8_t index){
+	uint16_t setting_base_x = GET_YZ_AXIS_DIST_SETTING_BLOCK_BASE_X;
+	uint16_t setting_base_y = GET_YZ_AXIS_DIST_SETTING_BLOCK_BASE_Y(index);
+	uint16_t setting_text_base_x = GET_YZ_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_X;
+	uint16_t setting_text_base_y = GET_YZ_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_Y(index);
+	uint16_t setting_decimal_base_x, setting_decimal_base_y;
+	char decimal_str[10] = {0};
+
+	if(index > (YZ_AXIS_DIST_SETTINGS - 1)){
+		return;
+	}
+
+	sprintf(decimal_str, "%1.3f", mpg_settings.yz_axis_multiplicity[index]);
+	setting_decimal_base_x = GET_YZ_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_X + YZ_AXIS_DIST_SETTING_BLOCK_WIDTH - 40 - (strlen(decimal_str) * 11);
+	setting_decimal_base_y = setting_text_base_y + 4; // + ((26 - 18) / 2)
+
+	R61529_FillRect(GRAY, setting_base_x, setting_base_y, setting_base_x + YZ_AXIS_DIST_SETTING_BLOCK_WIDTH, setting_base_y + YZ_AXIS_DIST_SETTING_BLOCK_HEIGHT);
+	R61529_WriteString(setting_text_base_x, setting_text_base_y, yz_axis_dist_settings[index], Font_16x26, WHITE, GRAY);
+	R61529_WriteString(setting_decimal_base_x, setting_decimal_base_y, decimal_str, Font_11x18, BROWN, GRAY);
+}
+
+/**
+  * @brief Delete a given jog speed setting
+  */
+void delete_jog_feed_setting(uint8_t index){
+	uint16_t setting_base_x = GET_JOG_FEED_SETTING_BLOCK_BASE_X;
+	uint16_t setting_base_y = GET_JOG_FEED_SETTING_BLOCK_BASE_Y(index);
+
+	if(index > (JOG_FEED_SETTINGS - 1)){
+		return;
+	}
+
+	R61529_FillRect(BLACK, setting_base_x, setting_base_y, setting_base_x + JOG_FEED_SETTING_BLOCK_WIDTH, setting_base_y + JOG_FEED_SETTING_BLOCK_HEIGHT);
+}
+
+/**
+  * @brief Select a given jog speed setting
+  */
+void select_jog_feed_setting(uint8_t index){
+	uint16_t setting_base_x = GET_JOG_FEED_SETTING_BLOCK_BASE_X;
+	uint16_t setting_base_y = GET_JOG_FEED_SETTING_BLOCK_BASE_Y(index);
+	uint16_t setting_text_base_x = GET_JOG_FEED_SETTING_BLOCK_TEXT_BASE_X;
+	uint16_t setting_text_base_y = GET_JOG_FEED_SETTING_BLOCK_TEXT_BASE_Y(index);
+	uint16_t setting_decimal_base_x, setting_decimal_base_y;
+	char decimal_str[10] = {0};
+
+	if(index > (JOG_FEED_SETTINGS - 1)){
+		return;
+	}
+
+	sprintf(decimal_str, "%4u", mpg_settings.jog_speeds[index]);
+	setting_decimal_base_x = GET_JOG_FEED_SETTING_BLOCK_TEXT_BASE_X + JOG_FEED_SETTING_BLOCK_WIDTH - 40 - (strlen(decimal_str) * 11);
+	setting_decimal_base_y = setting_text_base_y + 4; // + ((26 - 18) / 2)
+
+	R61529_FillRect(GREEN, setting_base_x, setting_base_y, setting_base_x + JOG_FEED_SETTING_BLOCK_WIDTH, setting_base_y + JOG_FEED_SETTING_BLOCK_HEIGHT);
+	R61529_WriteString(setting_text_base_x, setting_text_base_y, jog_feed_settings[index], Font_16x26, BROWN, GREEN);
+	R61529_WriteString(setting_decimal_base_x, setting_decimal_base_y, decimal_str, Font_11x18, PURPLE, GREEN);
+}
+
+/**
+  * @brief Un-select a given jog speed setting
+  */
+void unselect_jog_feed_setting(uint8_t index){
+	uint16_t setting_base_x = GET_JOG_FEED_SETTING_BLOCK_BASE_X;
+	uint16_t setting_base_y = GET_JOG_FEED_SETTING_BLOCK_BASE_Y(index);
+	uint16_t setting_text_base_x = GET_JOG_FEED_SETTING_BLOCK_TEXT_BASE_X;
+	uint16_t setting_text_base_y = GET_JOG_FEED_SETTING_BLOCK_TEXT_BASE_Y(index);
+	uint16_t setting_decimal_base_x, setting_decimal_base_y;
+	char decimal_str[10] = {0};
+
+	if(index > (JOG_FEED_SETTINGS - 1)){
+		return;
+	}
+
+	sprintf(decimal_str, "%4u", mpg_settings.jog_speeds[index]);
+	setting_decimal_base_x = GET_JOG_FEED_SETTING_BLOCK_TEXT_BASE_X + JOG_FEED_SETTING_BLOCK_WIDTH - 40 - (strlen(decimal_str) * 11);
+	setting_decimal_base_y = setting_text_base_y + 4; // + ((26 - 18) / 2)
+
+	R61529_FillRect(GRAY, setting_base_x, setting_base_y, setting_base_x + JOG_FEED_SETTING_BLOCK_WIDTH, setting_base_y + JOG_FEED_SETTING_BLOCK_HEIGHT);
+	R61529_WriteString(setting_text_base_x, setting_text_base_y, jog_feed_settings[index], Font_16x26, WHITE, GRAY);
+	R61529_WriteString(setting_decimal_base_x, setting_decimal_base_y, decimal_str, Font_11x18, BROWN, GRAY);
+}
+
+
+void mpg_axes_update_settings(void){
+	if((menu_controller.level_indexes[0] & 0xFF00 >> 8) == 2 && (menu_controller.level_indexes[1] & 0xFF00 >> 8) == 1){
+		uint16_t setting_text_base_y = 0;
+		uint16_t setting_decimal_base_x = 0;
+		uint16_t setting_decimal_base_y = 0;
+		char decimal_str[10] = {0};
+
+		if((menu_controller.level_indexes[2] & 0xFF00 >> 8) == 0){ ////TODO: X axis jogging distances
+			switch((menu_controller.level_indexes[3] & 0xFF00 >> 8)){
+				case 0: //Slow
+					setting_text_base_y = GET_X_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_Y(0);
+					sprintf(decimal_str, "%1.3f", mpg_settings.x_axis_multiplicity[0]);
+					break;
+				case 1: //Medium
+					setting_text_base_y = GET_X_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_Y(1);
+					sprintf(decimal_str, "%1.3f", mpg_settings.x_axis_multiplicity[1]);
+					break;
+				case 2:	//Fast
+					setting_text_base_y = GET_X_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_Y(2);
+					sprintf(decimal_str, "%1.3f", mpg_settings.x_axis_multiplicity[2]);
+					break;
+				default:
+					break;
+			}
+			setting_decimal_base_x = GET_X_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_X + X_AXIS_DIST_SETTING_BLOCK_WIDTH - 40 - (strlen(decimal_str) * 11);
+			setting_decimal_base_y = setting_text_base_y + 4; // + ((26 - 18) / 2)
+			R61529_WriteString(setting_decimal_base_x, setting_decimal_base_y, decimal_str, Font_11x18, PURPLE, GREEN);
+		}else if((menu_controller.level_indexes[2] & 0xFF00 >> 8) == 1){ //TODO: Y/Z axis jogging distances
+			switch((menu_controller.level_indexes[3] & 0xFF00 >> 8)){
+				case 0: //Slow
+					setting_text_base_y = GET_YZ_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_Y(0);
+					sprintf(decimal_str, "%1.3f", mpg_settings.yz_axis_multiplicity[0]);
+					break;
+				case 1: //Medium
+					setting_text_base_y = GET_YZ_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_Y(1);
+					sprintf(decimal_str, "%1.3f", mpg_settings.yz_axis_multiplicity[1]);
+					break;
+				case 2:	//Fast
+					setting_text_base_y = GET_YZ_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_Y(2);
+					sprintf(decimal_str, "%1.3f", mpg_settings.yz_axis_multiplicity[2]);
+					break;
+				default:
+					break;
+			}
+			setting_decimal_base_x = GET_YZ_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_X + YZ_AXIS_DIST_SETTING_BLOCK_WIDTH - 40 - (strlen(decimal_str) * 11);
+			setting_decimal_base_y = setting_text_base_y + 4; // + ((26 - 18) / 2)
+			R61529_WriteString(setting_decimal_base_x, setting_decimal_base_y, decimal_str, Font_11x18, PURPLE, GREEN);
+		}else if((menu_controller.level_indexes[2] & 0xFF00 >> 8) == 2){ //TODO: Jogging feed rates
+			switch((menu_controller.level_indexes[3] & 0xFF00 >> 8)){
+				case 0: //Slow
+					setting_text_base_y = GET_JOG_FEED_SETTING_BLOCK_TEXT_BASE_Y(0);
+					sprintf(decimal_str, "%4u", mpg_settings.jog_speeds[0]);
+					break;
+				case 1: //Medium
+					setting_text_base_y = GET_JOG_FEED_SETTING_BLOCK_TEXT_BASE_Y(1);
+					sprintf(decimal_str, "%4u", mpg_settings.jog_speeds[1]);
+					break;
+				case 2:	//Fast
+					setting_text_base_y = GET_JOG_FEED_SETTING_BLOCK_TEXT_BASE_Y(2);
+					sprintf(decimal_str, "%4u", mpg_settings.jog_speeds[2]);
+					break;
+				default:
+					break;
+			}
+			setting_decimal_base_x = GET_JOG_FEED_SETTING_BLOCK_TEXT_BASE_X + JOG_FEED_SETTING_BLOCK_WIDTH - 40 - (strlen(decimal_str) * 11);
+			setting_decimal_base_y = setting_text_base_y + 4; // + ((26 - 18) / 2)
+			R61529_WriteString(setting_decimal_base_x, setting_decimal_base_y, decimal_str, Font_11x18, PURPLE, GREEN);
+		}
+	}
+}
+
+void mpg_spindle_update_setting(void){
+	if((menu_controller.level_indexes[0] & 0xFF00 >> 8) == 2 && (menu_controller.level_indexes[1] & 0xFF00 >> 8) == 2){
+		if((menu_controller.level_indexes[2] & 0xFF00 >> 8) == 0){
+			uint16_t speed_max_min_diff = SPINDLE_SPEED_MAX - SPINDLE_SPEED_MIN;
+			uint16_t end_x = (((mpg_settings.spindle_speed - SPINDLE_SPEED_MIN) * (SPINDLE_SPEED_SETTING_SLIDER_WIDTH - 2)) / speed_max_min_diff) + SPINDLE_SPEED_SETTING_SLIDER_BASE_X + 1;
+			char spindle_speed_str[10] = {0};
+
+			sprintf(spindle_speed_str, "%4u", mpg_settings.spindle_speed);
+
+			R61529_WriteString(SPINDLE_SPEED_SETTING_SLIDER_BASE_X + strlen("Spindle speed: ") * 11, SPINDLE_SPEED_SETTING_SLIDER_BASE_Y + SPINDLE_SPEED_SETTING_SLIDER_HEIGHT + 10, spindle_speed_str, Font_11x18, MAGENTA, BLACK);
+			R61529_FillRect(YELLOW, SPINDLE_SPEED_SETTING_SLIDER_BASE_X + 1, SPINDLE_SPEED_SETTING_SLIDER_BASE_Y + 1, end_x, SPINDLE_SPEED_SETTING_SLIDER_END_Y - 1);
+			if((end_x + 1) != SPINDLE_SPEED_SETTING_SLIDER_END_X){
+				R61529_FillRect(GRAY, end_x + 1, SPINDLE_SPEED_SETTING_SLIDER_BASE_Y + 1, SPINDLE_SPEED_SETTING_SLIDER_END_X - 1, SPINDLE_SPEED_SETTING_SLIDER_END_Y - 1);
+			}
+		}
+	}
+}
+
+
+
+
+
+// Other functions
+/**
+  * @brief Process received information from the MPG pendant
+  * and do the according actions
+  * (send the according data packets to GRBL)
+  */
 void process_pendant_data_to_action(void){
 	static pendant_data_t data = {0};
 	pendant_data_t current_data;

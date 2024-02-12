@@ -32,10 +32,13 @@ extern "C" {
 #define JOG_SPEED_DEFAULT_MEDIUM 750
 #define JOG_SPEED_DEFAULT_FAST 1000
 
-#define SPINDLE_SPEED_DEFAULT 1150
 #define SPINDLE_MODE_OFF 0
 #define SPINDLE_MODE_CW 1
 #define SPINDLE_MODE_CCW 2
+#define SPINDLE_SPEED_DEFAULT 1000
+#define SPINDLE_SPEED_MAX 5000
+#define SPINDLE_SPEED_MIN 800
+#define SPINDLE_SPEED_DIFF 100
 
 
 /* Exported types ------------------------------------------------------------*/
@@ -43,7 +46,7 @@ typedef struct{
 	double x_axis_multiplicity[3];
 	double yz_axis_multiplicity[3];
 	uint16_t jog_speeds[3];
-	uint16_t spindle_speed;
+	int16_t spindle_speed;
 	uint8_t spindle_mode;
 }mpg_settings_t;
 
