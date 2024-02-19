@@ -33,7 +33,7 @@ Core/Src/r61529_screen_menu.o: ../Core/Src/r61529_screen_menu.c \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h \
  ../Core/Inc/r61529_screen_menu.h ../Core/Inc/main.h \
- ../Core/R61529/r61529.h ../Core/R61529/fonts.h ../Core/FT5436/ft5436.h \
+ ../Core/FT5436/ft5436.h ../Core/R61529/r61529.h ../Core/R61529/fonts.h \
  ../Core/Inc/buttons.h ../Core/SoundFX/sound_fx.h \
  ../Core/Inc/stm32h7xx_it.h ../Core/MPGpendant/mpg_pendant.h \
  ../Core/Src/../grblHALComm/parser.h \
@@ -76,9 +76,9 @@ Core/Src/r61529_screen_menu.o: ../Core/Src/r61529_screen_menu.c \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h:
 ../Core/Inc/r61529_screen_menu.h:
 ../Core/Inc/main.h:
+../Core/FT5436/ft5436.h:
 ../Core/R61529/r61529.h:
 ../Core/R61529/fonts.h:
-../Core/FT5436/ft5436.h:
 ../Core/Inc/buttons.h:
 ../Core/SoundFX/sound_fx.h:
 ../Core/Inc/stm32h7xx_it.h:

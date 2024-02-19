@@ -19,7 +19,7 @@ extern "C" {
 
 
 /* Private defines -----------------------------------------------------------*/
-#if(1)
+#if(0)
 #define INCLUDE_DOOM
 #endif
 

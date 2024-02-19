@@ -10,9 +10,11 @@
 #include "systick_timer.h"
 #include "stm32h7xx_it.h"
 #include "stm32h7xx_hal.h"
+#include "r61529_screen_menu.h"
 
 
 /* Private define ------------------------------------------------------------*/
+extern UART_HandleTypeDef huart3;
 extern UART_HandleTypeDef huart4;
 #define PENDANT_UART huart4
 
@@ -21,49 +23,32 @@ extern UART_HandleTypeDef huart4;
 /* Private macro -------------------------------------------------------------*/
 
 /* External variables --------------------------------------------------------*/
+extern menu_controller_t menu_controller;
+
 
 /* Private variables ---------------------------------------------------------*/
 pendant_control_t pendant_control = {0};
 pendant_data_t pendant_data = {0};
+char request_body[30] = {0};
 
 
 /* Private function prototypes -----------------------------------------------*/
-void connect_pendant(void);
-void disconnect_pendant(void);
 void request_pendant_data(void);
-uint8_t get_pendant_status(void);
-void set_pendant_status(uint8_t);
 
 
 /* Private user code -----------------------------------------------*/
-void connect_pendant(void){
-	if(pendant_control.status == PENDANT_DISCONNECTED || pendant_control.status == PENDANT_ERROR){
-		pendant_control.status = PENDANT_CONNECTING;
-		start_pendant_connection();
-	}
-}
-
-void disconnect_pendant(void){
-	if(pendant_control.status == PENDANT_CONNECTED || pendant_control.status == PENDANT_ERROR){
-		pendant_control.status = PENDANT_DISCONNECTING;
-		start_pendant_disconnection();
-	}
-}
-
+/**
+  * @brief Send a data request to the MPG pendant
+  */
 void request_pendant_data(void){
-	if(pendant_control.status == PENDANT_CONNECTED){
-		pendant_control.status = PENDANT_AWAITING_DATA;
-		HAL_UART_Transmit_DMA(&PENDANT_UART, (uint8_t*)"GET_DATA", 8);
-		start_pendant_reception();
-	}
-}
+	// Clear reqeust buffer
+	memset(request_body, 0, 30);
 
-uint8_t get_pendant_status(void){
-	return pendant_control.status;
-}
+	// Prepare buffer and send it to the pendant via UART
+	sprintf(request_body, "GET_DATA|%d|%d|%d", pendant_control.status, pendant_control.mpg_status, 5000);
+	HAL_UART_Transmit_DMA(&PENDANT_UART, (uint8_t*)request_body, strlen(request_body));
 
-void set_pendant_status(uint8_t status){
-	if(status >= 0 && status <= 6){
-		pendant_control.status = status;
-	}
+	// Initiate a DMA reception transfer on the
+	// UART port associated with the MPG pendant
+	start_pendant_reception();
 }

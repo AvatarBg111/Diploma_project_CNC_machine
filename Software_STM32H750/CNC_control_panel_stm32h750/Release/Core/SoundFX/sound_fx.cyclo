@@ -1,8 +1,3 @@
 ../Core/SoundFX/sound_fx.c:250:6:enable_buzzer	1
 ../Core/SoundFX/sound_fx.c:254:6:disable_buzzer	1
 ../Core/SoundFX/sound_fx.c:278:9:buzzer_short_ring	4
-../Core/SoundFX/sound_fx.c:307:6:DOOM	7
-../Core/SoundFX/sound_fx.c:337:6:play_DOOM	1
-../Core/SoundFX/sound_fx.c:344:6:stop_DOOM	1
-../Core/SoundFX/sound_fx.c:351:6:rewind_DOOM	1
-../Core/SoundFX/sound_fx.c:359:6:DOOM_playing	1

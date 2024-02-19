@@ -17,21 +17,23 @@ extern "C" {
 
 
 /* Private defines -----------------------------------------------------------*/
-#define CONNECTION_CNT 300
+#define DATA_REQUEST_CNT 9
+#define CHECK_DATA_RECEIVED_CNT 10
+#define REQUEST_TIMEOUT_CNT 10
 
-#define PENDANT_DISCONNECTED 0
-#define PENDANT_CONNECTED 1
-#define PENDANT_CONNECTING 2
-#define PENDANT_DISCONNECTING 3
-#define PENDANT_ERROR 4
-#define PENDANT_AWAITING_DATA 5
-#define PENDANT_DATA_RECEIVED 6
+#define MPG_STATUS_DISABLED 0
+#define MPG_STATUS_ENABLED 1
+#define MPG_STATUS_ENABLE_ONGOING 2
 
 
 /* Exported types ------------------------------------------------------------*/
 typedef struct{
-	uint8_t status;
-	uint16_t counter;
+	uint8_t counter;
+	uint8_t comm_cnt;
+	uint8_t mpg_status;
+	bool status;
+	bool turn_off_mpg;
+	bool request_answered;
 }pendant_control_t;
 
 typedef struct{
@@ -39,22 +41,22 @@ typedef struct{
 	uint32_t encoder2_val;
 	uint8_t x_axis_multiplicity;
 	uint8_t yz_axis_multiplicity;
-	uint8_t y_or_z;
-	uint8_t spindle_mode;
+	bool y_or_z;
 	uint8_t jog_mode;
-	uint16_t buttons;
+	uint8_t spindle_mode;
+	uint8_t system_status;
+	bool mpg;
+	bool flood;
+	bool mist;
 }pendant_data_t;
+
 
 /* Exported constants --------------------------------------------------------*/
 
 /* Exported macro ------------------------------------------------------------*/
 
 /* Exported functions prototypes ---------------------------------------------*/
-void connect_pendant(void);
-void disconnect_pendant(void);
 void request_pendant_data(void);
-uint8_t get_pendant_status(void);
-void set_pendant_status(uint8_t);
 
 #ifdef __cplusplus
 }

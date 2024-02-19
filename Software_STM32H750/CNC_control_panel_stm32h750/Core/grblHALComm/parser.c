@@ -80,6 +80,8 @@ grbl_data_t grbl_data = {
     .grbl.state_text      = "",
     .grbl.substate        = 0,
     .mpgMode              = false,
+    .mpg_enable_ongoing   = false,
+    .mpg_disable_ongoing  = false,
     .alarm                = 0,
     .error                = 0,
     .pins                 = "",
@@ -399,12 +401,10 @@ void parseData(char *block){
             }else if(!strncmp(line, "WCO:", 4)){
                 parseOffsets(line + 4);
             }else if(!strncmp(line, "Pn:", 3)){
-            	/*
                 pins = true;
                 if((grbl_data.changed.pins = (strcmp(grbl_data.pins, line + 3) != 0))){
                     strcpy(grbl_data.pins, line + 3);
                 }
-                */
             }else if(!strncmp(line, "D:", 2)){
                 grbl_data.xModeDiameter = line[2] == '1';
                 grbl_data.changed.xmode = true;
@@ -437,9 +437,19 @@ void parseData(char *block){
             }else if(!strncmp(line, "Ov:", 3)){
                 parseOverrides(line + 3);
             }else if(!strncmp(line, "MPG:", 4)){
-                if((grbl_data.changed.mpg = grbl_data.mpgMode != (line[4] == '1'))){
-                    grbl_data.mpgMode = !grbl_data.mpgMode;
+                if(line[4] == '1' && !grbl_data.mpgMode){
+                	grbl_data.mpgMode = true;
+                	grbl_data.changed.mpg = true;
+					grbl_data.mpg_enable_ongoing = false;
                     grbl_event.on_line_received = parseData;
+                }else if(line[4] == '0' && grbl_data.mpgMode){
+                	grbl_data.mpgMode = false;
+                	grbl_data.changed.mpg = true;
+                	grbl_data.mpg_disable_ongoing = false;
+                    grbl_event.on_line_received = parseData;
+                }else if(line[4] == '0' && !grbl_data.mpgMode){
+					grbl_data.mpg_enable_ongoing = false;
+					grbl_data.mpg_disable_ongoing = false;
                 }
             }else if(!strncmp(line, "SD:", 3)){
                 if((grbl_data.changed.message = !!strcmp(grbl_data.message, line + 3))){

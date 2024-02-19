@@ -1,1 +1,2 @@
-../Core/MPGmovement/mpg_movement.c:45:6:pendant_data_to_action	136	static
+../Core/MPGmovement/mpg_movement.c:54:6:pendant_data_to_action	128	static
+../Core/MPGmovement/mpg_movement.c:120:6:process_pendant_data_to_action	88	static

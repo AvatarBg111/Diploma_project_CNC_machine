@@ -55,24 +55,23 @@ typedef struct{
 	int16_t encoder2_val_diff;
 	uint8_t x_axis_multiplicity;
 	uint8_t yz_axis_multiplicity;
-	uint8_t y_or_z;
-	uint8_t spindle_mode;
+	bool y_or_z;
 	uint8_t jog_mode;
-	uint16_t buttons;
+	uint8_t spindle_mode;
+	uint8_t system_status;
+	bool mpg;
+	bool flood;
+	bool mist;
 }pendant_action_t;
 
 
 /* Exported constants --------------------------------------------------------*/
 
 /* Exported macro ------------------------------------------------------------*/
-#define MACHINE_HOLD(button_state_arr) (button_state_arr & 0x0001)
-#define CYCLE_START(button_state_arr) (button_state_arr & 0x0002)
-#define FLOOD_ON(button_state_arr) (button_state_arr & 0x0004)
-#define MIST_ON(button_state_arr) (button_state_arr & 0x0008)
-
 
 /* Exported functions prototypes ---------------------------------------------*/
 void pendant_data_to_action(pendant_action_t);
+void process_pendant_data_to_action(void);
 
 #ifdef __cplusplus
 }

@@ -1,5 +1,1 @@
-../Core/MPGpendant/mpg_pendant.c:39:6:connect_pendant	0	static
-../Core/MPGpendant/mpg_pendant.c:46:6:disconnect_pendant	0	static
-../Core/MPGpendant/mpg_pendant.c:53:6:request_pendant_data	8	static
-../Core/MPGpendant/mpg_pendant.c:61:9:get_pendant_status	0	static
-../Core/MPGpendant/mpg_pendant.c:65:6:set_pendant_status	0	static
+../Core/MPGpendant/mpg_pendant.c:43:6:request_pendant_data	16	static

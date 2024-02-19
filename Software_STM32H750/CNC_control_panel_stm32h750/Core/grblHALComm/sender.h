@@ -25,8 +25,8 @@ extern "C" {
 /* Exported macro ------------------------------------------------------------*/
 
 /* Exported functions prototypes ---------------------------------------------*/
-bool enable_mpg(void);
-bool disable_mpg(void);
+uint8_t enable_mpg(void);
+uint8_t disable_mpg(void);
 uint8_t grbl_send_packet(uint8_t*,uint16_t);
 bool request_report(void);
 

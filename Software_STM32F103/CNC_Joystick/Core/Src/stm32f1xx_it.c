@@ -69,6 +69,10 @@ extern DMA_HandleTypeDef hdma_usart2_rx;
 extern DMA_HandleTypeDef hdma_usart2_tx;
 extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim3;
+extern bool process_inputs_flag;
+extern bool pendant_status;
+extern uint8_t pendant_mpg_status;
+extern pendant_data_t pendant_data;
 
 /* USER CODE END EV */
 
@@ -244,11 +248,22 @@ void DMA1_Channel7_IRQHandler(void)
 void TIM4_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM4_IRQn 0 */
+	static uint8_t counter = 0;
 
   /* USER CODE END TIM4_IRQn 0 */
   HAL_TIM_IRQHandler(&htim4);
   /* USER CODE BEGIN TIM4_IRQn 1 */
+  // Call function that implements the updating
+  // of button channel statuses in a de-bouncer
   update_button_status();
+
+  // Increment a counter and when it reaches TIM1_INT_ENTRIES
+  // set a flag that shows whether the main program should
+  // process the system inputs
+  if(++counter >= TIM1_INT_ENTRIES){
+	  counter = 0;
+	  process_inputs_flag = true;
+  }
 
   /* USER CODE END TIM4_IRQn 1 */
 }
@@ -270,21 +285,54 @@ void USART2_IRQHandler(void)
 /* USER CODE BEGIN 1 */
 // CALLBACKS
 void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size){
-	if(huart->Instance == USART2){
+	if(huart->Instance == USART2){ // Events for USART2
 		HAL_UART_RxEventTypeTypeDef eventId = HAL_UARTEx_GetRxEventType(huart);
 
 		if(eventId == HAL_UART_RXEVENT_IDLE || eventId == HAL_UART_RXEVENT_TC){
-			if(!strcmp((char*)uart2_rx_buf, "GET_DATA")){
+			// The program will enter this if statement,
+			// if the received message has "GET_DATA" in it
+			if(strstr((char*)uart2_rx_buf, "GET_DATA")){
+				// The program will enter this if statement, if
+				// the received message's size is more than 13
+				if(Size >= 13){
+					//uint16_t spindle_sw_delay_action = atoi(uart2_rx_buf + 13);	//TODO
+					if(uart2_rx_buf[9] == '1'){ // Received system status is ON
+						// Turn on system
+						pendant_status = true;
+
+						// Logic for enabling/disabling the MPG functionality
+						if((pendant_status && uart2_rx_buf[11] == '0' + MPG_STATUS_DISABLED) && (pendant_mpg_status == MPG_STATUS_ENABLED && !pendant_data.mpg)){
+							pendant_data.mpg = true;
+						}else if(pendant_status == MPG_STATUS_ENABLED && uart2_rx_buf[11] == '0' + MPG_STATUS_DISABLED){
+							pendant_mpg_status = MPG_STATUS_DISABLED;
+							pendant_data.mpg = false;
+						}else if(pendant_mpg_status == MPG_STATUS_DISABLED && uart2_rx_buf[11] == '0' + MPG_STATUS_ENABLED){
+							pendant_data.mpg = false;
+						}else if(pendant_mpg_status == MPG_STATUS_ENABLED && uart2_rx_buf[11] == '0' + MPG_STATUS_ENABLE_ONGOING){
+							pendant_data.mpg = true;
+						}
+					}else if(uart2_rx_buf[9] == '0'){ // Received system status is OFF
+						// Turn off system
+						pendant_status = false;
+
+						// Turn off system MPG functionality
+						pendant_mpg_status = MPG_STATUS_DISABLED;
+
+						// Reset pendant data MPG functionality flag
+						pendant_data.mpg = false;
+					}
+				}
+
+				// Call function that sends message
+				// with system data via UART
 				send_system_data();
-			}else if(!strcmp((char*)uart2_rx_buf, "CONNECT")){
-				send_system_connected();
-			}else if(!strcmp((char*)uart2_rx_buf, "DISCONNECT")){
-				send_system_disconnected();
-			}else{
-				send_system_error();
 			}
 
+			// Clear UART2 transmit buffer
+			// from index 0 to index "Size"
 			memset(uart2_rx_buf, 0, Size);
+
+			// Call function that initiates DMA reception transfer on UART2
 			start_uart2_reception();
 		}
 	}

@@ -14,11 +14,34 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 #include "main.h"
+#include "ft5436.h"
 
 
 /* Private defines -----------------------------------------------------------*/
+#define LEVELS 4
+#define BUTTONS 6
+#define ENTER_MENU_DELAY_TIME 50
+#define DEFAULT_DELAY 200
+
 
 /* Exported types ------------------------------------------------------------*/
+typedef struct{
+	uint8_t level;
+	uint16_t level_indexes[LEVELS];
+
+	uint8_t menu_cnt;
+	bool enter_menu;
+
+	uint8_t button_delay;
+	uint8_t button_delay_cnts[BUTTONS];
+
+	uint8_t touch_point_cnt;
+	int16_t touch_points[FT_REG_NUMTOUCHES][2];
+
+	int8_t brightness_value;
+	bool entered_manual_mode;
+}menu_controller_t;
+
 
 /* Exported constants --------------------------------------------------------*/
 

@@ -1,6 +1,4 @@
-Core/grblHALParser/parser.o: ../Core/grblHALParser/parser.c \
- ../Core/grblHALParser/parser.h ../Core/grblHALParser/grbl.h \
- ../Core/grblHALParser/i2c_interface.h ../Core/Inc/systick_timer.h \
+Core/Src/stm32h7xx_hal_msp.o: ../Core/Src/stm32h7xx_hal_msp.c \
  ../Core/Inc/main.h ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h \
  ../Core/Inc/stm32h7xx_hal_conf.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc.h \
@@ -32,11 +30,9 @@ Core/grblHALParser/parser.o: ../Core/grblHALParser/parser.c \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h \
- ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h
-../Core/grblHALParser/parser.h:
-../Core/grblHALParser/grbl.h:
-../Core/grblHALParser/i2c_interface.h:
-../Core/Inc/systick_timer.h:
+ ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h \
+ ../Core/FT5436/ft5436.h \
+ ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_i2c.h
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 ../Core/Inc/stm32h7xx_hal_conf.h:
@@ -70,3 +66,5 @@ Core/grblHALParser/parser.o: ../Core/grblHALParser/parser.c \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h:
+../Core/FT5436/ft5436.h:
+../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_ll_i2c.h:

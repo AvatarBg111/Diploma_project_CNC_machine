@@ -79,6 +79,10 @@ void Error_Handler(void);
 #define USER_BUT_E_GPIO_Port GPIOC
 #define USER_BUT_F_Pin GPIO_PIN_2
 #define USER_BUT_F_GPIO_Port GPIOC
+#define PENDANT_TX_Pin GPIO_PIN_0
+#define PENDANT_TX_GPIO_Port GPIOA
+#define PENDANT_RX_Pin GPIO_PIN_1
+#define PENDANT_RX_GPIO_Port GPIOA
 #define MPG_TX_Pin GPIO_PIN_2
 #define MPG_TX_GPIO_Port GPIOA
 #define MPG_RX_Pin GPIO_PIN_3

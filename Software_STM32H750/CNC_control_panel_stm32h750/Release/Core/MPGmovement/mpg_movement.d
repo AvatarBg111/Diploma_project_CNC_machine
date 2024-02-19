@@ -37,7 +37,7 @@ Core/MPGmovement/mpg_movement.o: ../Core/MPGmovement/mpg_movement.c \
  ../Core/MPGmovement/../grblHALComm/../grblHALComm/grbl.h \
  ../Core/MPGmovement/../grblHALComm/../grblHALComm/i2c_interface.h \
  ../Core/MPGmovement/../grblHALComm/sender.h ../Core/Inc/systick_timer.h \
- ../Core/Inc/main.h
+ ../Core/Inc/main.h ../Core/Inc/stm32h7xx_it.h
 ../Core/MPGmovement/mpg_movement.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
@@ -79,3 +79,4 @@ Core/MPGmovement/mpg_movement.o: ../Core/MPGmovement/mpg_movement.c \
 ../Core/MPGmovement/../grblHALComm/sender.h:
 ../Core/Inc/systick_timer.h:
 ../Core/Inc/main.h:
+../Core/Inc/stm32h7xx_it.h:

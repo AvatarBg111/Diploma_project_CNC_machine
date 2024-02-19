@@ -161,6 +161,8 @@ typedef struct{
     bool awaitWCO;
     bool absDistance;
     bool mpgMode;
+    bool mpg_enable_ongoing;
+    bool mpg_disable_ongoing;
     bool xModeDiameter;
     bool tloReferenced;
     jog_mode_t jog_mode;

@@ -9,7 +9,6 @@
 #include <mpg_movement.h>
 #include "r61529_screen_menu.h"
 #include "r61529.h"
-#include "ft5436.h"
 #include "buttons.h"
 #include "sound_fx.h"
 #include "mpg_pendant.h"
@@ -22,7 +21,6 @@
 
 
 /* Private define ------------------------------------------------------------*/
-#define LEVELS 4
 #define MAXIMUM_BRIGHTNESS	100
 #define MINIMUM_BRIGHTNESS	10
 
@@ -89,7 +87,6 @@
 #define SCREEN_BRIGHTNESS_SETTING_SLIDER_END_X	(SCREEN_BRIGHTNESS_SETTING_SLIDER_WIDTH + SCREEN_BRIGHTNESS_SETTING_SLIDER_BASE_X)
 #define SCREEN_BRIGHTNESS_SETTING_SLIDER_END_Y	(SCREEN_BRIGHTNESS_SETTING_SLIDER_HEIGHT + SCREEN_BRIGHTNESS_SETTING_SLIDER_BASE_Y)
 
-#define BUTTONS 6
 #define BUTTON_UP_CH 0
 #define BUTTON_DOWN_CH 1
 #define BUTTON_LEFT_CH 2
@@ -97,23 +94,8 @@
 #define BUTTON_ENTER_CH 4
 #define BUTTON_BACK_CH 5
 
-#define INPUT_DELAY_TIME 20
-#define DEFAULT_DELAY 200
-
 
 /* Private typedef -----------------------------------------------------------*/
-typedef struct{
-	uint8_t level;
-	uint16_t level_indexes[LEVELS];
-	uint8_t button_delay;
-	uint8_t button_delay_cnts[BUTTONS];
-
-	int8_t brightness_value;
-	int8_t buzzer_volume;
-	uint8_t touch_point_cnt;
-	int16_t touch_points[FT_REG_NUMTOUCHES][2];
-}_menu_controller;
-
 
 /* Private macro -------------------------------------------------------------*/
 #define GET_SUBMENU_BLOCK_BASE_X(index) (SUBMENU_BLOCK_X_MARGIN + (index * SUBMENU_BLOCK_X_OFFSET) + (index * SUBMENU_BLOCK_WIDTH))
@@ -169,10 +151,12 @@ extern const double YZ_AXIS_MULTIPLICITY_DIFF[3];
 extern const double JOG_SPEED_DIFF[3];
 
 extern pendant_data_t pendant_data;
+extern pendant_control_t pendant_control;
 
 
 /* Private variables ---------------------------------------------------------*/
-_menu_controller menu_controller = {0};
+menu_controller_t menu_controller = {0};
+
 static const char *main_menu_options[SUBMENUS] = {
 	"Auto mode",
 	"Manual mode",
@@ -213,9 +197,10 @@ static grbl_state_t grbl_state = -1;
 static double grbl_position[3] = {-1,-1,-1};
 static double grbl_offset[3] = {-1,-1,-1};
 static bool grbl_coolant_status[3] = {false, false, false};
+static uint8_t grbl_spindle_state = -1;
 static double grbl_rpm = -1;
 static uint8_t mpg_state = -1;
-static uint8_t pendant_status = -1;
+static uint8_t pendant_mpg_status = -1;
 static uint8_t pendant_jog_mode = -1;
 
 
@@ -275,9 +260,6 @@ void unselect_jog_feed_setting(uint8_t);
 void mpg_axes_update_settings(void);
 void mpg_spindle_update_setting(void);
 
-// Other functions
-void process_pendant_data_to_action(void);
-
 
 /* Private user code -----------------------------------------------*/
 //// Button functions ////
@@ -299,7 +281,7 @@ void init_button_inputs(void){
 	set_button_channel(USER_BUT_E_GPIO_Port, USER_BUT_E_Pin, BUTTON_BACK_CH);
 	set_button_channel(USER_BUT_F_GPIO_Port, USER_BUT_F_Pin, BUTTON_ENTER_CH);
 
-	menu_controller.button_delay = (uint8_t)(DEFAULT_DELAY / INPUT_DELAY_TIME);
+	menu_controller.button_delay = (uint8_t)(DEFAULT_DELAY / ENTER_MENU_DELAY_TIME);
 	for(uint8_t i = 0; i < BUTTONS; i++)
 		menu_controller.button_delay_cnts[i] = 0;
 }
@@ -428,29 +410,38 @@ bool touch_exit_submenu(uint8_t level){
 }
 
 /**
-  * @brief Function that implements graphical menu of the system
+  * @brief Function that performs the graphical
+  * and logical aspects of the system menu
   */
 void r61529_screen_menu(void){
-	if(wait_ms_ch(0, INPUT_DELAY_TIME)){
-		int8_t touch_selected_submenu;
-		int8_t index;
+	// Enter menu when the entry flag is set
+	// The flag is controlled inside TIM1 interrupt handler
+	if(menu_controller.enter_menu){
+		int8_t index, touch_selected_submenu;
 
-		// Check for screen touch data
+		// Reset entry flag in order to enter the next time
+		// the TIM1 interrupt handler has set the flag
+		menu_controller.enter_menu = false;
+
+		// Check for touch screen data
 		menu_controller.touch_point_cnt = touch_detected;
 		for(uint8_t i = 0; (i < FT_REG_NUMTOUCHES) && touch_detected; i++){
 			if(i >= menu_controller.touch_point_cnt){
-				menu_controller.touch_points[i][0] = -1;					//Touch point not available
-				menu_controller.touch_points[i][1] = -1;					//Touch point not available
+				// Touch point not available
+				menu_controller.touch_points[i][0] = -1;
+				menu_controller.touch_points[i][1] = -1;
 			}else{
-				menu_controller.touch_points[i][0] = touchY[i];				//This is because of screen rotation
-				menu_controller.touch_points[i][1] = (320 - touchX[i]);		//This is because of screen rotation
+				// The values are saved like this to accommodate
+				// the selected rotation of the TFT screen
+				menu_controller.touch_points[i][0] = touchY[i];
+				menu_controller.touch_points[i][1] = (320 - touchX[i]);
 			}
 		}
 
-		// Clear the counters of the button channels
+		// Call function for clearing the counters of the button channels
 		clear_button_channel_cnts();
 
-		// Set LEDs
+		// Re/set LEDs based on real-time machine status
 		if(grbl_data.grbl.state == Run || grbl_data.grbl.state == Jog){
 			HAL_GPIO_WritePin(USER_LED_B_GPIO_Port, USER_LED_B_Pin, GPIO_PIN_SET);
 			HAL_GPIO_WritePin(USER_LED_C_GPIO_Port, USER_LED_C_Pin, GPIO_PIN_RESET);
@@ -468,216 +459,376 @@ void r61529_screen_menu(void){
 			HAL_GPIO_WritePin(USER_LED_C_GPIO_Port, USER_LED_C_Pin, GPIO_PIN_RESET);
 			HAL_GPIO_WritePin(USER_LED_D_GPIO_Port, USER_LED_D_Pin, GPIO_PIN_RESET);
 		}
+
+		// Re/set coolant status LED
 		if(grbl_data.coolant.flood || grbl_data.coolant.mist || grbl_data.coolant.shower || grbl_data.coolant.trough_spindle){
 			HAL_GPIO_WritePin(USER_LED_A_GPIO_Port, USER_LED_A_Pin, GPIO_PIN_SET);
 		}else{
 			HAL_GPIO_WritePin(USER_LED_A_GPIO_Port, USER_LED_A_Pin, GPIO_PIN_RESET);
 		}
 
-		// Go to a given sub-menu based on touch screen data
+		// Go to a given sub-menu based on data from touch screen
 		touch_selected_submenu = touch_select_submenu(menu_controller.level);
 		if(touch_selected_submenu != -1){
+			// Delete currently shown menu
 			delete_menu();
+
+			// Change menu level and index
 			menu_controller.level_indexes[menu_controller.level] = touch_selected_submenu | (touch_selected_submenu << 8);
 			menu_controller.level++;
+
+			// Draw new menu
 			draw_menu();
+
 			return;
 		}
 
+		// Menu selector switch statement
 		switch(menu_controller.level){
-			case 0:		//Main menu
+			case 0:	// Main menu case statement
 				index = (int8_t)menu_controller.level_indexes[0] & 0x00FF;
-				if(get_button_state(BUTTON_RIGHT_CH) == GPIO_PIN_RESET){
+
+				if(get_button_state(BUTTON_RIGHT_CH) == GPIO_PIN_RESET){ // Select next sub-menu
 					if(++menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] == menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] == 1){
 						if(menu_controller.button_delay_cnts[BUTTON_RIGHT_CH]++ != 1){
 							menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] = 0;
 						}
 
+						// Increment sub-menu index
 						if(++index >= SUBMENUS)	index = 0;
 					}
-				}else if(get_button_state(BUTTON_LEFT_CH) == GPIO_PIN_RESET){
+				}else if(get_button_state(BUTTON_LEFT_CH) == GPIO_PIN_RESET){ // Select previous sub-menu
 					if(++menu_controller.button_delay_cnts[BUTTON_LEFT_CH] == menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_LEFT_CH] == 1){
 						if(menu_controller.button_delay_cnts[BUTTON_LEFT_CH]++ != 1){
 							menu_controller.button_delay_cnts[BUTTON_LEFT_CH] = 0;
 						}
 
+						// Decrement sub-menu index
 						if(--index < 0)	index = SUBMENUS - 1;
 					}
-				}else if(get_button_state(BUTTON_ENTER_CH) == GPIO_PIN_RESET){
+				}else if(get_button_state(BUTTON_ENTER_CH) == GPIO_PIN_RESET){ // Enter selected sub-menu
+					// Delete currently shown menu
 					delete_menu();
+
+					// Change menu level and index
 					menu_controller.level_indexes[0] &= 0x00FF;
 					menu_controller.level_indexes[0] |= (menu_controller.level_indexes[0] << 8);
 					menu_controller.level = 1;
+
+					// Draw new menu
 					draw_menu();
+
 					break;
 				}
 
+				// When menu index has changed run the following code
 				if(index != (menu_controller.level_indexes[0] & 0x00FF)){
+					// Un-select previously selected sub-menu
 					unselect_submenu((menu_controller.level_indexes[0] & 0x00FF));
+
+					// Save new sub-menu index
 					menu_controller.level_indexes[0] &= 0x0000;
 					menu_controller.level_indexes[0] |= index;
+
+					// Select newly selected sub-menu
 					select_submenu((menu_controller.level_indexes[0] & 0x00FF));
+
+					// Emit sound via buzzer
 					buzzer_short_ring(2500, 100);
-					//buzzer_short_ring(1250, (uint16_t)(menu_controller.button_delay * INPUT_DELAY_TIME));
 				}
 				break;
-			case 1:
+			case 1:	// Menus: "Auto mode", "Manual mode", "Settings"
+				// Exit selected menu if user has activated the according input
 				if(touch_exit_submenu(1)){
+					// Disable MPG
+					/*uint8_t disable_mpg_cnt = 0;*/
+					disable_mpg();
+					/*while(!disable_mpg() && ++disable_mpg_cnt < 10);*/
+
+					// Put MPG pendant in sleep mode
+					if(((menu_controller.level_indexes[0] & 0xFF00) >> 8) == 1){
+						while(pendant_control.status){
+							// Logical manual mode exit
+							menu_controller.entered_manual_mode = false;
+
+							// Logically disable MPG functionality on pendant
+							pendant_control.mpg_status = MPG_STATUS_DISABLED;
+
+							// Logically disable MPG pendant
+							pendant_control.status = false;
+
+							// Send message to pendant with new flag information
+							request_pendant_data();
+							delay_ms(5);
+						}
+					}
+
+					// Reset flags and variables
+					grbl_rpm = -1;
+					grbl_spindle_state = -1;
+					mpg_state = -1;
+					grbl_state = -1;
+					pendant_jog_mode = -1;
+					pendant_mpg_status = -1;
+					for(uint8_t i = 0; i < 3; i++){
+						grbl_offset[i] = -1;
+						grbl_position[i] = -1;
+						grbl_coolant_status[i] = -1;
+					}
+
+					// Delete currently shown menu
 					delete_menu();
+
+					// Save new menu index
 					menu_controller.level = 0;
 					menu_controller.level_indexes[1] = 0;
 					menu_controller.level_indexes[0] &= 0x00FF;
+
+					// Select menu on previous menu level
 					draw_menu();
+
 					break;
 				}else if(get_button_state(BUTTON_BACK_CH) == GPIO_PIN_RESET){
+					// Disable MPG
+					/*uint8_t disable_mpg_cnt = 0;*/
+					disable_mpg();
+					/*while(!disable_mpg() && ++disable_mpg_cnt < 10);*/
+
+					// Put MPG pendant in sleep mode
+					if(((menu_controller.level_indexes[0] & 0xFF00) >> 8) == 1){
+						while(pendant_control.status){
+							// Logical manual mode exit
+							menu_controller.entered_manual_mode = false;
+
+							// Logically disable MPG functionality on pendant
+							pendant_control.mpg_status = MPG_STATUS_DISABLED;
+
+							// Logically disable MPG pendant
+							pendant_control.status = false;
+
+							// Send message to pendant with new flag information
+							request_pendant_data();
+							delay_ms(5);
+						}
+					}
+
+					// Reset flags and variables
+					grbl_rpm = -1;
+					grbl_spindle_state = -1;
+					mpg_state = -1;
+					grbl_state = -1;
+					pendant_jog_mode = -1;
+					pendant_mpg_status = -1;
+					for(uint8_t i = 0; i < 3; i++){
+						grbl_offset[i] = -1;
+						grbl_position[i] = -1;
+						grbl_coolant_status[i] = -1;
+					}
+
+					// Delete currently shown menu
 					delete_menu();
+
+					// Save new menu index
 					menu_controller.level = 0;
 					menu_controller.level_indexes[1] = 0;
 					menu_controller.level_indexes[0] &= 0x00FF;
+
+					// Select newly selected menu
 					draw_menu();
+
 					break;
 				}
 
-				if(((menu_controller.level_indexes[0] & 0xFF00) >> 8) == 0){
+				// Select logic, based on selected sub-menu from previous menu level [MAIN MENU]
+				if(((menu_controller.level_indexes[0] & 0xFF00) >> 8) == 0){	// Auto mode
+					// Call function that updates graphical aspects of the "Auto mode" menu
 					auto_mode_update_screen();
-				}else if(((menu_controller.level_indexes[0] & 0xFF00) >> 8) == 1){
+				}else if(((menu_controller.level_indexes[0] & 0xFF00) >> 8) == 1){	// Manual mode
+					// Call function that updates graphical aspects of the "Manual mode" menu
 					manual_mode_update_screen();
 
+					// Logical manual mode enter
+					menu_controller.entered_manual_mode = true;
+
+					// Logical manual mode enter
+					pendant_control.status = true;
+
+					// Switch MPG on/off
 					if(get_button_state(BUTTON_ENTER_CH) == GPIO_PIN_RESET){
 						if(++menu_controller.button_delay_cnts[BUTTON_ENTER_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_ENTER_CH] == 1){
-							static uint8_t procedure_id = 0x00;
-
 							if(menu_controller.button_delay_cnts[BUTTON_ENTER_CH]++ != 1){
 								menu_controller.button_delay_cnts[BUTTON_ENTER_CH] = 0;
-							}
+							}else{
+								if(!grbl_data.mpgMode && !grbl_data.mpg_enable_ongoing){
+									// Enable MPG mode
+									enable_mpg();
+								}else if(grbl_data.mpgMode && !grbl_data.mpg_disable_ongoing){
+									// Disable MPG mode
+									disable_mpg();
 
-							if(get_pendant_status() == PENDANT_DISCONNECTED || \
-							  (get_pendant_status() == PENDANT_ERROR && procedure_id == 0x00)){
-								procedure_id = 0x00;
-								connect_pendant();
-							}else if(get_pendant_status() == PENDANT_CONNECTED || \
-							  (get_pendant_status() == PENDANT_ERROR && procedure_id == 0x01)){
-								procedure_id = 0x01;
-								disconnect_pendant();
+									// Turn off pendant MPG functionality
+									if(pendant_control.mpg_status == MPG_STATUS_ENABLED){
+										// Initiate procedure for turning off
+										// pendant MPG functionality
+										pendant_control.turn_off_mpg = true;
+									}
+								}
 							}
 						}
 					}
 
-					if(get_pendant_status() == PENDANT_CONNECTED && !grbl_data.mpgMode){
-						enable_mpg();
-					}else if(get_pendant_status() == PENDANT_DISCONNECTED && grbl_data.mpgMode){
-						disable_mpg();
-					}
-
+					// When GRBL MPG mode is on run the following code
 					if(grbl_data.mpgMode){
+						char button_action_buf[30] = {0};
+
 						// Request GRBL data
 						if(wait_ms_ch(4, 100)){
 							request_report();
 						}
 
-						// Request pendant data
-						if(wait_ms_ch(5, 100) && get_pendant_status() == PENDANT_CONNECTED){
-							request_pendant_data();
-						}else if(get_pendant_status() == PENDANT_DATA_RECEIVED){
-							reset_wait_ms_ch(5);
-							process_pendant_data_to_action();
-							set_pendant_status(PENDANT_CONNECTED);
-						}
-
 						// Use button presses for machine movement
-						if(get_button_state(BUTTON_RIGHT_CH) == GPIO_PIN_RESET){ // X -> +1mm
+						if(get_button_state(BUTTON_RIGHT_CH) == GPIO_PIN_RESET){ // X axis -> +1mm
 							if(++menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] == 1){
 								if(menu_controller.button_delay_cnts[BUTTON_RIGHT_CH]++ != 1){
 									menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] = 0;
 								}
 
-								grbl_send_packet((uint8_t*)"$J=G91G21X1F1000\n", 17);
+								// Clear message buffer
+								memset(button_action_buf, 0, strlen(button_action_buf));
+
+								// Prepare message buffer and send it
+								sprintf(button_action_buf, "$J=G91G21X%fF%d\n", mpg_settings.x_axis_multiplicity[pendant_data.x_axis_multiplicity], mpg_settings.jog_speeds[pendant_data.jog_mode]);
+								grbl_send_packet((uint8_t*)button_action_buf, strlen(button_action_buf));
 							}
-						}else if(get_button_state(BUTTON_LEFT_CH) == GPIO_PIN_RESET){ // X -> -1mm
+						}else if(get_button_state(BUTTON_LEFT_CH) == GPIO_PIN_RESET){ // X axis -> -1mm
 							if(++menu_controller.button_delay_cnts[BUTTON_LEFT_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_LEFT_CH] == 1){
 								if(menu_controller.button_delay_cnts[BUTTON_LEFT_CH]++ != 1){
 									menu_controller.button_delay_cnts[BUTTON_LEFT_CH] = 0;
 								}
 
-								grbl_send_packet((uint8_t*)"$J=G91G21X-1F1000\n", 18);
+								// Clear message buffer
+								memset(button_action_buf, 0, strlen(button_action_buf));
+
+								// Prepare message buffer and send it
+								sprintf(button_action_buf, "$J=G91G21X-%fF%d\n", mpg_settings.x_axis_multiplicity[pendant_data.x_axis_multiplicity], mpg_settings.jog_speeds[pendant_data.jog_mode]);
+								grbl_send_packet((uint8_t*)button_action_buf, strlen(button_action_buf));
 							}
-						}else if(get_button_state(BUTTON_UP_CH) == GPIO_PIN_RESET){ // Y -> +1mm
+						}else if(get_button_state(BUTTON_UP_CH) == GPIO_PIN_RESET){ // Y axis -> +1mm
 							if(++menu_controller.button_delay_cnts[BUTTON_UP_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_UP_CH] == 1){
 								if(menu_controller.button_delay_cnts[BUTTON_UP_CH]++ != 1){
 									menu_controller.button_delay_cnts[BUTTON_UP_CH] = 0;
 								}
 
-								grbl_send_packet((uint8_t*)"$J=G91G21Y1F1000\n", 17);
+								// Clear message buffer
+								memset(button_action_buf, 0, strlen(button_action_buf));
+
+								// Prepare message buffer and send it
+								sprintf(button_action_buf, "$J=G91G21Y%fF%d\n", mpg_settings.x_axis_multiplicity[pendant_data.x_axis_multiplicity], mpg_settings.jog_speeds[pendant_data.jog_mode]);
+								grbl_send_packet((uint8_t*)button_action_buf, strlen(button_action_buf));
 							}
-						}else if(get_button_state(BUTTON_DOWN_CH) == GPIO_PIN_RESET){ // Y -> -1mm
+						}else if(get_button_state(BUTTON_DOWN_CH) == GPIO_PIN_RESET){ // Y axis -> -1mm
 							if(++menu_controller.button_delay_cnts[BUTTON_DOWN_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_DOWN_CH] == 1){
 								if(menu_controller.button_delay_cnts[BUTTON_DOWN_CH]++ != 1){
 									menu_controller.button_delay_cnts[BUTTON_DOWN_CH] = 0;
 								}
 
-								grbl_send_packet((uint8_t*)"$J=G91G21Y-1F1000\n", 18);
+								// Clear message buffer
+								memset(button_action_buf, 0, strlen(button_action_buf));
+
+								// Prepare message buffer and send it
+								sprintf(button_action_buf, "$J=G91G21Y-%fF%d\n", mpg_settings.x_axis_multiplicity[pendant_data.x_axis_multiplicity], mpg_settings.jog_speeds[pendant_data.jog_mode]);
+								grbl_send_packet((uint8_t*)button_action_buf, strlen(button_action_buf));
 							}
 						}
 					}
 				}else if(((menu_controller.level_indexes[0] & 0xFF00) >> 8) == 2){
 					int8_t index = menu_controller.level_indexes[1] & 0x00FF;
-					if(get_button_state(BUTTON_DOWN_CH) == GPIO_PIN_RESET){
+
+					if(get_button_state(BUTTON_DOWN_CH) == GPIO_PIN_RESET){	// Select next setting menu
 						if(++menu_controller.button_delay_cnts[BUTTON_DOWN_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_DOWN_CH] == 1){
 							if(menu_controller.button_delay_cnts[BUTTON_DOWN_CH]++ != 1){
 								menu_controller.button_delay_cnts[BUTTON_DOWN_CH] = 0;
 							}
 
+							// Increment "Settings" sub-menu index
 							if(++index == SETTINGS_SUBMENUS)	index = 0;
 						}
-					}else if(get_button_state(BUTTON_UP_CH) == GPIO_PIN_RESET){
+					}else if(get_button_state(BUTTON_UP_CH) == GPIO_PIN_RESET){ // Select previous setting menu
 						if(++menu_controller.button_delay_cnts[BUTTON_UP_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_UP_CH] == 1){
 							if(menu_controller.button_delay_cnts[BUTTON_UP_CH]++ != 1){
 								menu_controller.button_delay_cnts[BUTTON_UP_CH] = 0;
 							}
 
+							// Decrement "Settings" sub-menu index
 							if(--index < 0)	index = SETTINGS_SUBMENUS - 1;
 						}
-					}else if(get_button_state(BUTTON_ENTER_CH) == GPIO_PIN_RESET){
+					}else if(get_button_state(BUTTON_ENTER_CH) == GPIO_PIN_RESET){ // Enter selected setting menu
+						// Delete currently shown menu
 						delete_menu();
+
+						// Save new menu index
 						menu_controller.level = 2;
 						menu_controller.level_indexes[1] &= 0x00FF;
 						menu_controller.level_indexes[1] |= menu_controller.level_indexes[1] << 8;
+
+						// Select newly selected menu
 						draw_menu();
+
 						break;
 					}
 
+					// When menu index has changed run the following code
 					if(index != (menu_controller.level_indexes[1] & 0x00FF)){
+						// Un-select previously selected sub-menu
 						unselect_setting((menu_controller.level_indexes[1] & 0x00FF));
+
+						// Save new sub-menu index
 						menu_controller.level_indexes[1] &= 0x0000;
 						menu_controller.level_indexes[1] |= index;
+
+						// Select newly selected sub-menu
 						select_setting((menu_controller.level_indexes[1] & 0x00FF));
+
+						// Emit sound via buzzer
 						buzzer_short_ring(2500, 100);
-						//buzzer_short_ring(1250, (uint16_t)(menu_controller.button_delay * INPUT_DELAY_TIME));
 					}
 				}
 				break;
-			case 2:
+			case 2: // "Screen brightness", "MPG axes settings", "MPG spindle settings"
+				// Exit selected menu if user has activated the according input
 				if(touch_exit_submenu(2)){
+					// Delete currently shown menu
 					delete_menu();
+
+					// Save new menu index
 					menu_controller.level = 1;
 					menu_controller.level_indexes[2] = 0;
 					menu_controller.level_indexes[1] &= 0x00FF;
+
+					// Select newly selected menu
 					draw_menu();
+
 					break;
 				}else if(get_button_state(BUTTON_BACK_CH) == GPIO_PIN_RESET){
+					// Delete currently shown menu
 					delete_menu();
+
+					// Save new menu index
 					menu_controller.level = 1;
 					menu_controller.level_indexes[2] = 0;
 					menu_controller.level_indexes[1] &= 0x00FF;
+
+					// Select menu on previous menu level
 					draw_menu();
+
 					break;
 				}
 
-				if(((menu_controller.level_indexes[0] & 0xFF00) >> 8) == 2){
-					if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 0){
+				if(((menu_controller.level_indexes[0] & 0xFF00) >> 8) == 2){ // Settings
+					if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 0){ // Brightness level setting menu
 						int8_t previous_brightness_value = menu_controller.brightness_value;
 
-						if(get_button_state(BUTTON_RIGHT_CH) == GPIO_PIN_RESET){
+						if(get_button_state(BUTTON_RIGHT_CH) == GPIO_PIN_RESET){ // Increment brightness level
 							if(++menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] == 1){
 								if(menu_controller.button_delay_cnts[BUTTON_RIGHT_CH]++ != 1){
 									menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] = 0;
@@ -685,7 +836,7 @@ void r61529_screen_menu(void){
 
 								if(++previous_brightness_value > MAXIMUM_BRIGHTNESS)	previous_brightness_value = MAXIMUM_BRIGHTNESS;
 							}
-						}else if(get_button_state(BUTTON_LEFT_CH) == GPIO_PIN_RESET){
+						}else if(get_button_state(BUTTON_LEFT_CH) == GPIO_PIN_RESET){ // Decrement brightness level
 							if(++menu_controller.button_delay_cnts[BUTTON_LEFT_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_LEFT_CH] == 1){
 								if(menu_controller.button_delay_cnts[BUTTON_LEFT_CH]++ != 1){
 									menu_controller.button_delay_cnts[BUTTON_LEFT_CH] = 0;
@@ -695,125 +846,158 @@ void r61529_screen_menu(void){
 							}
 						}
 
+						// When the brightness level has been changed run the following code
 						if(previous_brightness_value != menu_controller.brightness_value){
 							menu_controller.brightness_value = previous_brightness_value;
+
+							// Based on new brightness level, change the PWM of the screen backlight
 							htim3.Instance->CCR2 = (menu_controller.brightness_value * htim3.Instance->ARR) / 100;
+
+							// Display new brightness level
 							screen_brightness_setting_update_screen();
 						}
 					}else if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 1 || \
-							 ((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 2){
+							 ((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 2){ // MPG axes and spindle settings selector menus
 						index = menu_controller.level_indexes[2] & 0x00FF;
-						if(get_button_state(BUTTON_DOWN_CH) == GPIO_PIN_RESET){
+
+						if(get_button_state(BUTTON_DOWN_CH) == GPIO_PIN_RESET){ // Select next setting menu
 							if(++menu_controller.button_delay_cnts[BUTTON_DOWN_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_DOWN_CH] == 1){
 								if(menu_controller.button_delay_cnts[BUTTON_DOWN_CH]++ != 1){
 									menu_controller.button_delay_cnts[BUTTON_DOWN_CH] = 0;
 								}
 
-								if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 1){
+								// Increase sub-menu index based on which menu the program is in
+								if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 1){ // MPG axes settings
 									if(++index >= MPG_AXES_SETTINGS) index = 0;
-								}else{
+								}else{ // MPG spindle settings
 									if(++index >= MPG_SPINDLE_SETTINGS)	index = 0;
 								}
 							}
-						}else if(get_button_state(BUTTON_UP_CH) == GPIO_PIN_RESET){
+						}else if(get_button_state(BUTTON_UP_CH) == GPIO_PIN_RESET){ // Select previous setting menu
 							if(++menu_controller.button_delay_cnts[BUTTON_UP_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_UP_CH] == 1){
 								if(menu_controller.button_delay_cnts[BUTTON_UP_CH]++ != 1){
 									menu_controller.button_delay_cnts[BUTTON_UP_CH] = 0;
 								}
 
-								if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 1){
+								// Decrement sub-menu index based on which menu the program is in
+								if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 1){ // MPG axes settings
 									if(--index < 0)	index = MPG_AXES_SETTINGS - 1;
-								}else{
+								}else{ // MPG spindle settings
 									if(--index < 0)	index = MPG_SPINDLE_SETTINGS - 1;
 								}
 							}
 						}else if(get_button_state(BUTTON_ENTER_CH) == GPIO_PIN_RESET){
+							// Delete currently selected menu
 							delete_menu();
+
+							// Save new menu index
 							menu_controller.level = 3;
 							menu_controller.level_indexes[2] &= 0x00FF;
 							menu_controller.level_indexes[2] |= menu_controller.level_indexes[2] << 8;
+
+							// Draw newly selected menu
 							draw_menu();
+
 							break;
 						}
 
+						// When menu index has changed run the following code
 						if(index != (menu_controller.level_indexes[2] & 0x00FF)){
-							if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 1){
+							// Un-select sub-menu based on which menu the program is in
+							if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 1){ // MPG axes settings
 								mpg_axes_unselect_setting((menu_controller.level_indexes[2] & 0x00FF));
-							}else{
+							}else{ // MPG spindle settings
 								mpg_spindle_unselect_setting((menu_controller.level_indexes[2] & 0x00FF));
 							}
 
+							// Save new sub-menu index
 							menu_controller.level_indexes[2] &= 0x0000;
 							menu_controller.level_indexes[2] |= index;
 
-							if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 1){
+							// Select sub-menu based on which menu the program is in
+							if(((menu_controller.level_indexes[1] & 0xFF00) >> 8) == 1){ // MPG axes settings
 								mpg_axes_select_setting((menu_controller.level_indexes[2] & 0x00FF));
-							}else{
+							}else{ // MPG spindle settings
 								mpg_spindle_select_setting((menu_controller.level_indexes[2] & 0x00FF));
 							}
 
+							// Emit sound via buzzer
 							buzzer_short_ring(2500, 100);
-							//buzzer_short_ring(1250, (uint16_t)(menu_controller.button_delay * INPUT_DELAY_TIME));
 						}
 					}
 				}
 				break;
-			case 3:
+			case 3: // "X axis jogging distances", "Y/Z axes jogging distances", "Jogging feed rates", "Jogging spindle speed"
 				index = menu_controller.level_indexes[3] & 0x00FF;
 
+				// Exit selected menu if user has activated the according input
 				if(touch_exit_submenu(3)){
+					// Delete currently shown menu
 					delete_menu();
+
+					// Save new menu index
 					menu_controller.level = 2;
 					menu_controller.level_indexes[3] = 0;
 					menu_controller.level_indexes[2] &= 0x00FF;
+
+					// Select menu on previous menu level
 					draw_menu();
+
 					break;
 				}else if(get_button_state(BUTTON_BACK_CH) == GPIO_PIN_RESET){
+					// Delete currently shown menu
 					delete_menu();
+
+					// Save new menu index
 					menu_controller.level = 2;
 					menu_controller.level_indexes[3] = 0;
 					menu_controller.level_indexes[2] &= 0x00FF;
+
+					// Select menu on previous menu level
 					draw_menu();
+
 					break;
 				}
 
-				if((menu_controller.level_indexes[0] & 0x00FF) == 2){
-					if((menu_controller.level_indexes[1] & 0x00FF) == 1){
-						if(get_button_state(BUTTON_DOWN_CH) == GPIO_PIN_RESET){
+				if((menu_controller.level_indexes[0] & 0x00FF) == 2){ // Settings
+					if((menu_controller.level_indexes[1] & 0x00FF) == 1){ // MPG axes settings
+						if(get_button_state(BUTTON_DOWN_CH) == GPIO_PIN_RESET){	// Select next MPG axes setting sub-menu
 							if(++menu_controller.button_delay_cnts[BUTTON_DOWN_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_DOWN_CH] == 1){
 								if(menu_controller.button_delay_cnts[BUTTON_DOWN_CH]++ != 1){
 									menu_controller.button_delay_cnts[BUTTON_DOWN_CH] = 0;
 								}
 
-								if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 0){
+								// Increment sub-menu index based on which menu the program is in
+								if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 0){ // X axis jogging distances
 									if(++index >= X_AXIS_DIST_SETTINGS)	index = 0;
-								}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 1){
+								}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 1){ // Y/Z axes jogging distances
 									if(++index >= YZ_AXIS_DIST_SETTINGS) index = 0;
-								}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 2){
+								}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 2){ // Jogging spindle speed
 									if(++index >= JOG_FEED_SETTINGS) index = 0;
 								}
 							}
-						}else if(get_button_state(BUTTON_UP_CH) == GPIO_PIN_RESET){
+						}else if(get_button_state(BUTTON_UP_CH) == GPIO_PIN_RESET){	// Select previous MPG axes setting sub-menu
 							if(++menu_controller.button_delay_cnts[BUTTON_UP_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_UP_CH] == 1){
 								if(menu_controller.button_delay_cnts[BUTTON_UP_CH]++ != 1){
 									menu_controller.button_delay_cnts[BUTTON_UP_CH] = 0;
 								}
 
-								if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 0){
+								// Decrement sub-menu index based on which menu the program is in
+								if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 0){ // X axis jogging distances
 									if(--index < 0)	index = X_AXIS_DIST_SETTINGS - 1;
-								}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 1){
+								}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 1){ // Y/Z axes jogging distances
 									if(--index < 0)	index = YZ_AXIS_DIST_SETTINGS - 1;
-								}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 2){
+								}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 2){ // Jogging spindle speed
 									if(--index < 0) index = JOG_FEED_SETTINGS - 1;
 								}
 							}
-						}else if(get_button_state(BUTTON_RIGHT_CH) == GPIO_PIN_RESET){
+						}else if(get_button_state(BUTTON_RIGHT_CH) == GPIO_PIN_RESET){ // Increment value associated with the selected setting
 							if(++menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] == 1){
 								if(menu_controller.button_delay_cnts[BUTTON_RIGHT_CH]++ != 1){
 									menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] = 0;
 								}
 
-								if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 0){	//TODO
+								if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 0){
 									switch(menu_controller.level_indexes[3] & 0x00FF){
 										case 0:	//Slow jogging x axis distance
 											mpg_settings.x_axis_multiplicity[0] += X_AXIS_MULTIPLICITY_DIFF[0];
@@ -830,7 +1014,7 @@ void r61529_screen_menu(void){
 										default:
 											break;
 									}
-								}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 1){ //TODO
+								}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 1){
 									switch(menu_controller.level_indexes[3] & 0x00FF){
 										case 0:	//Slow jogging y/z axis distance
 											mpg_settings.yz_axis_multiplicity[0] += YZ_AXIS_MULTIPLICITY_DIFF[0];
@@ -847,7 +1031,7 @@ void r61529_screen_menu(void){
 										default:
 											break;
 									}
-								}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 2){	//TODO
+								}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 2){
 									switch(menu_controller.level_indexes[3] & 0x00FF){
 										case 0:	//Slow jogging feed rate
 											mpg_settings.jog_speeds[0] += JOG_SPEED_DIFF[0];
@@ -866,7 +1050,7 @@ void r61529_screen_menu(void){
 									}
 								}
 							}
-						}else if(get_button_state(BUTTON_LEFT_CH) == GPIO_PIN_RESET){
+						}else if(get_button_state(BUTTON_LEFT_CH) == GPIO_PIN_RESET){ // Decrement value associated with the selected setting
 							if(++menu_controller.button_delay_cnts[BUTTON_LEFT_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_LEFT_CH] == 1){
 								if(menu_controller.button_delay_cnts[BUTTON_LEFT_CH]++ != 1){
 									menu_controller.button_delay_cnts[BUTTON_LEFT_CH] = 0;
@@ -927,44 +1111,50 @@ void r61529_screen_menu(void){
 							}
 						}
 
+						// Update MPG axes settings menu graphical aspects
 						mpg_axes_update_settings();
 
+						// When menu index has changed run the following code
 						if(index != (menu_controller.level_indexes[3] & 0x00FF)){
-							if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 0){
+							// Un-select setting based on which menu the program is in
+							if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 0){ // X axis jogging distances
 								unselect_x_axis_dist_setting((menu_controller.level_indexes[3] & 0x00FF));
-							}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 1){
+							}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 1){ // Y/Z axes jogging distances
 								unselect_yz_axis_dist_setting((menu_controller.level_indexes[3] & 0x00FF));
-							}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 2){
+							}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 2){ // Jogging spindle speed
 								unselect_jog_feed_setting((menu_controller.level_indexes[3] & 0x00FF));
 							}
 
+							// Save new setting index
 							menu_controller.level_indexes[3] &= 0x0000;
 							menu_controller.level_indexes[3] |= index;
 
-							if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 0){
+							// Select setting based on which menu the program is in
+							if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 0){ // X axis jogging distances
 								select_x_axis_dist_setting((menu_controller.level_indexes[3] & 0x00FF));
-							}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 1){
+							}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 1){ // Y/Z axes jogging distances
 								select_yz_axis_dist_setting((menu_controller.level_indexes[3] & 0x00FF));
-							}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 2){
+							}else if(((menu_controller.level_indexes[2] & 0xFF00) >> 8) == 2){ // Jogging spindle speed
 								select_jog_feed_setting((menu_controller.level_indexes[3] & 0x00FF));
 							}
 
+							// Emit sound via buzzer
 							buzzer_short_ring(2500, 100);
-							//buzzer_short_ring(1250, (uint16_t)(menu_controller.button_delay * INPUT_DELAY_TIME));
 						}
-					}else if((menu_controller.level_indexes[1] & 0xFF00 >> 8) == 2){		//TODO: MPG spindle settings
-						if(get_button_state(BUTTON_RIGHT_CH) == GPIO_PIN_RESET){
+					}else if((menu_controller.level_indexes[1] & 0xFF00 >> 8) == 2){
+						uint8_t spindle_speed = mpg_settings.spindle_speed;
+
+						if(get_button_state(BUTTON_RIGHT_CH) == GPIO_PIN_RESET){ // Increase MPG spindle speed
 							if(++menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] == 1){
 								if(menu_controller.button_delay_cnts[BUTTON_RIGHT_CH]++ != 1){
 									menu_controller.button_delay_cnts[BUTTON_RIGHT_CH] = 0;
 								}
 
-								if((menu_controller.level_indexes[2] & 0x00FF) == 0){
+								if((menu_controller.level_indexes[2] & 0x00FF) == 0){ // Decrease MPG spindle speed
 									mpg_settings.spindle_speed += SPINDLE_SPEED_DIFF;
 									if(mpg_settings.spindle_speed > SPINDLE_SPEED_MAX)	mpg_settings.spindle_speed = SPINDLE_SPEED_MAX;
 								}
 							}
-							mpg_spindle_update_setting();
 						}else if(get_button_state(BUTTON_LEFT_CH) == GPIO_PIN_RESET){
 							if(++menu_controller.button_delay_cnts[BUTTON_LEFT_CH] >= menu_controller.button_delay || menu_controller.button_delay_cnts[BUTTON_LEFT_CH] == 1){
 								if(menu_controller.button_delay_cnts[BUTTON_LEFT_CH]++ != 1){
@@ -976,6 +1166,10 @@ void r61529_screen_menu(void){
 									if(mpg_settings.spindle_speed < SPINDLE_SPEED_MIN)	mpg_settings.spindle_speed = SPINDLE_SPEED_MIN;
 								}
 							}
+						}
+
+						// When spindle speed has changed, update the graphical aspects of the menu
+						if(spindle_speed != mpg_settings.spindle_speed){
 							mpg_spindle_update_setting();
 						}
 					}
@@ -1008,7 +1202,7 @@ void draw_menu(void){
 			break;
 		case 1:
 			switch((menu_controller.level_indexes[0] & 0xFF00 >> 8)){
-				case 0: 	//TODO: Auto mode sub-menu draw
+				case 0:
 					R61529_WriteString(10, 10, "Auto mode engaged", Font_11x18, PURPLE, BLACK);
 
 					// Position section
@@ -1027,7 +1221,6 @@ void draw_menu(void){
 					R61529_WriteString(390, 80,  "Coolant", Font_11x18, CYAN, BLACK);
 					R61529_WriteString(390, 100, "MIST", Font_11x18, RED, GRAY);
 					R61529_WriteString(390, 130, "FLOOD", Font_11x18, RED, GRAY);
-					R61529_WriteString(390, 160, "SPINDLE", Font_11x18, RED, GRAY);
 
 					// RPM
 					R61529_WriteString(10, 250,  "RPM:", Font_16x26, WHITE, BLACK);
@@ -1038,7 +1231,7 @@ void draw_menu(void){
 					// Show data on screen
 					auto_mode_update_screen();
 					break;
-				case 1: 	//TODO: Manual mode sub-menu draw
+				case 1:
 					R61529_WriteString(10, 10, "Manual mode engaged", Font_11x18, PURPLE, BLACK);
 
 					// Position section
@@ -1062,7 +1255,6 @@ void draw_menu(void){
 					R61529_WriteString(390, 80,  "Coolant", Font_11x18, CYAN, BLACK);
 					R61529_WriteString(390, 100, "MIST", Font_11x18, RED, GRAY);
 					R61529_WriteString(390, 130, "FLOOD", Font_11x18, RED, GRAY);
-					R61529_WriteString(390, 160, "SPINDLE", Font_11x18, RED, GRAY);
 
 					// RPM
 					R61529_WriteString(10, 250,  "RPM:", Font_16x26, WHITE, BLACK);
@@ -1194,19 +1386,8 @@ void delete_menu(void){
 		case 1:
 			R61529_WriteString(410, 5, "Back", Font_16x26, BLACK, BLACK);
 
-			grbl_rpm = -1;
-			mpg_state = -1;
-			grbl_state = -1;
-			pendant_status = -1;
-			pendant_jog_mode = -1;
-			for(uint8_t i = 0; i < 3; i++){
-				grbl_offset[i] = -1;
-				grbl_position[i] = -1;
-				grbl_coolant_status[i] = -1;
-			}
-
 			switch((menu_controller.level_indexes[0] & 0xFF00 >> 8)){
-				case 0: 	//TODO: Auto mode sub-menu screen deletion
+				case 0:
 					R61529_FillRect(BLACK, 10, 10, 200, 30);
 					R61529_FillRect(BLACK, 10, 80, 200, 190);
 					R61529_FillRect(BLACK, 200, 80, 400, 190);
@@ -1214,20 +1395,12 @@ void delete_menu(void){
 					R61529_FillRect(BLACK, 10, 250, 165, 280);
 					R61529_FillRect(BLACK, 10, 290, 200, 310);
 					break;
-				case 1: 	//TODO: Manual mode sub-menu screen deletion
-					disconnect_pendant();
-					while(get_pendant_status() == PENDANT_DISCONNECTING){
-						disconnect_pendant();
-					}
-					if(grbl_data.mpgMode){
-						disable_mpg();
-					}
-
+				case 1:
 					R61529_FillRect(BLACK, 10, 10, 450, 80);
 					R61529_FillRect(BLACK, 10, 80, 200, 190);
 					R61529_FillRect(BLACK, 200, 80, 400, 190);
 					R61529_FillRect(BLACK, 390, 80, 470, 180);
-					R61529_FillRect(BLACK, 10, 250, 165, 280);
+					R61529_FillRect(BLACK, 10, 250, 180, 280);
 					R61529_FillRect(BLACK, 10, 290, 200, 310);
 					R61529_FillRect(BLACK, 140, 100, 190, 170);
 					R61529_FillRect(BLACK, 350, 270, 470, 290);
@@ -1323,15 +1496,22 @@ void draw_loading_screen(void){
 
 	//Initialize menu controller
 	menu_controller.level = 0;
-	menu_controller.buzzer_volume = 50;
-	menu_controller.brightness_value = 50;
+	menu_controller.menu_cnt = 0;
+	menu_controller.enter_menu = true;
+	menu_controller.entered_manual_mode = false;
+	menu_controller.brightness_value = (htim3.Instance->CCR2 * 100) / htim3.Instance->ARR;
+	if(menu_controller.brightness_value > 100){
+		menu_controller.brightness_value = 100;
+	}
+
 	menu_controller.touch_point_cnt = 0;
 	for(uint8_t i = 0; i < FT_REG_NUMTOUCHES; i++){
 		menu_controller.touch_points[i][0] = -1;	//NA
 		menu_controller.touch_points[i][1] = -1;	//NA
 	}
-	for(uint8_t i = 0; i < LEVELS; i++)
+	for(uint8_t i = 0; i < LEVELS; i++){
 		menu_controller.level_indexes[i] = 0;
+	}
 
 	//Draw initial menu (main menu)
 	R61529_FillScreen(BLACK);
@@ -1556,7 +1736,7 @@ void mpg_spindle_unselect_setting(uint8_t index){
 
 // Level 1 menu special functions
 /**
-  * @brief Update screen data for auto mode sub-menu
+  * @brief Update the graphical aspects of "Auto mode" menu
   */
 void auto_mode_update_screen(void){
 	// Display coordinates
@@ -1636,6 +1816,7 @@ void auto_mode_update_screen(void){
 
 		R61529_WriteString(390, 130, "FLOOD", Font_11x18, color, bg_color);
 	}
+#if(0)
 	if(grbl_data.coolant.trough_spindle != grbl_coolant_status[2]){
 		uint16_t color = RED, bg_color = GRAY;
 		grbl_coolant_status[2] = grbl_data.coolant.trough_spindle;
@@ -1647,6 +1828,7 @@ void auto_mode_update_screen(void){
 
 		R61529_WriteString(390, 160, "SPINDLE", Font_11x18, color, bg_color);
 	}
+#endif
 
 	// Display machine state
 	if(grbl_state != grbl_data.grbl.state){
@@ -1654,6 +1836,9 @@ void auto_mode_update_screen(void){
 		char state_str[10] = {0};
 
 		grbl_state = grbl_data.grbl.state;
+		if(grbl_data.grbl.state_text[0] == 0){
+			strcpy(grbl_data.grbl.state_text, "Unknown");
+		}
 		strcpy(state_str, grbl_data.grbl.state_text);
 		if(grbl_state == Idle){
 			color = CYAN;
@@ -1677,29 +1862,48 @@ void auto_mode_update_screen(void){
 		R61529_WriteString(90, 290, state_str, Font_11x18, color, BLACK);
 	}
 
-	// Display RPM
-	if(grbl_rpm != grbl_data.spindle.rpm_programmed){
-		uint16_t color = WHITE;
-		char rpm_str[10] = {0}, prev_rpm_str[10] = {0};
-		uint8_t rpm_str_len, prev_rpm_str_len;
+	// Display "RPM" text, spindle RPM and direction
+	if((grbl_spindle_state == -1 || (grbl_spindle_state != grbl_data.spindle.state.on)) || \
+	   (grbl_rpm == -1 || grbl_rpm != grbl_data.spindle.rpm_programmed)){
+		uint16_t rpm_text_color = WHITE;
+		uint16_t rpm_color = GREEN;
+		float rpm = 0;
+		char rpm_str[20] = {0}, ccw[5] = {0};
 
-		if(grbl_rpm != 0){
-			color = ORANGE;
-		}
-		sprintf(prev_rpm_str, "%4.3f", grbl_rpm);
-		sprintf(rpm_str, "%4.3f", grbl_data.spindle.rpm_programmed);
-		rpm_str_len = strlen(rpm_str);
-		prev_rpm_str_len = strlen(prev_rpm_str);
+		// Save current statuses
+		grbl_spindle_state = grbl_data.spindle.state.on;
 		grbl_rpm = grbl_data.spindle.rpm_programmed;
+		rpm = grbl_rpm;
 
-		if(rpm_str_len < prev_rpm_str_len)
-			R61529_FillRect(BLACK, 80, 250, 80 + (prev_rpm_str_len * 11), 270);
-		R61529_WriteString(80, 250 + ((26 - 18) / 2), rpm_str, Font_11x18, color, BLACK);
+		// Assign values to text variables
+		if(!grbl_data.spindle.state.on){
+			strcpy(ccw, " OFF");
+			rpm = 0.000;
+		}else if(grbl_data.spindle.state.ccw){
+			strcpy(ccw, " CCW");
+		}else{
+			strcpy(ccw, " CW");
+		}
+		sprintf(rpm_str, "%4.3f", rpm);
+
+		// Change text colors
+		if(rpm != 0.000){
+			rpm_color = ORANGE;
+		}
+		if(grbl_spindle_state){
+			rpm_text_color = ORANGE;
+		}
+
+		// Print text to screen
+		R61529_WriteString(10, 250,  "RPM:", Font_16x26, rpm_text_color, BLACK);
+		R61529_FillRect(BLACK, 80, 250, 210, 270);
+		R61529_WriteString(80, 250 + ((26 - 18) / 2), rpm_str, Font_11x18, rpm_color, BLACK);
+		R61529_WriteString(80 + (strlen(rpm_str) * 11), 250 + ((26 - 18) / 2), ccw, Font_11x18, WHITE, BLACK);
 	}
 }
 
 /**
-  * @brief Update screen data for manual mode sub-menu
+  * @brief Update the graphical aspects of "Manual mode" menu
   */
 void manual_mode_update_screen(void){
 	// Display coordinates
@@ -1734,14 +1938,13 @@ void manual_mode_update_screen(void){
 		char multiplier[5] = {0};
 
 		if(i == 0){
-			sprintf(multiplier, "%3.2f", mpg_settings.x_axis_multiplicity[pendant_data.jog_mode]);
+			sprintf(multiplier, "%3.2f", mpg_settings.x_axis_multiplicity[pendant_data.x_axis_multiplicity]);
 		}else{
-			sprintf(multiplier, "%3.2f", mpg_settings.yz_axis_multiplicity[pendant_data.jog_mode]);
+			sprintf(multiplier, "%3.2f", mpg_settings.yz_axis_multiplicity[pendant_data.yz_axis_multiplicity]);
 		}
 
 		R61529_WriteString(150, 100 + (i * 30) + (26 - 10), multiplier, Font_7x10, YELLOW, BLACK);
 	}
-
 
 	// Display offset
 	for(uint8_t i = 0; i < 3; i++){
@@ -1793,6 +1996,7 @@ void manual_mode_update_screen(void){
 
 		R61529_WriteString(390, 130, "FLOOD", Font_11x18, color, bg_color);
 	}
+#if(0)
 	if(grbl_data.coolant.trough_spindle != grbl_coolant_status[2]){
 		uint16_t color = RED, bg_color = GRAY;
 		grbl_coolant_status[2] = grbl_data.coolant.trough_spindle;
@@ -1804,6 +2008,7 @@ void manual_mode_update_screen(void){
 
 		R61529_WriteString(390, 160, "SPINDLE", Font_11x18, color, bg_color);
 	}
+#endif
 
 	// Display machine state
 	if(grbl_state != grbl_data.grbl.state){
@@ -1811,6 +2016,9 @@ void manual_mode_update_screen(void){
 		char state_str[10] = {0};
 
 		grbl_state = grbl_data.grbl.state;
+		if(grbl_data.grbl.state_text[0] == 0){
+			strcpy(grbl_data.grbl.state_text, "Unknown");
+		}
 		strcpy(state_str, grbl_data.grbl.state_text);
 		if(grbl_state == Idle){
 			color = CYAN;
@@ -1852,60 +2060,60 @@ void manual_mode_update_screen(void){
 	}
 
 	// Display MPG pendant status
-	if(pendant_status == -1 || (pendant_status != get_pendant_status() && \
-	   get_pendant_status() != PENDANT_AWAITING_DATA && \
-	   get_pendant_status() != PENDANT_DATA_RECEIVED)){
+	if(pendant_mpg_status != pendant_control.mpg_status){
 		uint16_t color = WHITE;
 		char pendant_status_str[30] = {0};
 
-		pendant_status = get_pendant_status();
-		switch(pendant_status){
-			case PENDANT_DISCONNECTED:
-				strcpy(pendant_status_str, "Pendant DISCONNECTED");
-				color = RED;
-				break;
-			case PENDANT_CONNECTED:
-				strcpy(pendant_status_str, "Pendant CONNECTED");
-				color = GREEN;
-				break;
-			case PENDANT_CONNECTING:
-				strcpy(pendant_status_str, "Pendant CONNECTING");
-				color = ORANGE;
-				break;
-			case PENDANT_DISCONNECTING:
-				color = ORANGE;
-				strcpy(pendant_status_str, "Pendant DISCONNECTING");
-				break;
-			case PENDANT_ERROR:
-				strcpy(pendant_status_str, "Pendant COMM. ERROR");
-				color = YELLOW;
-				break;
-			default:
-				break;
+		pendant_mpg_status = pendant_control.mpg_status;
+		if(pendant_control.status && pendant_mpg_status == MPG_STATUS_ENABLED){
+			color = GREEN;
+			strcpy(pendant_status_str, "Pendant ENABLED");
+		}else{
+			color = RED;
+			strcpy(pendant_status_str, "Pendant DISABLED");
 		}
 
 		R61529_FillRect(BLACK, 160, 40, 395, 60);
 		R61529_WriteString(160, 40, pendant_status_str, Font_11x18, color, BLACK);
 	}
 
-	// Display RPM
-	if(grbl_rpm != grbl_data.spindle.rpm_programmed){
-		uint16_t color = WHITE;
-		char rpm_str[10] = {0}, prev_rpm_str[10] = {0};
-		uint8_t rpm_str_len, prev_rpm_str_len;
+	// Display "RPM" text, spindle RPM and direction
+	if((grbl_spindle_state == -1 || (grbl_spindle_state != grbl_data.spindle.state.on)) || \
+	   (grbl_rpm == -1 || grbl_rpm != grbl_data.spindle.rpm_programmed)){
+		uint16_t rpm_text_color = WHITE;
+		uint16_t rpm_color = GREEN;
+		float rpm = 0;
+		char rpm_str[20] = {0}, ccw[5] = {0};
 
-		if(grbl_rpm != 0){
-			color = ORANGE;
-		}
-		sprintf(prev_rpm_str, "%4.3f", grbl_rpm);
-		sprintf(rpm_str, "%4.3f", grbl_data.spindle.rpm_programmed);
-		rpm_str_len = strlen(rpm_str);
-		prev_rpm_str_len = strlen(prev_rpm_str);
+		// Save current statuses
+		grbl_spindle_state = grbl_data.spindle.state.on;
 		grbl_rpm = grbl_data.spindle.rpm_programmed;
+		rpm = grbl_rpm;
 
-		if(rpm_str_len < prev_rpm_str_len)
-			R61529_FillRect(BLACK, 80, 250, 80 + (prev_rpm_str_len * 11), 270);
-		R61529_WriteString(80, 250 + ((26 - 18) / 2), rpm_str, Font_11x18, color, BLACK);
+		// Assign values to text variables
+		if(!grbl_data.spindle.state.on){
+			strcpy(ccw, " OFF");
+			rpm = 0.000;
+		}else if(grbl_data.spindle.state.ccw){
+			strcpy(ccw, " CCW");
+		}else{
+			strcpy(ccw, " CW");
+		}
+		sprintf(rpm_str, "%4.3f", rpm);
+
+		// Change text colors
+		if(rpm != 0.000){
+			rpm_color = ORANGE;
+		}
+		if(grbl_spindle_state){
+			rpm_text_color = ORANGE;
+		}
+
+		// Print text to screen
+		R61529_WriteString(10, 250,  "RPM:", Font_16x26, rpm_text_color, BLACK);
+		R61529_FillRect(BLACK, 80, 250, 210, 270);
+		R61529_WriteString(80, 250 + ((26 - 18) / 2), rpm_str, Font_11x18, rpm_color, BLACK);
+		R61529_WriteString(80 + (strlen(rpm_str) * 11), 250 + ((26 - 18) / 2), ccw, Font_11x18, WHITE, BLACK);
 	}
 
 	// Display jogging mode
@@ -1934,7 +2142,7 @@ void manual_mode_update_screen(void){
 
 // Level 2 menu special functions
 /**
-  * @brief Update screen data for screen brightness setting sub-menu
+  * @brief Update screen data for "Screen brightness" menu
   */
 void screen_brightness_setting_update_screen(void){
 	uint16_t end_x = ((menu_controller.brightness_value * (SCREEN_BRIGHTNESS_SETTING_SLIDER_WIDTH - 2)) / 100) + SCREEN_BRIGHTNESS_SETTING_SLIDER_BASE_X + 1;
@@ -1955,7 +2163,7 @@ void screen_brightness_setting_update_screen(void){
 
 // Level 4 menu special functions
 /**
-  * @brief Delete a given x axis distance setting
+  * @brief Delete a given "X axis distances" setting
   */
 void delete_x_axis_dist_setting(uint8_t index){
 	uint16_t setting_base_x = GET_X_AXIS_DIST_SETTING_BLOCK_BASE_X;
@@ -1969,7 +2177,7 @@ void delete_x_axis_dist_setting(uint8_t index){
 }
 
 /**
-  * @brief Select a given x axis distance setting
+  * @brief Select a given "X axis distances" setting
   */
 void select_x_axis_dist_setting(uint8_t index){
 	uint16_t setting_base_x = GET_X_AXIS_DIST_SETTING_BLOCK_BASE_X;
@@ -1993,7 +2201,7 @@ void select_x_axis_dist_setting(uint8_t index){
 }
 
 /**
-  * @brief Un-select a given x axis distance setting
+  * @brief Un-select a given "X axis distances" setting
   */
 void unselect_x_axis_dist_setting(uint8_t index){
 	uint16_t setting_base_x = GET_X_AXIS_DIST_SETTING_BLOCK_BASE_X;
@@ -2017,7 +2225,7 @@ void unselect_x_axis_dist_setting(uint8_t index){
 }
 
 /**
-  * @brief Delete a given y/z axis distance setting
+  * @brief Delete a given "Y/Z axis distances" setting
   */
 void delete_yz_axis_dist_setting(uint8_t index){
 	uint16_t setting_base_x = GET_YZ_AXIS_DIST_SETTING_BLOCK_BASE_X;
@@ -2031,7 +2239,7 @@ void delete_yz_axis_dist_setting(uint8_t index){
 }
 
 /**
-  * @brief Select a given yz axis distance setting
+  * @brief Select a given "Y/Z axis distances" setting
   */
 void select_yz_axis_dist_setting(uint8_t index){
 	uint16_t setting_base_x = GET_YZ_AXIS_DIST_SETTING_BLOCK_BASE_X;
@@ -2055,7 +2263,7 @@ void select_yz_axis_dist_setting(uint8_t index){
 }
 
 /**
-  * @brief Un-select a given yz axis distance setting
+  * @brief Un-select a given "Y/Z axis distances" setting
   */
 void unselect_yz_axis_dist_setting(uint8_t index){
 	uint16_t setting_base_x = GET_YZ_AXIS_DIST_SETTING_BLOCK_BASE_X;
@@ -2079,7 +2287,7 @@ void unselect_yz_axis_dist_setting(uint8_t index){
 }
 
 /**
-  * @brief Delete a given jog speed setting
+  * @brief Delete a given "Jog speeds" setting
   */
 void delete_jog_feed_setting(uint8_t index){
 	uint16_t setting_base_x = GET_JOG_FEED_SETTING_BLOCK_BASE_X;
@@ -2093,7 +2301,7 @@ void delete_jog_feed_setting(uint8_t index){
 }
 
 /**
-  * @brief Select a given jog speed setting
+  * @brief Select a given "Jog speeds" setting
   */
 void select_jog_feed_setting(uint8_t index){
 	uint16_t setting_base_x = GET_JOG_FEED_SETTING_BLOCK_BASE_X;
@@ -2117,7 +2325,7 @@ void select_jog_feed_setting(uint8_t index){
 }
 
 /**
-  * @brief Un-select a given jog speed setting
+  * @brief Un-select a given "Jog speed" settings
   */
 void unselect_jog_feed_setting(uint8_t index){
 	uint16_t setting_base_x = GET_JOG_FEED_SETTING_BLOCK_BASE_X;
@@ -2140,7 +2348,9 @@ void unselect_jog_feed_setting(uint8_t index){
 	R61529_WriteString(setting_decimal_base_x, setting_decimal_base_y, decimal_str, Font_11x18, BROWN, GRAY);
 }
 
-
+/**
+  * @brief Update the graphical aspects of "MPG axes settings" menu/sub-menus
+  */
 void mpg_axes_update_settings(void){
 	if((menu_controller.level_indexes[0] & 0xFF00 >> 8) == 2 && (menu_controller.level_indexes[1] & 0xFF00 >> 8) == 1){
 		uint16_t setting_text_base_y = 0;
@@ -2148,7 +2358,7 @@ void mpg_axes_update_settings(void){
 		uint16_t setting_decimal_base_y = 0;
 		char decimal_str[10] = {0};
 
-		if((menu_controller.level_indexes[2] & 0xFF00 >> 8) == 0){ ////TODO: X axis jogging distances
+		if((menu_controller.level_indexes[2] & 0xFF00 >> 8) == 0){
 			switch((menu_controller.level_indexes[3] & 0xFF00 >> 8)){
 				case 0: //Slow
 					setting_text_base_y = GET_X_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_Y(0);
@@ -2168,7 +2378,7 @@ void mpg_axes_update_settings(void){
 			setting_decimal_base_x = GET_X_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_X + X_AXIS_DIST_SETTING_BLOCK_WIDTH - 40 - (strlen(decimal_str) * 11);
 			setting_decimal_base_y = setting_text_base_y + 4; // + ((26 - 18) / 2)
 			R61529_WriteString(setting_decimal_base_x, setting_decimal_base_y, decimal_str, Font_11x18, PURPLE, GREEN);
-		}else if((menu_controller.level_indexes[2] & 0xFF00 >> 8) == 1){ //TODO: Y/Z axis jogging distances
+		}else if((menu_controller.level_indexes[2] & 0xFF00 >> 8) == 1){
 			switch((menu_controller.level_indexes[3] & 0xFF00 >> 8)){
 				case 0: //Slow
 					setting_text_base_y = GET_YZ_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_Y(0);
@@ -2188,7 +2398,7 @@ void mpg_axes_update_settings(void){
 			setting_decimal_base_x = GET_YZ_AXIS_DIST_SETTING_BLOCK_TEXT_BASE_X + YZ_AXIS_DIST_SETTING_BLOCK_WIDTH - 40 - (strlen(decimal_str) * 11);
 			setting_decimal_base_y = setting_text_base_y + 4; // + ((26 - 18) / 2)
 			R61529_WriteString(setting_decimal_base_x, setting_decimal_base_y, decimal_str, Font_11x18, PURPLE, GREEN);
-		}else if((menu_controller.level_indexes[2] & 0xFF00 >> 8) == 2){ //TODO: Jogging feed rates
+		}else if((menu_controller.level_indexes[2] & 0xFF00 >> 8) == 2){
 			switch((menu_controller.level_indexes[3] & 0xFF00 >> 8)){
 				case 0: //Slow
 					setting_text_base_y = GET_JOG_FEED_SETTING_BLOCK_TEXT_BASE_Y(0);
@@ -2212,6 +2422,9 @@ void mpg_axes_update_settings(void){
 	}
 }
 
+/**
+  * @brief Update the graphical aspects of "MPG spindle" menu/sub-menus
+  */
 void mpg_spindle_update_setting(void){
 	if((menu_controller.level_indexes[0] & 0xFF00 >> 8) == 2 && (menu_controller.level_indexes[1] & 0xFF00 >> 8) == 2){
 		if((menu_controller.level_indexes[2] & 0xFF00 >> 8) == 0){
@@ -2228,59 +2441,4 @@ void mpg_spindle_update_setting(void){
 			}
 		}
 	}
-}
-
-
-
-
-
-// Other functions
-/**
-  * @brief Process received information from the MPG pendant
-  * and do the according actions
-  * (send the according data packets to GRBL)
-  */
-void process_pendant_data_to_action(void){
-	static pendant_data_t data = {0};
-	pendant_data_t current_data;
-	pendant_action_t action = {0};
-
-	// Copy current pendant data into local structure
-	memcpy(&current_data, &pendant_data, sizeof(pendant_data_t));
-
-	// Encoder X
-	if((current_data.encoder1_val > data.encoder1_val) && (current_data.encoder1_val - data.encoder1_val) < 300){
-		action.encoder1_val_diff = current_data.encoder1_val - data.encoder1_val;
-	}else if(current_data.encoder1_val > data.encoder1_val){
-		action.encoder1_val_diff = -((0xFFFF - current_data.encoder1_val) + data.encoder1_val);
-	}else if((current_data.encoder1_val < data.encoder1_val) && (data.encoder1_val - current_data.encoder1_val) < 300){
-		action.encoder1_val_diff = current_data.encoder1_val - data.encoder1_val;
-	}else if(current_data.encoder1_val < data.encoder1_val){
-		action.encoder1_val_diff = -((0xFFFF - data.encoder1_val) + current_data.encoder1_val);
-	}
-
-	// Encoder YZ
-	if((current_data.encoder2_val > data.encoder2_val) && (current_data.encoder2_val - data.encoder2_val) < 300){
-		action.encoder2_val_diff = current_data.encoder2_val - data.encoder2_val;
-	}else if(current_data.encoder2_val > data.encoder2_val){
-		action.encoder2_val_diff = -((0xFFFF - current_data.encoder2_val) + data.encoder2_val);
-	}else if((current_data.encoder2_val < data.encoder2_val) && (data.encoder2_val - current_data.encoder2_val) < 300){
-		action.encoder2_val_diff = current_data.encoder2_val - data.encoder2_val;
-	}else if(current_data.encoder2_val < data.encoder2_val){
-		action.encoder2_val_diff = -((0xFFFF - data.encoder2_val) + current_data.encoder2_val);
-	}
-
-	// Copy the rest of the data
-	action.x_axis_multiplicity = current_data.x_axis_multiplicity;
-	action.yz_axis_multiplicity = current_data.yz_axis_multiplicity;
-	action.y_or_z = current_data.y_or_z;
-	action.spindle_mode = current_data.spindle_mode;
-	action.jog_mode = current_data.jog_mode;
-	action.buttons = current_data.buttons;
-
-	// Translate pendant data into actions
-	pendant_data_to_action(action);
-
-	// Save current data
-	memcpy(&data, &current_data, sizeof(pendant_data_t));
 }

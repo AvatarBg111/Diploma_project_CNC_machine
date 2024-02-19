@@ -72,8 +72,6 @@ void I2C3_EV_IRQHandler(void);
 void I2C3_ER_IRQHandler(void);
 /* USER CODE BEGIN EFP */
 void start_grbl_uart_reception(void);
-void start_pendant_connection(void);
-void start_pendant_disconnection(void);
 void start_pendant_reception(void);
 bool turn_on_buzzer(uint16_t);
 

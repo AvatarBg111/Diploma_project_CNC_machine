@@ -10,11 +10,13 @@ RM := rm -rf
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include Drivers/STM32H7xx_HAL_Driver/Src/subdir.mk
--include Core/grblHALParser/subdir.mk
+-include Core/grblHALComm/subdir.mk
 -include Core/Startup/subdir.mk
 -include Core/Src/subdir.mk
 -include Core/SoundFX/subdir.mk
 -include Core/R61529/subdir.mk
+-include Core/MPGpendant/subdir.mk
+-include Core/MPGmovement/subdir.mk
 -include Core/FT5436/subdir.mk
 -include objects.mk
 

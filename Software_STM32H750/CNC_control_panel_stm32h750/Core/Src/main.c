@@ -131,6 +131,7 @@ int main(void)
   MX_UART4_Init();
   MX_USART3_UART_Init();
   /* USER CODE BEGIN 2 */
+  // Initialize interfaces
   Init_interfaces();
 
   /* USER CODE END 2 */
@@ -138,6 +139,7 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 	while(1){
+		// Switch board LED state between 650ms
 		if(wait_ms_ch(1, 650)){
 			if(HAL_GPIO_ReadPin(Board_LED_GPIO_Port, Board_LED_Pin) == GPIO_PIN_RESET){
 				HAL_GPIO_WritePin(Board_LED_GPIO_Port, Board_LED_Pin, GPIO_PIN_SET);
@@ -146,6 +148,7 @@ int main(void)
 			}
 		}
 
+		// Call function, implementing the menu of the control panel
 		r61529_screen_menu();
     /* USER CODE END WHILE */
 
@@ -450,7 +453,7 @@ static void MX_UART4_Init(void)
 
   /* USER CODE END UART4_Init 1 */
   huart4.Instance = UART4;
-  huart4.Init.BaudRate = 254000;
+  huart4.Init.BaudRate = 200000;
   huart4.Init.WordLength = UART_WORDLENGTH_8B;
   huart4.Init.StopBits = UART_STOPBITS_1;
   huart4.Init.Parity = UART_PARITY_NONE;
