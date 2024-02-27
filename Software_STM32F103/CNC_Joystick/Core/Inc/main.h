@@ -142,6 +142,14 @@ void process_inputs(void);
 #define PROCESS_INPUTS_DELAY 50
 #define TIM1_INT_ENTRIES (PROCESS_INPUTS_DELAY / TIM1_INT_TIME)
 
+#if(1)
+	#define LED_STATE_OFF GPIO_PIN_SET
+	#define LED_STATE_ON GPIO_PIN_RESET
+#else
+	#define LED_STATE_OFF GPIO_PIN_RESET
+	#define LED_STATE_ON GPIO_PIN_SET
+#endif
+
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

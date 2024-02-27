@@ -44,7 +44,11 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
+// UART2 variables and buffers
 uint8_t uart2_rx_buf[UART_BUF_SIZE] = {0};
+
+// Other variables
+uint8_t inputs_counter = 0;
 
 /* USER CODE END PV */
 
@@ -248,22 +252,22 @@ void DMA1_Channel7_IRQHandler(void)
 void TIM4_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM4_IRQn 0 */
-	static uint8_t counter = 0;
+
+	// Call function that implements the updating
+	// of button channel statuses in a de-bouncer
+	update_button_status();
+
+	// Increment a counter and when it reaches TIM1_INT_ENTRIES
+	// set a flag that shows whether the main program should
+	// process the system inputs
+	if(++inputs_counter >= TIM1_INT_ENTRIES){
+		inputs_counter = 0;
+		process_inputs_flag = true;
+	}
 
   /* USER CODE END TIM4_IRQn 0 */
   HAL_TIM_IRQHandler(&htim4);
   /* USER CODE BEGIN TIM4_IRQn 1 */
-  // Call function that implements the updating
-  // of button channel statuses in a de-bouncer
-  update_button_status();
-
-  // Increment a counter and when it reaches TIM1_INT_ENTRIES
-  // set a flag that shows whether the main program should
-  // process the system inputs
-  if(++counter >= TIM1_INT_ENTRIES){
-	  counter = 0;
-	  process_inputs_flag = true;
-  }
 
   /* USER CODE END TIM4_IRQn 1 */
 }
@@ -301,15 +305,15 @@ void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size){
 						pendant_status = true;
 
 						// Logic for enabling/disabling the MPG functionality
-						if((pendant_status && uart2_rx_buf[11] == '0' + MPG_STATUS_DISABLED) && (pendant_mpg_status == MPG_STATUS_ENABLED && !pendant_data.mpg)){
+						if(uart2_rx_buf[11] == ('0' + MPG_STATUS_DISABLED) && pendant_mpg_status == MPG_STATUS_ENABLE_ONGOING && !pendant_data.mpg){
 							pendant_data.mpg = true;
-						}else if(pendant_status == MPG_STATUS_ENABLED && uart2_rx_buf[11] == '0' + MPG_STATUS_DISABLED){
-							pendant_mpg_status = MPG_STATUS_DISABLED;
-							pendant_data.mpg = false;
-						}else if(pendant_mpg_status == MPG_STATUS_DISABLED && uart2_rx_buf[11] == '0' + MPG_STATUS_ENABLED){
-							pendant_data.mpg = false;
-						}else if(pendant_mpg_status == MPG_STATUS_ENABLED && uart2_rx_buf[11] == '0' + MPG_STATUS_ENABLE_ONGOING){
+						}else if(uart2_rx_buf[11] == ('0' + MPG_STATUS_ENABLED) && pendant_mpg_status == MPG_STATUS_ENABLE_ONGOING){
 							pendant_data.mpg = true;
+							pendant_mpg_status = MPG_STATUS_ENABLED;
+						}else if(uart2_rx_buf[11] == ('0' + MPG_STATUS_ENABLED) && pendant_mpg_status == MPG_STATUS_DISABLED){
+							pendant_data.mpg = false;
+						}else if(uart2_rx_buf[11] == ('0' + MPG_STATUS_DISABLED) && pendant_mpg_status == MPG_STATUS_ENABLED && pendant_data.mpg){
+							pendant_data.mpg = false;
 						}
 					}else if(uart2_rx_buf[9] == '0'){ // Received system status is OFF
 						// Turn off system

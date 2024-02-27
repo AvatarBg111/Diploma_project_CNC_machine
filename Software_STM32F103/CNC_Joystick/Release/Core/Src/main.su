@@ -1,8 +1,9 @@
-../Core/Src/main.c:155:6:SystemClock_Config	80	static,ignoring_inline_asm
-../Core/Src/main.c:505:6:Init_interfaces	16	static
-../Core/Src/main.c:626:9:get_spindle_mode	8	static
-../Core/Src/main.c:643:9:get_x_axis_multiplier	8	static
-../Core/Src/main.c:660:9:get_yz_axis_multiplier	8	static
-../Core/Src/main.c:536:6:process_inputs	16	static
-../Core/Src/main.c:101:5:main	72	static,ignoring_inline_asm
-../Core/Src/main.c:683:6:Error_Handler	0	static,ignoring_inline_asm
+../Core/Src/main.c:162:6:SystemClock_Config	80	static,ignoring_inline_asm
+../Core/Src/main.c:552:6:turn_off_leds	16	static
+../Core/Src/main.c:515:6:Init_interfaces	16	static
+../Core/Src/main.c:784:9:get_spindle_mode	8	static
+../Core/Src/main.c:804:9:get_x_axis_multiplier	8	static
+../Core/Src/main.c:824:9:get_yz_axis_multiplier	8	static
+../Core/Src/main.c:576:6:process_inputs	24	static
+../Core/Src/main.c:102:5:main	72	static,ignoring_inline_asm
+../Core/Src/main.c:847:6:Error_Handler	0	static,ignoring_inline_asm

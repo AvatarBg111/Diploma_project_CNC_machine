@@ -78,6 +78,7 @@ static void MX_USART2_UART_Init(void);
 static void MX_TIM4_Init(void);
 /* USER CODE BEGIN PFP */
 void Init_interfaces(void);
+void turn_off_leds(void);
 void process_inputs(void);
 uint8_t get_spindle_mode(void);
 uint8_t get_x_axis_multiplier(void);
@@ -138,15 +139,15 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while(1)
   {
-	  // The program will enter this if statement when the flag
-	  // has been set which happens inside TIM4 interrupt handler
-	  if(process_inputs_flag){
-		  // Reset the entry flag
-		  process_inputs_flag = false;
+	// The program will enter this if statement when the flag
+	// has been set which happens inside TIM4 interrupt handler
+	if(process_inputs_flag && pendant_status){
+		// Call function for processing system inputs
+		process_inputs();
 
-		  // Call function for processing system inputs
-		  process_inputs();
-	  }
+		// Reset the entry flag
+		process_inputs_flag = false;
+	}
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -425,10 +426,10 @@ static void MX_DMA_Init(void)
 
   /* DMA interrupt init */
   /* DMA1_Channel6_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel6_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(DMA1_Channel6_IRQn, 1, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel6_IRQn);
   /* DMA1_Channel7_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel7_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(DMA1_Channel7_IRQn, 1, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel7_IRQn);
 
 }
@@ -538,9 +539,36 @@ void Init_interfaces(void){
 	set_button_channel(LOCK_X_AXIS_SW_GPIO_Port, LOCK_X_AXIS_SW_Pin, LOCK_X_AXIS_SW_CH);
 	set_button_channel(LOCK_YZ_AXIS_SW_GPIO_Port, LOCK_YZ_AXIS_SW_Pin, LOCK_YZ_AXIS_SW_CH);
 
+	// Turn off all LEDs
+	turn_off_leds();
+
 	// Start UART2 reception
 	start_uart2_reception();
 }
+
+/**
+  * @brief Turn off all system LEDs
+  */
+void turn_off_leds(void){
+	HAL_GPIO_WritePin(FLOOD_LED_GPIO_Port, FLOOD_LED_Pin, LED_STATE_OFF);
+	HAL_GPIO_WritePin(MIST_LED_GPIO_Port, MIST_LED_Pin, LED_STATE_OFF);
+	HAL_GPIO_WritePin(CYCLE_START_LED_GPIO_Port, CYCLE_START_LED_Pin, LED_STATE_OFF);
+	HAL_GPIO_WritePin(HOLD_LED_GPIO_Port, HOLD_LED_Pin, LED_STATE_OFF);
+	HAL_GPIO_WritePin(MPG_ON_LED_GPIO_Port, MPG_ON_LED_Pin, LED_STATE_OFF);
+	HAL_GPIO_WritePin(YZ_SW_LED_Y_GPIO_Port, YZ_SW_LED_Y_Pin, LED_STATE_OFF);
+	HAL_GPIO_WritePin(YZ_SW_LED_Z_GPIO_Port, YZ_SW_LED_Z_Pin, LED_STATE_OFF);
+	HAL_GPIO_WritePin(SPINDLE_CW_LED_GPIO_Port, SPINDLE_CW_LED_Pin, LED_STATE_OFF);
+	HAL_GPIO_WritePin(SPINDLE_CCW_LED_GPIO_Port, SPINDLE_CCW_LED_Pin, LED_STATE_OFF);
+
+	HAL_GPIO_WritePin(AXIS_X_MULTIPLIER_LED_1_GPIO_Port, AXIS_X_MULTIPLIER_LED_1_Pin, LED_STATE_OFF);
+	HAL_GPIO_WritePin(AXIS_X_MULTIPLIER_LED_2_GPIO_Port, AXIS_X_MULTIPLIER_LED_2_Pin, LED_STATE_OFF);
+	HAL_GPIO_WritePin(AXIS_X_MULTIPLIER_LED_3_GPIO_Port, AXIS_X_MULTIPLIER_LED_3_Pin, LED_STATE_OFF);
+
+	HAL_GPIO_WritePin(AXIS_YZ_MULTIPLIER_LED_1_GPIO_Port, AXIS_YZ_MULTIPLIER_LED_1_Pin, LED_STATE_OFF);
+	HAL_GPIO_WritePin(AXIS_YZ_MULTIPLIER_LED_2_GPIO_Port, AXIS_YZ_MULTIPLIER_LED_2_Pin, LED_STATE_OFF);
+	HAL_GPIO_WritePin(AXIS_YZ_MULTIPLIER_LED_3_GPIO_Port, AXIS_YZ_MULTIPLIER_LED_3_Pin, LED_STATE_OFF);
+}
+
 
 /**
   * @brief Process system inputs
@@ -549,6 +577,24 @@ void process_inputs(void){
 	static bool y_or_z_last_state = false;
 	uint8_t lock_x_axis = get_button_state(LOCK_X_AXIS_SW_CH);	// Get X axis lock state
 	uint8_t lock_yz_axis = get_button_state(LOCK_YZ_AXIS_SW_CH); // Get Y/Z axes lock state
+
+	// Check MPG functionality switch input (it disables/enables MPG functionality)
+	if(get_button_state(MPG_BUT_CH) == GPIO_PIN_RESET){
+		if(++button_action_delay_cnt_ch[MPG_BUT_DELAY_CH] >= button_delay_action_cnt || \
+		   button_action_delay_cnt_ch[MPG_BUT_DELAY_CH] == 1){
+			if(button_action_delay_cnt_ch[MPG_BUT_DELAY_CH] != 1 && button_delay_action_cnt != 1){
+				button_action_delay_cnt_ch[MPG_BUT_DELAY_CH] = 0;
+			}
+
+			if(pendant_mpg_status != MPG_STATUS_DISABLED){
+				pendant_mpg_status = MPG_STATUS_DISABLED;
+			}else{
+				pendant_mpg_status = MPG_STATUS_ENABLE_ONGOING;
+			}
+		}
+	}else{
+		button_action_delay_cnt_ch[MPG_BUT_DELAY_CH] = 0;
+	}
 
 	// The program will enter this if statement, if the system
 	// is enabled and it's MPg functionality is turned on
@@ -565,78 +611,166 @@ void process_inputs(void){
 			ENCODER_2_TIM.Instance->CNT = pendant_data.encoder2_val;
 		}
 	}else{
-		// Discard inputs
+		// Discard encoder inputs
 		pendant_data.encoder1_val = 0;
 		pendant_data.encoder2_val = 0;
 		ENCODER_1_TIM.Instance->CNT = 0;
 		ENCODER_2_TIM.Instance->CNT = 0;
 	}
-	pendant_data.spindle_mode = get_spindle_mode(); // Get spindle mode
-	pendant_data.jog_mode = 0;	//TODO: need to have an input for jogging mode switching
-	pendant_data.x_axis_multiplicity = get_x_axis_multiplier(); // Get X axis multiplier
-	pendant_data.yz_axis_multiplicity = get_yz_axis_multiplier(); // Get Y/Z axes multiplier
 
-	// Check Y/Z axes switch input
-	if(get_button_state(YZ_SW_CH) == GPIO_PIN_RESET){
-		if(!y_or_z_last_state){
-			y_or_z_last_state = true;
-			button_action_delay_cnt_ch[Y_OR_Z_BUT_DELAY_CH] = 0;
-		}
-		if(++button_action_delay_cnt_ch[Y_OR_Z_BUT_DELAY_CH] >= button_delay_action_cnt){
-			button_action_delay_cnt_ch[Y_OR_Z_BUT_DELAY_CH] = 0;
-			pendant_data.y_or_z = YZ_MOVEMENT_Z;	// Set to Z axis
-		}
-	}else{
-		if(y_or_z_last_state){
-			y_or_z_last_state = false;
-			button_action_delay_cnt_ch[Y_OR_Z_BUT_DELAY_CH] = 0;
-		}
-		if(++button_action_delay_cnt_ch[Y_OR_Z_BUT_DELAY_CH] >= button_delay_action_cnt){
-			button_action_delay_cnt_ch[Y_OR_Z_BUT_DELAY_CH] = 0;
-			pendant_data.y_or_z = YZ_MOVEMENT_Y;	// Set to Z axis
-		}
-	}
+	// If pendant's MPG functionality is enabled,
+	// execute the following code inside the if statement
+	if(pendant_mpg_status == MPG_STATUS_ENABLED){
+		pendant_data.spindle_mode = get_spindle_mode(); // Get spindle mode
+		pendant_data.jog_mode = 0;	//TODO: need to have an input for jogging mode switching
+		pendant_data.x_axis_multiplicity = get_x_axis_multiplier(); // Get X axis multiplier
+		pendant_data.yz_axis_multiplicity = get_yz_axis_multiplier(); // Get Y/Z axes multiplier
 
-	// Check MPG functionality switch input (it dis/enables MPG functionality)
-	if(get_button_state(MPG_BUT_CH) == GPIO_PIN_RESET){
-		if(++button_action_delay_cnt_ch[MPG_BUT_DELAY_CH] >= button_delay_action_cnt){
-			button_action_delay_cnt_ch[MPG_BUT_DELAY_CH] = 0;
-
-			if(pendant_mpg_status != MPG_STATUS_DISABLED){
-				pendant_mpg_status = MPG_STATUS_DISABLED;
-			}else{
-				pendant_mpg_status = MPG_STATUS_ENABLED;
+		// Check Y/Z axes switch input
+		if(get_button_state(YZ_SW_CH) == GPIO_PIN_RESET){
+			if(!y_or_z_last_state){
+				y_or_z_last_state = true;
+				button_action_delay_cnt_ch[Y_OR_Z_BUT_DELAY_CH] = 0;
+			}
+			if(++button_action_delay_cnt_ch[Y_OR_Z_BUT_DELAY_CH] >= button_delay_action_cnt){
+				button_action_delay_cnt_ch[Y_OR_Z_BUT_DELAY_CH] = 0;
+				pendant_data.y_or_z = YZ_MOVEMENT_Z;	// Set to Z axis
+			}
+		}else{
+			if(y_or_z_last_state){
+				y_or_z_last_state = false;
+				button_action_delay_cnt_ch[Y_OR_Z_BUT_DELAY_CH] = 0;
+			}
+			if(++button_action_delay_cnt_ch[Y_OR_Z_BUT_DELAY_CH] >= button_delay_action_cnt){
+				button_action_delay_cnt_ch[Y_OR_Z_BUT_DELAY_CH] = 0;
+				pendant_data.y_or_z = YZ_MOVEMENT_Y;	// Set to Z axis
 			}
 		}
-	}else{
-		button_action_delay_cnt_ch[MPG_BUT_DELAY_CH] = 0;
-	}
 
-	// Check FLOOD coolant switch input
-	if(get_button_state(FLOOD_SW_CH) == GPIO_PIN_RESET){
-		if(++button_action_delay_cnt_ch[FLOOD_BUT_DELAY_CH] >= button_delay_action_cnt){
+		// Check FLOOD coolant switch input
+		if(get_button_state(FLOOD_SW_CH) == GPIO_PIN_RESET){
+			if(++button_action_delay_cnt_ch[FLOOD_BUT_DELAY_CH] >= button_delay_action_cnt){
+				button_action_delay_cnt_ch[FLOOD_BUT_DELAY_CH] = 0;
+				pendant_data.flood = (pendant_data.flood ? false : true);
+			}
+		}else{
 			button_action_delay_cnt_ch[FLOOD_BUT_DELAY_CH] = 0;
-			pendant_data.flood = (pendant_data.flood ? false : true);
 		}
-	}else{
-		button_action_delay_cnt_ch[FLOOD_BUT_DELAY_CH] = 0;
-	}
 
-	// Check MIST coolant switch input
-	if(get_button_state(MIST_SW_CH) == GPIO_PIN_RESET){
-		if(++button_action_delay_cnt_ch[MIST_BUT_DELAY_CH] >= button_delay_action_cnt){
+		// Check MIST coolant switch input
+		if(get_button_state(MIST_SW_CH) == GPIO_PIN_RESET){
+			if(++button_action_delay_cnt_ch[MIST_BUT_DELAY_CH] >= button_delay_action_cnt){
+				button_action_delay_cnt_ch[MIST_BUT_DELAY_CH] = 0;
+				pendant_data.mist = (pendant_data.mist ? false : true);
+			}
+		}else{
 			button_action_delay_cnt_ch[MIST_BUT_DELAY_CH] = 0;
-			pendant_data.mist = (pendant_data.mist ? false : true);
 		}
-	}else{
-		button_action_delay_cnt_ch[MIST_BUT_DELAY_CH] = 0;
-	}
 
-	// Check HOLD and Cycle start button input
-	if(get_button_state(HOLD_BUT_CH) == GPIO_PIN_RESET){	// System HOLD status
-		pendant_data.system_status = Hold;		// Set system status to Hold
-	}else if(get_button_state(CYCLE_START_BUT_CH) == GPIO_PIN_RESET){	// System CYCLE START status
-		pendant_data.system_status = Idle;		// Set system status to Idle
+		// Check HOLD and Cycle start button input
+		if(get_button_state(HOLD_BUT_CH) == GPIO_PIN_RESET){	// System HOLD status
+			pendant_data.system_status = Hold;		// Set system status to Hold
+		}else if(get_button_state(CYCLE_START_BUT_CH) == GPIO_PIN_RESET){	// System CYCLE START status
+			pendant_data.system_status = Idle;		// Set system status to Idle
+		}
+
+		// Set MPG status LED
+		HAL_GPIO_WritePin(MPG_ON_LED_GPIO_Port, MPG_ON_LED_Pin, LED_STATE_ON);
+
+		// Set / Reset LED for which axis between Y and Z is selected
+		if(pendant_data.y_or_z == YZ_MOVEMENT_Z){
+			HAL_GPIO_WritePin(YZ_SW_LED_Y_GPIO_Port, YZ_SW_LED_Y_Pin, LED_STATE_OFF);
+			HAL_GPIO_WritePin(YZ_SW_LED_Z_GPIO_Port, YZ_SW_LED_Z_Pin, LED_STATE_ON);
+		}else if(pendant_data.y_or_z == YZ_MOVEMENT_Y){
+			HAL_GPIO_WritePin(YZ_SW_LED_Y_GPIO_Port, YZ_SW_LED_Y_Pin, LED_STATE_ON);
+			HAL_GPIO_WritePin(YZ_SW_LED_Z_GPIO_Port, YZ_SW_LED_Z_Pin, LED_STATE_OFF);
+		}
+
+		// Set / Reset flood coolant LED
+		if(pendant_data.flood){
+			HAL_GPIO_WritePin(FLOOD_LED_GPIO_Port, FLOOD_LED_Pin, LED_STATE_ON);
+		}else{
+			HAL_GPIO_WritePin(FLOOD_LED_GPIO_Port, FLOOD_LED_Pin, LED_STATE_OFF);
+		}
+
+		// Set / Reset mist coolant LED
+		if(pendant_data.mist){
+			HAL_GPIO_WritePin(MIST_LED_GPIO_Port, MIST_LED_Pin, LED_STATE_ON);
+		}else{
+			HAL_GPIO_WritePin(MIST_LED_GPIO_Port, MIST_LED_Pin, LED_STATE_OFF);
+		}
+
+		// Set / Reset X axis multiplier LEDs
+		switch(pendant_data.x_axis_multiplicity){
+			case 0:
+				HAL_GPIO_WritePin(AXIS_X_MULTIPLIER_LED_1_GPIO_Port, AXIS_X_MULTIPLIER_LED_1_Pin, LED_STATE_ON);
+				HAL_GPIO_WritePin(AXIS_X_MULTIPLIER_LED_2_GPIO_Port, AXIS_X_MULTIPLIER_LED_2_Pin, LED_STATE_OFF);
+				HAL_GPIO_WritePin(AXIS_X_MULTIPLIER_LED_3_GPIO_Port, AXIS_X_MULTIPLIER_LED_3_Pin, LED_STATE_OFF);
+				break;
+			case 1:
+				HAL_GPIO_WritePin(AXIS_X_MULTIPLIER_LED_1_GPIO_Port, AXIS_X_MULTIPLIER_LED_1_Pin, LED_STATE_OFF);
+				HAL_GPIO_WritePin(AXIS_X_MULTIPLIER_LED_2_GPIO_Port, AXIS_X_MULTIPLIER_LED_2_Pin, LED_STATE_ON);
+				HAL_GPIO_WritePin(AXIS_X_MULTIPLIER_LED_3_GPIO_Port, AXIS_X_MULTIPLIER_LED_3_Pin, LED_STATE_OFF);
+				break;
+			case 2:
+				HAL_GPIO_WritePin(AXIS_X_MULTIPLIER_LED_1_GPIO_Port, AXIS_X_MULTIPLIER_LED_1_Pin, LED_STATE_OFF);
+				HAL_GPIO_WritePin(AXIS_X_MULTIPLIER_LED_2_GPIO_Port, AXIS_X_MULTIPLIER_LED_2_Pin, LED_STATE_OFF);
+				HAL_GPIO_WritePin(AXIS_X_MULTIPLIER_LED_3_GPIO_Port, AXIS_X_MULTIPLIER_LED_3_Pin, LED_STATE_ON);
+				break;
+			default:
+				break;
+		}
+
+		// Set / Reset YZ axis multiplier LEDs
+		switch(pendant_data.x_axis_multiplicity){
+			case 0:
+				HAL_GPIO_WritePin(AXIS_YZ_MULTIPLIER_LED_1_GPIO_Port, AXIS_YZ_MULTIPLIER_LED_1_Pin, LED_STATE_ON);
+				HAL_GPIO_WritePin(AXIS_YZ_MULTIPLIER_LED_2_GPIO_Port, AXIS_YZ_MULTIPLIER_LED_2_Pin, LED_STATE_OFF);
+				HAL_GPIO_WritePin(AXIS_YZ_MULTIPLIER_LED_3_GPIO_Port, AXIS_YZ_MULTIPLIER_LED_3_Pin, LED_STATE_OFF);
+				break;
+			case 1:
+				HAL_GPIO_WritePin(AXIS_YZ_MULTIPLIER_LED_1_GPIO_Port, AXIS_YZ_MULTIPLIER_LED_1_Pin, LED_STATE_OFF);
+				HAL_GPIO_WritePin(AXIS_YZ_MULTIPLIER_LED_2_GPIO_Port, AXIS_YZ_MULTIPLIER_LED_2_Pin, LED_STATE_ON);
+				HAL_GPIO_WritePin(AXIS_YZ_MULTIPLIER_LED_3_GPIO_Port, AXIS_YZ_MULTIPLIER_LED_3_Pin, LED_STATE_OFF);
+				break;
+			case 2:
+				HAL_GPIO_WritePin(AXIS_YZ_MULTIPLIER_LED_1_GPIO_Port, AXIS_YZ_MULTIPLIER_LED_1_Pin, LED_STATE_OFF);
+				HAL_GPIO_WritePin(AXIS_YZ_MULTIPLIER_LED_2_GPIO_Port, AXIS_YZ_MULTIPLIER_LED_2_Pin, LED_STATE_OFF);
+				HAL_GPIO_WritePin(AXIS_YZ_MULTIPLIER_LED_3_GPIO_Port, AXIS_YZ_MULTIPLIER_LED_3_Pin, LED_STATE_ON);
+				break;
+			default:
+				break;
+		}
+
+		// Set / Reset spindle mode LEDs
+		switch(pendant_data.spindle_mode){
+			case SPINDLE_MODE_CW:
+				HAL_GPIO_WritePin(SPINDLE_CW_LED_GPIO_Port, SPINDLE_CW_LED_Pin, LED_STATE_ON);
+				HAL_GPIO_WritePin(SPINDLE_CCW_LED_GPIO_Port, SPINDLE_CCW_LED_Pin, LED_STATE_OFF);
+				break;
+			case SPINDLE_MODE_CCW:
+				HAL_GPIO_WritePin(SPINDLE_CW_LED_GPIO_Port, SPINDLE_CW_LED_Pin, LED_STATE_OFF);
+				HAL_GPIO_WritePin(SPINDLE_CCW_LED_GPIO_Port, SPINDLE_CCW_LED_Pin, LED_STATE_ON);
+				break;
+			case SPINDLE_MODE_OFF:
+				HAL_GPIO_WritePin(SPINDLE_CW_LED_GPIO_Port, SPINDLE_CW_LED_Pin, LED_STATE_OFF);
+				HAL_GPIO_WritePin(SPINDLE_CCW_LED_GPIO_Port, SPINDLE_CCW_LED_Pin, LED_STATE_OFF);
+				break;
+			default:
+				break;
+		}
+
+		// Set / Reset machine status LEDs
+		if(pendant_data.system_status == Idle){
+			HAL_GPIO_WritePin(CYCLE_START_LED_GPIO_Port, CYCLE_START_LED_Pin, LED_STATE_ON);
+			HAL_GPIO_WritePin(HOLD_LED_GPIO_Port, HOLD_LED_Pin, LED_STATE_OFF);
+		}else if(pendant_data.system_status == Hold){
+			HAL_GPIO_WritePin(CYCLE_START_LED_GPIO_Port, CYCLE_START_LED_Pin, LED_STATE_OFF);
+			HAL_GPIO_WritePin(HOLD_LED_GPIO_Port, HOLD_LED_Pin, LED_STATE_ON);
+		}
+	}else if(pendant_mpg_status == MPG_STATUS_DISABLED){
+		// Turn off system LEDs
+		turn_off_leds();
 	}
 }
 
