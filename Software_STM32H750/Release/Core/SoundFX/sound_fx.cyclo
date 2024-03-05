@@ -1,0 +1,3 @@
+../Core/SoundFX/sound_fx.c:250:6:enable_buzzer	1
+../Core/SoundFX/sound_fx.c:254:6:disable_buzzer	1
+../Core/SoundFX/sound_fx.c:278:9:buzzer_short_ring	4

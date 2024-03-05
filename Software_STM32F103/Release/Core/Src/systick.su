@@ -1,0 +1,6 @@
+../Core/Src/systick.c:34:17:GetSysTickTimer_ms	0	static
+../Core/Src/systick.c:41:6:delay_ms	0	static
+../Core/Src/systick.c:53:6:clear_wait_ms_ch	0	static
+../Core/Src/systick.c:60:6:reset_wait_ms_ch	0	static
+../Core/Src/systick.c:67:6:set_wait_ms_ch	0	static
+../Core/Src/systick.c:74:9:wait_ms_ch	8	static

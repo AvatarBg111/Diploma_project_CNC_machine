@@ -1,0 +1,16 @@
+../Core/R61529/r61529.c:77:13:Lcd_Write	5
+../Core/R61529/r61529.c:108:13:Lcd_Write_Reg	1
+../Core/R61529/r61529.c:116:13:Lcd_Write_Data	1
+../Core/R61529/r61529.c:124:6:R61529_SetAddrWindow	1
+../Core/R61529/r61529.c:142:6:Init_R61529	1
+../Core/R61529/r61529.c:351:6:R61529_SetRotation	5
+../Core/R61529/r61529.c:381:6:R61529_Flood	4
+../Core/R61529/r61529.c:415:6:R61529_FillScreen	1
+../Core/R61529/r61529.c:423:6:R61529_FillRect	7
+../Core/R61529/r61529.c:438:6:R61529_DrawPixel	5
+../Core/R61529/r61529.c:450:6:R61529_DrawLine	8
+../Core/R61529/r61529.c:482:6:R61529_DrawRect	1
+../Core/R61529/r61529.c:492:6:R61529_DrawCircle	3
+../Core/R61529/r61529.c:525:13:R61529_WriteChar	4
+../Core/R61529/r61529.c:545:6:R61529_WriteString	5
+../Core/R61529/r61529.c:571:6:Draw_Image	2

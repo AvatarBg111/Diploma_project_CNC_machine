@@ -14,3 +14,6 @@ Repository for diploma project on the topic "System for controlling a CNC machin
 
 ## V0.3 - 19.02.2024
  - Main functionalities are complete
+
+## V1.0 - 05.03.2024
+ - Basic documentation added

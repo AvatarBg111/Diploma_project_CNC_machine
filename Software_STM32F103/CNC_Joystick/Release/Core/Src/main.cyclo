@@ -1,9 +1,0 @@
-../Core/Src/main.c:162:6:SystemClock_Config	3
-../Core/Src/main.c:552:6:turn_off_leds	1
-../Core/Src/main.c:515:6:Init_interfaces	1
-../Core/Src/main.c:784:9:get_spindle_mode	3
-../Core/Src/main.c:804:9:get_x_axis_multiplier	3
-../Core/Src/main.c:824:9:get_yz_axis_multiplier	3
-../Core/Src/main.c:576:6:process_inputs	37
-../Core/Src/main.c:102:5:main	14
-../Core/Src/main.c:847:6:Error_Handler	1

@@ -1,3 +1,0 @@
-../networking/multipartparser.c:118:6:multipartparser_init	1
-../networking/multipartparser.c:128:6:multipartparser_callbacks_init	1
-../networking/multipartparser.c:133:8:multipartparser_execute	81

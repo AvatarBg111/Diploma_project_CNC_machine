@@ -1,0 +1,6 @@
+../Core/FT5436/ft5436.c:70:6:Init_FT5436	40	static
+../Core/FT5436/ft5436.c:110:6:request_available_points	16	static
+../Core/FT5436/ft5436.c:135:6:transmission_complete_callback	16	static
+../Core/FT5436/ft5436.c:177:6:reception_complete_callback	24	static
+../Core/FT5436/ft5436.c:231:6:HAL_I2C_MasterTxCpltCallback	0	static
+../Core/FT5436/ft5436.c:240:6:HAL_I2C_MasterRxCpltCallback	0	static

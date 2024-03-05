@@ -1,0 +1,4 @@
+../Core/grblHALComm/sender.c:40:9:enable_mpg	16	static
+../Core/grblHALComm/sender.c:64:9:disable_mpg	16	static
+../Core/grblHALComm/sender.c:88:9:grbl_send_packet	8	static
+../Core/grblHALComm/sender.c:100:6:request_report	8	static
